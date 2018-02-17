@@ -1,4 +1,4 @@
-# dotfiles-rs
+# dotfiles-rs [![Build Status](https://travis-ci.org/jokeyrhyme/dotfiles-rs.svg?branch=master)](https://travis-ci.org/jokeyrhyme/dotfiles-rs)
 
 reads my dotfiles repository and does stuff
 
@@ -11,8 +11,6 @@ reads my dotfiles repository and does stuff
   * otherwise creates and/or edits settings files in `~`
 
 ## Roadmap
-
-* [ ] Travis CI integration
 
 * [ ] automatically build and publish for new git tags
 
