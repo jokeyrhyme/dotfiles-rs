@@ -8,8 +8,8 @@ script:
 - cargo build --verbose
 - cargo test --verbose
 - if [ -n "$TRAVIS_TAG" ]; then
-    cargo login $CARGO_TOKEN
-    cargo package
-    cargo publish
+    cargo login $CARGO_TOKEN &&
+    cargo package &&
+    cargo publish;
   fi
 sudo: false
