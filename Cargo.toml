@@ -2,6 +2,11 @@
 name = "jokeyrhyme-dotfiles"
 version = "0.1.0"
 authors = ["Ron Waldon <jokeyrhyme@gmail.com>"]
+include = [
+  "src/**/*.rs",
+  "Cargo.lock",
+  "Cargo.toml",
+]
 
 [dependencies]
 clap = "2.30"
