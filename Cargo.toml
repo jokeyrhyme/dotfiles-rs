@@ -1,12 +1,19 @@
 [package]
 name = "jokeyrhyme-dotfiles"
+description = "read my dotfiles repository and does stuff"
 version = "0.1.1"
 authors = ["Ron Waldon <jokeyrhyme@gmail.com>"]
+documentation = "https://github.com/jokeyrhyme/dotfiles-rs#readme"
+homepage = "https://github.com/jokeyrhyme/dotfiles-rs"
+repository = "https://github.com/jokeyrhyme/dotfiles-rs"
 include = [
   "src/**/*.rs",
   "Cargo.lock",
   "Cargo.toml",
+  "LICENSE",
 ]
+license = "MIT"
+license-file = "LICENSE"
 
 [dependencies]
 clap = "2.30"
