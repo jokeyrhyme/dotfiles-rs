@@ -7,7 +7,7 @@ env:
 script:
 - cargo build --verbose
 - cargo test --verbose
-- '[ -n "$TRAVIS_TAG" ] && cargo build --release --verbose'
-- '[ -n "$TRAVIS_TAG" ] && cargo login $CARGO_TOKEN'
-- '[ -n "$TRAVIS_TAG" ] && cargo package && cargo publish'
+- 'if [ -n "$TRAVIS_TAG" ]; then; cargo build --release --verbose; fi'
+- 'if [ -n "$TRAVIS_TAG" ]; then; cargo login $CARGO_TOKEN; fi'
+- 'if [ -n "$TRAVIS_TAG" ]; then; cargo package && cargo publish; fi'
 sudo: false
