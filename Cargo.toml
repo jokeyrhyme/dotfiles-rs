@@ -1,0 +1,6 @@
+[package]
+name = "jokeyrhyme-dotfiles"
+version = "0.1.0"
+authors = ["Ron Waldon <jokeyrhyme@gmail.com>"]
+
+[dependencies]
