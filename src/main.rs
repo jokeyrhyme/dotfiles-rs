@@ -10,7 +10,7 @@ mod utils {
 
 fn main() {
     let matches = App::new("jokeyrhyme-dotfiles")
-        .version("0.1.0")
+        .version(env!("CARGO_PKG_VERSION"))
         .subcommand(SubCommand::with_name("sync"))
         .get_matches();
 
