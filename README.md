@@ -1,6 +1,6 @@
 # dotfiles-rs [![Build Status](https://travis-ci.org/jokeyrhyme/dotfiles-rs.svg?branch=master)](https://travis-ci.org/jokeyrhyme/dotfiles-rs)
 
-read my dotfiles repository and does stuff
+read my dotfiles repository and do stuff
 
 ## Features
 

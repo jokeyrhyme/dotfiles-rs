@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+* use values from Cargo.toml for `--help` and `--version`
+
 ## [0.1.2] - 2018-02-18
 
 * add missing package metadata to fix `cargo publish`
