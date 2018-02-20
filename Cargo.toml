@@ -1,6 +1,6 @@
 [package]
 name = "jokeyrhyme-dotfiles"
-description = "read my dotfiles repository and does stuff"
+description = "read my dotfiles repository and do stuff"
 version = "0.1.2"
 authors = ["Ron Waldon <jokeyrhyme@gmail.com>"]
 documentation = "https://github.com/jokeyrhyme/dotfiles-rs#readme"
@@ -13,7 +13,6 @@ include = [
   "LICENSE",
 ]
 license = "MIT"
-license-file = "LICENSE"
 
 [dependencies]
 clap = "2.30"

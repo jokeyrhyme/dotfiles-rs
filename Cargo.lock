@@ -34,7 +34,7 @@ dependencies = [
 
 [[package]]
 name = "jokeyrhyme-dotfiles"
-version = "0.1.0"
+version = "0.1.2"
 dependencies = [
  "clap 2.30.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
