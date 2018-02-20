@@ -11,3 +11,5 @@ pub fn sync() {
 
     utils::fs::symbolic_link(&src, &dest);
 }
+
+pub fn update() {}
