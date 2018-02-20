@@ -13,7 +13,6 @@ include = [
   "LICENSE",
 ]
 license = "MIT"
-license-file = "LICENSE"
 
 [dependencies]
 clap = "2.30"
