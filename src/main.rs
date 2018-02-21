@@ -1,5 +1,9 @@
 extern crate clap;
 extern crate regex;
+extern crate serde;
+#[macro_use]
+extern crate serde_derive;
+extern crate toml;
 
 use clap::{App, SubCommand};
 
@@ -7,7 +11,6 @@ mod tasks;
 mod utils {
     pub mod env;
     pub mod fs;
-    pub mod strings;
 }
 
 fn main() {

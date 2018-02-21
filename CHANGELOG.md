@@ -9,11 +9,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
+* `sync` now reads a list of crates from a TOML file and installs missing crates with `cargo install`
+
 * add `update` command
 
-* implement `update` to update Rust with `rustup`
+* `update` now updates Rust with `rustup`
 
-* implement `update` to update crates installed by `cargo install`
+* `update` now updates crates installed by `cargo install`
 
 ### Changed
 

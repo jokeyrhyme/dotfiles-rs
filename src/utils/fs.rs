@@ -1,8 +1,6 @@
 use std;
 use std::path::Path;
 
-use utils;
-
 pub fn create_dir_all_or_panic(target: std::option::Option<&Path>) {
     let target = match target {
         Some(target) => target,
@@ -17,7 +15,7 @@ pub fn create_dir_all_or_panic(target: std::option::Option<&Path>) {
         Err(error) => {
             panic!(
                 "unable to create directories {}: {:?}",
-                utils::strings::unoption(target.to_str()),
+                target.to_str().unwrap_or("nil"),
                 error
             );
         }
@@ -36,13 +34,13 @@ pub fn delete_if_exists(path: &Path) {
     if attr.is_dir() {
         match std::fs::remove_dir_all(path) {
             Ok(_removed) => {
-                println!("deleted {}", utils::strings::unoption(path.to_str()));
+                println!("deleted {}", path.to_str().unwrap_or("nil"));
                 return;
             }
             Err(error) => {
                 println!(
                     "unable to recursively delete directory {}: {:?}",
-                    utils::strings::unoption(path.to_str()),
+                    path.to_str().unwrap_or("nil"),
                     error
                 );
                 return;
@@ -58,7 +56,7 @@ pub fn delete_if_exists(path: &Path) {
         Err(error) => {
             println!(
                 "unable to delete file {}: {:?}",
-                utils::strings::unoption(path.to_str()),
+                path.to_str().unwrap_or("nil"),
                 error
             );
             return;
@@ -72,7 +70,7 @@ pub fn symbolic_link(src: &Path, dest: &Path) {
         Err(error) => {
             println!(
                 "unable to access {}: {:?}",
-                utils::strings::unoption(src.to_str()),
+                src.to_str().unwrap_or("nil"),
                 error
             );
             return;
@@ -95,8 +93,8 @@ pub fn symbolic_link(src: &Path, dest: &Path) {
         Err(error) => {
             println!(
                 "unable to symlink {} to {}: {:?}",
-                utils::strings::unoption(dest.to_str()),
-                utils::strings::unoption(src.to_str()),
+                dest.to_str().unwrap_or("nil"),
+                src.to_str().unwrap_or("nil"),
                 error
             );
             return;
@@ -111,8 +109,8 @@ pub fn symbolic_link(src: &Path, dest: &Path) {
             Err(error) => {
                 println!(
                     "unable to symlink {} to {}: {:?}",
-                    utils::strings::unoption(dest.to_str()),
-                    utils::strings::unoption(src.to_str()),
+                    dest.to_str().unwrap_or("nil"),
+                    src.to_str().unwrap_or("nil"),
                     error
                 );
                 return;
@@ -127,8 +125,8 @@ pub fn symbolic_link(src: &Path, dest: &Path) {
         Err(error) => {
             println!(
                 "unable to symlink {} to {}: {:?}",
-                utils::strings::unoption(dest.to_str()),
-                utils::strings::unoption(src.to_str()),
+                dest.to_str().unwrap_or("nil"),
+                src.to_str().unwrap_or("nil"),
                 error
             );
             return;
@@ -138,7 +136,7 @@ pub fn symbolic_link(src: &Path, dest: &Path) {
     #[cfg(any(unix,windows))]
     println!(
         "symlinked {} to {}",
-        utils::strings::unoption(dest.to_str()),
-        utils::strings::unoption(src.to_str()),
+        dest.to_str().unwrap_or("nil"),
+        src.to_str().unwrap_or("nil"),
     );
 }
