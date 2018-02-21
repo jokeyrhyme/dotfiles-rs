@@ -28,7 +28,6 @@ pub fn update() {
         }
     }
 
-    let krate = Regex::new(r"^(?P<name>\S+)\sv").unwrap();
     match Command::new("cargo").arg("--version").spawn() {
         Ok(_child) => {
             println!("pkg: rust: updating crates...");
@@ -38,14 +37,8 @@ pub fn update() {
                 .output()
                 .expect(ERROR_MSG);
             let stdout = String::from_utf8_lossy(&output.stdout);
-            let mut lines = stdout.lines();
 
-            let krates: Vec<&str> = lines
-                .filter_map(|line| match krate.captures(line) {
-                    Some(caps) => Some(caps.get(1).unwrap().as_str()),
-                    None => None,
-                })
-                .collect();
+            let krates = parse_installed(&stdout);
 
             let mut install_args = vec!["install", "--force"];
             install_args.extend(krates);
@@ -62,3 +55,34 @@ pub fn update() {
         }
     }
 }
+
+fn parse_installed(stdout: &str) -> Vec<&str> {
+    let krate = Regex::new(r"^(?P<name>\S+)\sv\d+").unwrap();
+    let lines = stdout.lines();
+    return lines
+        .filter_map(|line| match krate.captures(line) {
+            Some(caps) => Some(caps.get(1).unwrap().as_str()),
+            None => None,
+        })
+        .collect();
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_parse_installed() {
+        let input = "
+racer v2.0.12:
+    racer
+rustfmt v0.10.0:
+    cargo-fmt
+    rustfmt
+rustsym v0.3.2:
+    rustsym
+";
+        assert_eq!(parse_installed(input), vec!["racer", "rustfmt", "rustsym"]);
+    }
+}
+
