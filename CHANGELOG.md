@@ -21,6 +21,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 * use values from Cargo.toml for `--help` and `--version`
 
+
+### Fixed
+
+* `sync` now actually avoid installing desired crates that already exist
+
 ## [0.1.2] - 2018-02-18
 
 ### Changed
