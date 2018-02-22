@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.2.0] - 2018-02-22
+
 ### Added
 
 * `sync` now reads a list of crates from a TOML file and installs missing crates with `cargo install`
@@ -24,7 +26,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-* `sync` now actually avoid installing desired crates that already exist
+* `sync` now actually avoids installing desired crates that already exist
+
+* `update` now actually avoids updated installed crates that are already latest
 
 ## [0.1.2] - 2018-02-18
 
