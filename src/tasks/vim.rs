@@ -9,7 +9,7 @@ pub fn sync() {
     let mut dest = utils::env::home_dir();
     dest.push(Path::new(".vim_runtime/my_configs.vim"));
 
-    utils::fs::symbolic_link(&src, &dest);
+    utils::fs::symbolic_link_if_exists(&src, &dest);
 }
 
 pub fn update() {}

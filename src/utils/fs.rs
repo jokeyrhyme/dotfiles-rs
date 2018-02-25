@@ -1,4 +1,5 @@
 use std;
+use std::io::Error;
 use std::path::Path;
 
 pub fn create_dir_all_or_panic(target: std::option::Option<&Path>) {
@@ -64,8 +65,8 @@ pub fn delete_if_exists(path: &Path) {
     }
 }
 
-pub fn symbolic_link(src: &Path, dest: &Path) {
-    let src_attr = match std::fs::symlink_metadata(src) {
+pub fn symbolic_link_if_exists(src: &Path, dest: &Path) {
+    match std::fs::symlink_metadata(src) {
         Ok(attr) => attr,
         Err(error) => {
             println!(
@@ -86,57 +87,43 @@ pub fn symbolic_link(src: &Path, dest: &Path) {
         Err(_error) => { /* might not exist, continue */ }
     }
 
-    #[cfg(not(windows))]
-    let linked = std::os::unix::fs::symlink(src, dest);
-    match linked {
-        Ok(linked) => linked,
+    match symbolic_link(&src, &dest) {
+      Ok(()) => {
+          println!(
+              "symlinked {} to {}",
+              dest.to_str().unwrap_or("nil"),
+              src.to_str().unwrap_or("nil"),
+          );
+      },
+      Err(error) => {
+          println!(
+              "unable to symlink {} to {}: {:?}",
+              dest.to_str().unwrap_or("nil"),
+              src.to_str().unwrap_or("nil"),
+              error
+          );
+          return;
+      }
+    };
+}
+
+#[cfg(not(windows))]
+fn symbolic_link(src: &Path, dest: &Path) -> Result<(), Error> {
+    return std::os::unix::fs::symlink(src, dest);
+}
+
+#[cfg(windows)]
+fn symbolic_link(src: &Path, dest: &Path) -> Result<(), Error> {
+    let src_attr = match std::fs::symlink_metadata(src) {
+        Ok(attr) => attr,
         Err(error) => {
-            println!(
-                "unable to symlink {} to {}: {:?}",
-                dest.to_str().unwrap_or("nil"),
-                src.to_str().unwrap_or("nil"),
-                error
-            );
-            return;
+            return Err(error);
         }
-    }
+    };
 
     if src_attr.is_dir() {
-        #[cfg(windows)]
-        let linked = std::os::windows::fs::symlink_dir(src, dest);
-        match linked {
-            Ok(linked) => linked,
-            Err(error) => {
-                println!(
-                    "unable to symlink {} to {}: {:?}",
-                    dest.to_str().unwrap_or("nil"),
-                    src.to_str().unwrap_or("nil"),
-                    error
-                );
-                return;
-            }
-        }
+        return std::os::windows::fs::symlink_dir(src, dest);
     }
 
-    #[cfg(windows)]
-    let linked = std::os::windows::fs::symlink_file(src, dest);
-    match linked {
-        Ok(linked) => linked,
-        Err(error) => {
-            println!(
-                "unable to symlink {} to {}: {:?}",
-                dest.to_str().unwrap_or("nil"),
-                src.to_str().unwrap_or("nil"),
-                error
-            );
-            return;
-        }
-    }
-
-    #[cfg(any(unix,windows))]
-    println!(
-        "symlinked {} to {}",
-        dest.to_str().unwrap_or("nil"),
-        src.to_str().unwrap_or("nil"),
-    );
+    return std::os::windows::fs::symlink_file(src, dest);
 }
