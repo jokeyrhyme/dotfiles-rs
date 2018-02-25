@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+* fix attribute usage so that Windows can successfully build
+
 ## [0.2.0] - 2018-02-22
 
 ### Added
