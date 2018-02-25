@@ -11,6 +11,12 @@ use utils;
 
 const ERROR_MSG: &str = "error: vscode";
 
+#[cfg(not(windows))]
+const COMMAND: &str = "code";
+
+#[cfg(windows)]
+const COMMAND: &str = "code.cmd";
+
 #[derive(Debug, Deserialize)]
 struct Config {
     install: Vec<String>,
@@ -44,7 +50,7 @@ pub fn sync() {
 
     let config: Config = toml::from_str(&contents).expect("cannot parse .../vscode.toml");
 
-    match Command::new("code").arg("--version").spawn() {
+    match Command::new(COMMAND).arg("--version").spawn() {
         Ok(_result) => {}
         Err(_error) => {
             return; // VSCode probably not installed, skip!
@@ -55,7 +61,7 @@ pub fn sync() {
 
     for ext in config.install {
         if !exts.contains(&ext) {
-            Command::new("code")
+            Command::new(COMMAND)
                 .args(&["--install-extension", &ext])
                 .spawn()
                 .expect(ERROR_MSG)
@@ -66,7 +72,7 @@ pub fn sync() {
 
     for ext in config.uninstall {
         if exts.contains(&ext) {
-            Command::new("code")
+            Command::new(COMMAND)
                 .args(&["--uninstall-extension", &ext])
                 .spawn()
                 .expect(ERROR_MSG)
@@ -79,7 +85,7 @@ pub fn sync() {
 pub fn update() {}
 
 fn exts_installed() -> Vec<String> {
-    let output = Command::new("code")
+    let output = Command::new(COMMAND)
         .args(&["--list-extensions"])
         .output()
         .expect(ERROR_MSG);
