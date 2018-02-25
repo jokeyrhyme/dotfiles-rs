@@ -88,22 +88,22 @@ pub fn symbolic_link_if_exists(src: &Path, dest: &Path) {
     }
 
     match symbolic_link(&src, &dest) {
-      Ok(()) => {
+        Ok(()) => {
           println!(
               "symlinked {} to {}",
               dest.to_str().unwrap_or("nil"),
               src.to_str().unwrap_or("nil"),
           );
-      },
-      Err(error) => {
-          println!(
-              "unable to symlink {} to {}: {:?}",
-              dest.to_str().unwrap_or("nil"),
-              src.to_str().unwrap_or("nil"),
-              error
-          );
-          return;
       }
+        Err(error) => {
+            println!(
+                "unable to symlink {} to {}: {:?}",
+                dest.to_str().unwrap_or("nil"),
+                src.to_str().unwrap_or("nil"),
+                error
+            );
+            return;
+        }
     };
 }
 
