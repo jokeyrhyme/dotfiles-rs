@@ -10,9 +10,17 @@ read my dotfiles repository and do stuff
 
   * otherwise creates and/or edits settings files in `~`
 
+  * reads from TOML file and installs desired rust crates
+
+  * reads from TOML file and installs desired Visual Studio Code extensions
+
+* `jokeyrhyme-dotfiles update`:
+
+  * updates rust and installed rust crates
+
 ## Roadmap
 
-* [ ] automatically build and publish for new git tags
+* [x] automatically build and publish for new git tags
 
 ## See Also
 
