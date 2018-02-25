@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+* `sync` now reads from a TOML file and installs / uninstalls desired Visual Studio Code extensions
+
 ### Fixed
 
 * fix attribute usage so that Windows can successfully build

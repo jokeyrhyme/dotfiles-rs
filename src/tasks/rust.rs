@@ -12,7 +12,7 @@ use toml;
 
 use utils;
 
-const ERROR_MSG: &str = "error: rust: update";
+const ERROR_MSG: &str = "error: rust";
 
 #[derive(Debug, Deserialize)]
 struct Config {
