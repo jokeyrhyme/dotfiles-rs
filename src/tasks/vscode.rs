@@ -28,7 +28,11 @@ pub fn sync() {
     src.push(Path::new(".dotfiles/config/vscode.json"));
 
     let mut dest = utils::env::home_dir();
-    dest.push(Path::new(".config/Code/User/settings.json"));
+    #[cfg(target_os = "macos")]
+    let settings_path = "Library/Application Support/Code/User/settings.json";
+    #[cfg(not(target_os = "macos"))]
+    let settings_path = ".config/Code/User/settings.json";
+    dest.push(Path::new(settings_path));
 
     utils::fs::symbolic_link_if_exists(&src, &dest);
 

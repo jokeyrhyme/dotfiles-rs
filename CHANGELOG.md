@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+* pkg: vscode: link settings in the correct macOS-specific place
+
 ## [0.3.1] - 2018-02-26
 
 ### Fixed
