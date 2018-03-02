@@ -30,7 +30,9 @@ pub fn sync() {
     let mut dest = utils::env::home_dir();
     #[cfg(target_os = "macos")]
     let settings_path = "Library/Application Support/Code/User/settings.json";
-    #[cfg(not(target_os = "macos"))]
+    #[cfg(target_os = "windows")]
+    let settings_path = "AppData/Roaming/Code/User/settings.json";
+    #[cfg(not(any(target_os = "macos",windows)))]
     let settings_path = ".config/Code/User/settings.json";
     dest.push(Path::new(settings_path));
 
