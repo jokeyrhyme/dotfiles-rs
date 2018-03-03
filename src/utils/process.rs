@@ -5,30 +5,30 @@ use std::process::Output;
 use std::str;
 
 #[cfg(not(windows))]
-pub fn command_output<'a>(cmd: &str, args: &[&str]) -> Result<Output, Error> {
+pub fn command_output<'a, T: AsRef<str>>(cmd: &str, args: &[T]) -> Result<Output, Error> {
     return Command::new(cmd).args(args).output();
 }
 
 #[cfg(windows)]
-pub fn command_output<'a>(cmd: &'a str, args: &[&str]) -> Result<Output, Error> {
+pub fn command_output<'a, T: AsRef<str>>(cmd: &str, args: &[T]) -> Result<Output, Error> {
     let mut cmdArgs = Vec::<&str>::new();
     cmdArgs.push("/c");
     cmdArgs.push(cmd);
-    cmdArgs.extend(args);
+    cmdArgs.extend::<Vec<&str>>(args.into_iter().map(|s| s.as_ref()).collect());
     return Command::new("cmd").args(cmdArgs).output();
 }
 
 #[cfg(not(windows))]
-pub fn command_spawn_wait<'a>(cmd: &str, args: &[&str]) -> Result<ExitStatus, Error> {
+pub fn command_spawn_wait<'a, T: AsRef<str>>(cmd: &str, args: &[T]) -> Result<ExitStatus, Error> {
     return Command::new(cmd).args(args).spawn()?.wait();
 }
 
 #[cfg(windows)]
-pub fn command_spawn_wait<'a>(cmd: &'a str, args: &[&str]) -> Result<ExitStatus, Error> {
+pub fn command_spawn_wait<'a, T: AsRef<str>>(cmd: &str, args: &[T]) -> Result<ExitStatus, Error> {
     let mut cmdArgs = Vec::<&str>::new();
     cmdArgs.push("/c");
     cmdArgs.push(cmd);
-    cmdArgs.extend(args);
+    cmdArgs.extend::<Vec<&str>>(args.into_iter().map(|s| s.as_ref()).collect());
     return Command::new("cmd").args(cmdArgs).spawn()?.wait();
 }
 
@@ -67,7 +67,7 @@ mod tests {
     }
 
     fn command_spawn_wait_does_not_exist () {
-        match command_spawn_wait("does_not_exist", &[]) {
+        match command_spawn_wait("does_not_exist", &["nope"]) {
             Ok(status) => {
                 assert!(!status.success());
             }

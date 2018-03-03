@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
+* pkg: vscode: `update` now works on Windows
+
 * pkg: vscode: link settings in the correct macOS-specific place
 
 * pkg: vscode: use the correct settings path on Windows

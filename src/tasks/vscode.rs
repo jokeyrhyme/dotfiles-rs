@@ -2,7 +2,6 @@ use std::fs::File;
 use std::io::BufReader;
 use std::io::Read;
 use std::path::Path;
-use std::process::Command;
 use std::str;
 
 use toml;
@@ -11,11 +10,7 @@ use utils;
 
 const ERROR_MSG: &str = "error: vscode";
 
-#[cfg(not(windows))]
 const COMMAND: &str = "code";
-
-#[cfg(windows)]
-const COMMAND: &str = "code.cmd";
 
 #[derive(Debug, Deserialize)]
 struct Config {
@@ -56,8 +51,13 @@ pub fn sync() {
 
     let config: Config = toml::from_str(&contents).expect("cannot parse .../vscode.toml");
 
-    match Command::new(COMMAND).arg("--version").spawn() {
-        Ok(_result) => {}
+    match utils::process::command_spawn_wait(COMMAND, &["--version"]) {
+        Ok(status) => {
+            if !status.success() {
+                println!("code --version: exit code {}", status.code().unwrap());
+                return;
+            }
+        }
         Err(_error) => {
             return; // VSCode probably not installed, skip!
         }
@@ -67,22 +67,14 @@ pub fn sync() {
 
     for ext in config.install {
         if !exts.contains(&ext) {
-            Command::new(COMMAND)
-                .args(&["--install-extension", &ext])
-                .spawn()
-                .expect(ERROR_MSG)
-                .wait()
+            utils::process::command_spawn_wait(COMMAND, &["--install-extension", &ext])
                 .expect(ERROR_MSG);
         }
     }
 
     for ext in config.uninstall {
         if exts.contains(&ext) {
-            Command::new(COMMAND)
-                .args(&["--uninstall-extension", &ext])
-                .spawn()
-                .expect(ERROR_MSG)
-                .wait()
+            utils::process::command_spawn_wait(COMMAND, &["--uninstall-extension", &ext])
                 .expect(ERROR_MSG);
         }
     }
@@ -91,9 +83,7 @@ pub fn sync() {
 pub fn update() {}
 
 fn exts_installed() -> Vec<String> {
-    let output = Command::new(COMMAND)
-        .args(&["--list-extensions"])
-        .output()
+    let output = utils::process::command_output(COMMAND, &["--list-extensions"])
         .expect(ERROR_MSG);
     let stdout = str::from_utf8(&output.stdout).unwrap();
 

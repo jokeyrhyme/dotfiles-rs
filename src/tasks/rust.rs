@@ -3,7 +3,6 @@ use std::fs::File;
 use std::io::BufReader;
 use std::io::Read;
 use std::path::Path;
-use std::process::Command;
 use std::result::Result;
 use std::str;
 
@@ -58,30 +57,19 @@ pub fn sync() {
     let mut install_args = vec![String::from("install")];
     install_args.extend(missing);
 
-    Command::new("cargo")
-        .args(install_args)
-        .spawn()
-        .expect(ERROR_MSG)
-        .wait()
+    utils::process::command_spawn_wait("cargo", &install_args)
         .expect(ERROR_MSG);
 }
 
 pub fn update() {
-    match Command::new("rustup").arg("--version").spawn() {
+    match utils::process::command_spawn_wait("rustup", &["--version"]) {
         Ok(_child) => {
             println!("pkg: rust: updating to latest stable...");
 
-            Command::new("rustup")
-                .args(&["override", "set", "stable"])
-                .spawn()
-                .expect(ERROR_MSG)
-                .wait()
+            utils::process::command_spawn_wait("rustup", &["override", "set", "stable"])
                 .expect(ERROR_MSG);
-            Command::new("rustup")
-                .args(&["update", "stable"])
-                .spawn()
-                .expect(ERROR_MSG)
-                .wait()
+
+            utils::process::command_spawn_wait("rustup", &["update", "stable"])
                 .expect(ERROR_MSG);
         }
         Err(_error) => {
@@ -89,7 +77,8 @@ pub fn update() {
         }
     }
 
-    match Command::new("cargo").arg("--version").spawn() {
+
+    match utils::process::command_spawn_wait("cargo", &["--version"]) {
         Ok(_child) => {
             println!("pkg: rust: updating crates...");
 
@@ -115,11 +104,7 @@ pub fn update() {
             let mut install_args = vec![String::from("install"), String::from("--force")];
             install_args.extend(outdated);
 
-            Command::new("cargo")
-                .args(install_args)
-                .spawn()
-                .expect(ERROR_MSG)
-                .wait()
+            utils::process::command_spawn_wait("cargo", &install_args)
                 .expect(ERROR_MSG);
         }
         Err(_error) => {
@@ -129,9 +114,7 @@ pub fn update() {
 }
 
 fn cargo_installed() -> HashMap<String, String> {
-    let output = Command::new("cargo")
-        .args(&["install", "--list"])
-        .output()
+    let output = utils::process::command_output("cargo", &["install", "--list"])
         .expect(ERROR_MSG);
     let stdout = str::from_utf8(&output.stdout).unwrap();
 
@@ -144,9 +127,7 @@ fn cargo_latest_version(krate: &str) -> Result<String, String> {
     pattern.push_str(krate);
     pattern.push_str(r#"\s=\s"(\S+)""#);
     let re = Regex::new(&pattern).unwrap();
-    let output = Command::new("cargo")
-        .args(&["search", "--limit", "1", krate])
-        .output()
+    let output = utils::process::command_output("cargo", &["search", "--limit", "1", krate])
         .expect(ERROR_MSG);
     let stdout = str::from_utf8(&output.stdout).unwrap();
     let lines = stdout.lines();
