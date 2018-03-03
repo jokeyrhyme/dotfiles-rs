@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+* pkg: atom: implement `sync` and `update`
+
 ### Fixed
 
 * pkg: vscode: `update` now works on Windows
