@@ -50,7 +50,7 @@ mod tests {
                 let stdout = str::from_utf8(&output.stdout).unwrap();
                 assert_eq!(&stdout[0..5], "cargo");
             }
-            Err(error) => {
+            Err(_error) => {
                 assert!(false);
             }
         }
@@ -68,13 +68,14 @@ mod tests {
         }
     }
 
+    #[test]
     fn command_spawn_wait_does_not_exist() {
         match command_spawn_wait("does_not_exist", &["nope"]) {
-            Ok(status) => {
-                assert!(!status.success());
+            Ok(_status) => {
+                assert!(false);
             }
             Err(_error) => {
-                assert!(false);
+                assert!(true);
             }
         }
     }
