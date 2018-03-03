@@ -11,6 +11,7 @@ mod tasks;
 mod utils {
     pub mod env;
     pub mod fs;
+    pub mod process;
 }
 
 fn main() {
