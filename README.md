@@ -2,6 +2,15 @@
 
 read my dotfiles repository and do stuff
 
+## Usage
+
+```sh
+$ cargo install jokeyrhyme-dotfiles
+$ jokeyrhyme-dotfiles sync && jokeyrhyme-dotfiles update
+```
+
+Note that you need to "Run As Administrator" in Windows so that this tool can properly create symbolic links
+
 ## Features
 
 * `jokeyrhyme-dotfiles sync`:
