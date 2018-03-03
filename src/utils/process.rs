@@ -39,7 +39,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn command_output_cargo_version () {
+    fn command_output_cargo_version() {
         match command_output("cargo", &["version"]) {
             Ok(output) => {
                 assert!(output.status.success());
@@ -57,7 +57,7 @@ mod tests {
     }
 
     #[test]
-    fn command_spawn_wait_cargo_version () {
+    fn command_spawn_wait_cargo_version() {
         match command_spawn_wait("cargo", &["version"]) {
             Ok(status) => {
                 assert!(status.success());
@@ -68,7 +68,7 @@ mod tests {
         }
     }
 
-    fn command_spawn_wait_does_not_exist () {
+    fn command_spawn_wait_does_not_exist() {
         match command_spawn_wait("does_not_exist", &["nope"]) {
             Ok(status) => {
                 assert!(!status.success());

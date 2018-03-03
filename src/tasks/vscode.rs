@@ -83,8 +83,7 @@ pub fn sync() {
 pub fn update() {}
 
 fn exts_installed() -> Vec<String> {
-    let output = utils::process::command_output(COMMAND, &["--list-extensions"])
-        .expect(ERROR_MSG);
+    let output = utils::process::command_output(COMMAND, &["--list-extensions"]).expect(ERROR_MSG);
     let stdout = str::from_utf8(&output.stdout).unwrap();
 
     let mut exts: Vec<String> = Vec::new();

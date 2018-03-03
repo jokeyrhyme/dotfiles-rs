@@ -57,8 +57,7 @@ pub fn sync() {
     let mut install_args = vec![String::from("install")];
     install_args.extend(missing);
 
-    utils::process::command_spawn_wait("cargo", &install_args)
-        .expect(ERROR_MSG);
+    utils::process::command_spawn_wait("cargo", &install_args).expect(ERROR_MSG);
 }
 
 pub fn update() {
@@ -69,8 +68,7 @@ pub fn update() {
             utils::process::command_spawn_wait("rustup", &["override", "set", "stable"])
                 .expect(ERROR_MSG);
 
-            utils::process::command_spawn_wait("rustup", &["update", "stable"])
-                .expect(ERROR_MSG);
+            utils::process::command_spawn_wait("rustup", &["update", "stable"]).expect(ERROR_MSG);
         }
         Err(_error) => {
             // rustup probably not installed, skip!
@@ -104,8 +102,7 @@ pub fn update() {
             let mut install_args = vec![String::from("install"), String::from("--force")];
             install_args.extend(outdated);
 
-            utils::process::command_spawn_wait("cargo", &install_args)
-                .expect(ERROR_MSG);
+            utils::process::command_spawn_wait("cargo", &install_args).expect(ERROR_MSG);
         }
         Err(_error) => {
             // cargo probably not installed, skip!
@@ -114,8 +111,7 @@ pub fn update() {
 }
 
 fn cargo_installed() -> HashMap<String, String> {
-    let output = utils::process::command_output("cargo", &["install", "--list"])
-        .expect(ERROR_MSG);
+    let output = utils::process::command_output("cargo", &["install", "--list"]).expect(ERROR_MSG);
     let stdout = str::from_utf8(&output.stdout).unwrap();
 
     let krates: HashMap<String, String> = parse_installed(&stdout);
