@@ -6,32 +6,32 @@ use std::str;
 
 #[cfg(not(windows))]
 pub fn command_output<'a, T: AsRef<str>>(cmd: &str, args: &[T]) -> Result<Output, Error> {
-    let cmdArgs: Vec<&str> = args.into_iter().map(|s| s.as_ref()).collect();
-    return Command::new(cmd).args(cmdArgs).output();
+    let cmd_args: Vec<&str> = args.into_iter().map(|s| s.as_ref()).collect();
+    return Command::new(cmd).args(cmd_args).output();
 }
 
 #[cfg(windows)]
 pub fn command_output<'a, T: AsRef<str>>(cmd: &str, args: &[T]) -> Result<Output, Error> {
-    let mut cmdArgs = Vec::<&str>::new();
-    cmdArgs.push("/c");
-    cmdArgs.push(cmd);
-    cmdArgs.extend::<Vec<&str>>(args.into_iter().map(|s| s.as_ref()).collect());
-    return Command::new("cmd").args(cmdArgs).output();
+    let mut cmd_args = Vec::<&str>::new();
+    cmd_args.push("/c");
+    cmd_args.push(cmd);
+    cmd_args.extend::<Vec<&str>>(args.into_iter().map(|s| s.as_ref()).collect());
+    return Command::new("cmd").args(cmd_args).output();
 }
 
 #[cfg(not(windows))]
 pub fn command_spawn_wait<'a, T: AsRef<str>>(cmd: &str, args: &[T]) -> Result<ExitStatus, Error> {
-    let cmdArgs: Vec<&str> = args.into_iter().map(|s| s.as_ref()).collect();
-    return Command::new(cmd).args(cmdArgs).spawn()?.wait();
+    let cmd_args: Vec<&str> = args.into_iter().map(|s| s.as_ref()).collect();
+    return Command::new(cmd).args(cmd_args).spawn()?.wait();
 }
 
 #[cfg(windows)]
 pub fn command_spawn_wait<'a, T: AsRef<str>>(cmd: &str, args: &[T]) -> Result<ExitStatus, Error> {
-    let mut cmdArgs = Vec::<&str>::new();
-    cmdArgs.push("/c");
-    cmdArgs.push(cmd);
-    cmdArgs.extend::<Vec<&str>>(args.into_iter().map(|s| s.as_ref()).collect());
-    return Command::new("cmd").args(cmdArgs).spawn()?.wait();
+    let mut cmd_args = Vec::<&str>::new();
+    cmd_args.push("/c");
+    cmd_args.push(cmd);
+    cmd_args.extend::<Vec<&str>>(args.into_iter().map(|s| s.as_ref()).collect());
+    return Command::new("cmd").args(cmd_args).spawn()?.wait();
 }
 
 #[cfg(test)]
