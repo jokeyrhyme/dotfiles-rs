@@ -6,7 +6,8 @@ use std::str;
 
 #[cfg(not(windows))]
 pub fn command_output<'a, T: AsRef<str>>(cmd: &str, args: &[T]) -> Result<Output, Error> {
-    return Command::new(cmd).args(args).output();
+    let cmdArgs: Vec<&str> = args.into_iter().map(|s| s.as_ref()).collect();
+    return Command::new(cmd).args(cmdArgs).output();
 }
 
 #[cfg(windows)]
@@ -20,7 +21,8 @@ pub fn command_output<'a, T: AsRef<str>>(cmd: &str, args: &[T]) -> Result<Output
 
 #[cfg(not(windows))]
 pub fn command_spawn_wait<'a, T: AsRef<str>>(cmd: &str, args: &[T]) -> Result<ExitStatus, Error> {
-    return Command::new(cmd).args(args).spawn()?.wait();
+    let cmdArgs: Vec<&str> = args.into_iter().map(|s| s.as_ref()).collect();
+    return Command::new(cmd).args(cmdArgs).spawn()?.wait();
 }
 
 #[cfg(windows)]
