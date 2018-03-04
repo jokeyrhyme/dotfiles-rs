@@ -19,11 +19,15 @@ Note that you need to "Run As Administrator" in Windows so that this tool can pr
 
   * otherwise creates and/or edits settings files in `~`
 
+  * reads from TOML file and installs desired Atom packages
+
   * reads from TOML file and installs desired rust crates
 
   * reads from TOML file and installs desired Visual Studio Code extensions
 
 * `jokeyrhyme-dotfiles update`:
+
+  * updates installed Atom packages
 
   * updates rust and installed rust crates
 

@@ -71,11 +71,12 @@ mod tests {
     #[test]
     fn command_spawn_wait_does_not_exist() {
         match command_spawn_wait("does_not_exist", &["nope"]) {
-            Ok(status) => {
-                #[cfg(not(windows))]
+            #[cfg(not(windows))]
+            Ok(_status) => {
                 assert!(false);
-
-                #[cfg(windows)]
+            }
+            #[cfg(windows)]
+            Ok(status) => {
                 assert!(!status.success());
             }
             Err(_error) => {
