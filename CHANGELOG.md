@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 * pkg: atom: `sync` can now disable packages listed in TOML
 
+* pkg: dotfiles: `sync` calls `git pull` in ~/.dotfiles
+
 ## [0.4.1] - 2018-03-04
 
 ### Fixed
