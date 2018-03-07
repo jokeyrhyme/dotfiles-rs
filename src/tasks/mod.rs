@@ -1,5 +1,6 @@
 mod alacritty;
 mod atom;
+mod dotfiles;
 mod hyper;
 mod psql;
 mod rust;
@@ -9,6 +10,9 @@ mod vim;
 mod vscode;
 
 pub fn sync() {
+    // must be first
+    dotfiles::sync();
+
     alacritty::sync();
     atom::sync();
     hyper::sync();
@@ -21,6 +25,9 @@ pub fn sync() {
 }
 
 pub fn update() {
+    // must be first
+    dotfiles::update();
+
     alacritty::update();
     atom::update();
     hyper::update();

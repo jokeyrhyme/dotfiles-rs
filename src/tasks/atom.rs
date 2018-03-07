@@ -56,8 +56,10 @@ pub fn sync() {
 
     for ext in config.install {
         if !pkgs.contains(&ext) {
-            utils::process::command_spawn_wait(COMMAND, &["install", "--compatible", "--production", "--quiet", &ext])
-                .expect(ERROR_MSG);
+            utils::process::command_spawn_wait(
+                COMMAND,
+                &["install", "--compatible", "--production", "--quiet", &ext],
+            ).expect(ERROR_MSG);
         }
     }
 
