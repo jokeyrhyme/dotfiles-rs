@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+* pkg: atom: `sync` can now disable packages listed in TOML
+
 ## [0.4.1] - 2018-03-04
 
 ### Fixed

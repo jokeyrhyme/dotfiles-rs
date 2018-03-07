@@ -14,6 +14,7 @@ const COMMAND: &str = "apm";
 
 #[derive(Debug, Deserialize)]
 struct Config {
+    disable: Vec<String>,
     install: Vec<String>,
     uninstall: Vec<String>,
 }
@@ -59,6 +60,11 @@ pub fn sync() {
                 .expect(ERROR_MSG);
         }
     }
+
+    let mut disable_args = vec![String::from("disable")];
+    disable_args.extend(config.disable);
+
+    utils::process::command_spawn_wait(COMMAND, &disable_args).expect(ERROR_MSG);
 
     for ext in config.uninstall {
         if pkgs.contains(&ext) {
