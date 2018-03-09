@@ -20,6 +20,10 @@ struct Config {
 }
 
 pub fn sync() {
+    if !has_apm() {
+        return;
+    }
+
     // TODO: synchronise Atom settings
 
     let mut cfg_path = utils::env::home_dir();
@@ -39,18 +43,6 @@ pub fn sync() {
     );
 
     let config: Config = toml::from_str(&contents).expect("cannot parse .../atom.toml");
-
-    match utils::process::command_spawn_wait(COMMAND, &["--version"]) {
-        Ok(status) => {
-            if !status.success() {
-                println!("apm --version: exit code {}", status.code().unwrap());
-                return;
-            }
-        }
-        Err(_error) => {
-            return; // Atom probably not installed, skip!
-        }
-    }
 
     let pkgs = pkgs_installed();
 
@@ -77,15 +69,23 @@ pub fn sync() {
 }
 
 pub fn update() {
-    match utils::process::command_spawn_wait(COMMAND, &["--version"]) {
-        Ok(_child) => {
-            println!("pkg: atom: updating packages...");
+    if !has_apm() {
+        return;
+    }
 
-            utils::process::command_spawn_wait(COMMAND, &["upgrade", "--confirm", "false"])
-                .expect(ERROR_MSG);
+    println!("pkg: atom: updating packages...");
+
+    utils::process::command_spawn_wait(COMMAND, &["upgrade", "--confirm", "false"])
+        .expect(ERROR_MSG);
+}
+
+fn has_apm() -> bool {
+    match utils::process::command_output("apm", &["--version"]) {
+        Ok(output) => {
+            return output.status.success();
         }
         Err(_error) => {
-            // Atom probably not installed, skip!
+            return false; // Atom probably not installed
         }
     }
 }

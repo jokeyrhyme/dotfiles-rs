@@ -16,7 +16,7 @@ pub fn sync() {
         return;
     }
 
-    if !has_npx() {
+    if !utils::node::has_npx() {
         return;
     }
 
@@ -24,7 +24,7 @@ pub fn sync() {
     utils::process::command_spawn_wait("npx", &["-q", "npm-merge-driver", "install", "--global"])
         .expect(ERROR_MSG);
 
-    if !has_yarn() {
+    if !utils::node::has_yarn() {
         return;
     }
 
@@ -47,25 +47,3 @@ pub fn sync() {
 }
 
 pub fn update() {}
-
-fn has_npx() -> bool {
-    match utils::process::command_output("npx", &["--version"]) {
-        Ok(output) => {
-            return output.status.success();
-        }
-        Err(_error) => {
-            return false; // npx probably not installed
-        }
-    }
-}
-
-fn has_yarn() -> bool {
-    match utils::process::command_output("yarn", &["--version"]) {
-        Ok(output) => {
-            return output.status.success();
-        }
-        Err(_error) => {
-            return false; // npx probably not installed
-        }
-    }
-}
