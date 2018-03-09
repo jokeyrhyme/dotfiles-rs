@@ -18,8 +18,12 @@ pub fn path_is_git_repository(path: &Path) -> bool {
 
 pub fn pull(path: &Path) {
     println!("`git pull`ing in {} ...", path.to_str().unwrap());
-    if let Ok(_status) = utils::process::command_spawn_wait("git", &["-C", path.to_str().unwrap(), "pull"]) {
-      println!("`git pull` done!");
+    if let Ok(_status) = utils::process::command_spawn_wait(
+        "git",
+        &["-C", path.to_str().unwrap(), "pull"],
+    )
+    {
+        println!("`git pull` done!");
     }
 }
 

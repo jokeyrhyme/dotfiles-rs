@@ -66,6 +66,22 @@ pub fn delete_if_exists(path: &Path) {
 }
 
 pub fn symbolic_link_if_exists(src: &Path, dest: &Path) {
+    match std::fs::read_link(dest.to_path_buf()) {
+        Ok(target) => {
+            if src == target {
+                println!(
+                    "already symlinked: {:?} -> {:?}",
+                    dest.to_str().unwrap_or("nil"),
+                    target.to_str().unwrap_or("nil"),
+                );
+                return;
+            }
+        }
+        Err(_error) => {
+            // does not exist, or not a symlink
+        }
+    };
+
     match std::fs::symlink_metadata(src) {
         Ok(attr) => attr,
         Err(error) => {
@@ -90,7 +106,7 @@ pub fn symbolic_link_if_exists(src: &Path, dest: &Path) {
     match symbolic_link(&src, &dest) {
         Ok(()) => {
           println!(
-              "symlinked {} to {}",
+              "symlinked: {} -> {}",
               dest.to_str().unwrap_or("nil"),
               src.to_str().unwrap_or("nil"),
           );
