@@ -28,6 +28,7 @@ pub fn pull(path: &Path) {
 }
 
 #[cfg(test)]
+#[cfg(unix)]
 mod tests {
     use super::*;
 
@@ -35,7 +36,6 @@ mod tests {
     fn has_git_is_true_for_unix() {
         let got = has_git();
 
-        #[cfg(unix)]
         assert!(got);
     }
 }
