@@ -22,4 +22,14 @@ pub fn update() {
         )
             .expect(ERROR_MSG);
     }
+
+    match utils::process::command_spawn_wait(
+        "npx",
+        &["-q", "npm", "update", "--global"]
+    ) {
+        Ok(_status) => {}
+        Err(_error) => {
+            // private packages will fail on incorrect networks, ignore this
+        }
+    }
 }
