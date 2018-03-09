@@ -1,6 +1,7 @@
 mod alacritty;
 mod atom;
 mod dotfiles;
+mod git;
 mod hyper;
 mod psql;
 mod rust;
@@ -15,6 +16,7 @@ pub fn sync() {
 
     alacritty::sync();
     atom::sync();
+    git::sync();
     hyper::sync();
     psql::sync();
     rust::sync();
@@ -30,6 +32,7 @@ pub fn update() {
 
     alacritty::update();
     atom::update();
+    git::update();
     hyper::update();
     psql::update();
     rust::update();
