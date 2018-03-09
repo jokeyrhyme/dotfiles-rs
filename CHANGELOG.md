@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+* skip symlinking when desired link already exists
+
 ## [0.5.0] - 2018-03-07
 
 ### Added
