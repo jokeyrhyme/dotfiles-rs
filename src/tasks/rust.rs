@@ -19,6 +19,10 @@ struct Config {
 }
 
 pub fn sync() {
+    if !has_cargo() {
+        return;
+    }
+
     let mut cfg_path = utils::env::home_dir();
     cfg_path.push(Path::new(".dotfiles/config/rust.toml"));
 
@@ -61,56 +65,53 @@ pub fn sync() {
 }
 
 pub fn update() {
-    match utils::process::command_spawn_wait("rustup", &["--version"]) {
-        Ok(_child) => {
-            println!("pkg: rust: updating to latest stable...");
-
-            utils::process::command_spawn_wait("rustup", &["override", "set", "stable"])
-                .expect(ERROR_MSG);
-
-            utils::process::command_spawn_wait("rustup", &["update", "stable"]).expect(ERROR_MSG);
-        }
-        Err(_error) => {
-            // rustup probably not installed, skip!
-        }
+    if !has_rustup() {
+        return;
     }
 
+    println!("pkg: rust: updating to latest stable...");
 
-    match utils::process::command_spawn_wait("cargo", &["--version"]) {
-        Ok(_child) => {
-            println!("pkg: rust: updating crates...");
+    utils::process::command_spawn_wait("rustup", &["override", "set", "stable"])
+        .expect(ERROR_MSG);
 
-            let krates = cargo_installed();
+    utils::process::command_spawn_wait("rustup", &["update", "stable"]).expect(ERROR_MSG);
 
-            let outdated: Vec<String> = krates
-                .into_iter()
-                .filter_map(|(krate, version)| match cargo_latest_version(&krate) {
-                    Ok(latest) => {
-                        if version == latest {
-                            return None;
-                        }
-                        return Some(krate);
-                    }
-                    Err(_) => None,
-                })
-                .collect();
+    if !has_cargo() {
+        return;
+    }
 
-            if outdated.len() <= 0 {
-                return; // nothing to do
+    println!("pkg: rust: updating crates...");
+
+    let krates = cargo_installed();
+
+    let outdated: Vec<String> = krates
+        .into_iter()
+        .filter_map(|(krate, version)| match cargo_latest_version(&krate) {
+            Ok(latest) => {
+                if version == latest {
+                    return None;
+                }
+                return Some(krate);
             }
+            Err(_) => None,
+        })
+        .collect();
 
-            let mut install_args = vec![String::from("install"), String::from("--force")];
-            install_args.extend(outdated);
-
-            utils::process::command_spawn_wait("cargo", &install_args).expect(ERROR_MSG);
-        }
-        Err(_error) => {
-            // cargo probably not installed, skip!
-        }
+    if outdated.len() <= 0 {
+        return; // nothing to do
     }
+
+    let mut install_args = vec![String::from("install"), String::from("--force")];
+    install_args.extend(outdated);
+
+    utils::process::command_spawn_wait("cargo", &install_args).expect(ERROR_MSG);
 }
 
 fn cargo_installed() -> HashMap<String, String> {
+    if !has_cargo() {
+        return HashMap::<String, String>::new();
+    }
+
     let output = utils::process::command_output("cargo", &["install", "--list"]).expect(ERROR_MSG);
     let stdout = str::from_utf8(&output.stdout).unwrap();
 
@@ -137,6 +138,28 @@ fn cargo_latest_version(krate: &str) -> Result<String, String> {
         };
     }
     return Err(String::from("not found"));
+}
+
+fn has_cargo() -> bool {
+    match utils::process::command_output("cargo", &["--version"]) {
+        Ok(output) => {
+            return output.status.success();
+        }
+        Err(_error) => {
+            return false; // cargo probably not installed
+        }
+    }
+}
+
+fn has_rustup() -> bool {
+    match utils::process::command_output("rustup", &["--version"]) {
+        Ok(output) => {
+            return output.status.success();
+        }
+        Err(_error) => {
+            return false; // rustup probably not installed
+        }
+    }
 }
 
 fn parse_installed(stdout: &str) -> HashMap<String, String> {

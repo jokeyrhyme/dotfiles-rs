@@ -19,6 +19,10 @@ struct Config {
 }
 
 pub fn sync() {
+    if !has_code() {
+        return;
+    }
+
     let mut src = utils::env::home_dir();
     src.push(Path::new(".dotfiles/config/vscode.json"));
 
@@ -50,18 +54,6 @@ pub fn sync() {
     );
 
     let config: Config = toml::from_str(&contents).expect("cannot parse .../vscode.toml");
-
-    match utils::process::command_spawn_wait(COMMAND, &["--version"]) {
-        Ok(status) => {
-            if !status.success() {
-                println!("code --version: exit code {}", status.code().unwrap());
-                return;
-            }
-        }
-        Err(_error) => {
-            return; // VSCode probably not installed, skip!
-        }
-    }
 
     let exts = exts_installed();
 
@@ -95,4 +87,15 @@ fn exts_installed() -> Vec<String> {
         }
     }
     return exts;
+}
+
+fn has_code() -> bool {
+    match utils::process::command_output("code", &["--version"]) {
+        Ok(output) => {
+            return output.status.success();
+        }
+        Err(_error) => {
+            return false; // Visual Studio Code probably not installed
+        }
+    }
 }

@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 * pkg: git: configure [npm-merge-driver](https://www.npmjs.com/package/npm-merge-driver) when possible
 
+* pkg: node: `sync` will (un)install `npm` packages as listed in TOML
+*
+* pkg: node: `update` will update `npm` and global packages
+
 ### Fixed
 
 * skip symlinking when desired link already exists

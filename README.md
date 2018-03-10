@@ -21,15 +21,19 @@ Note that you need to "Run As Administrator" in Windows so that this tool can pr
 
   * configures [npm-merge-driver](https://www.npmjs.com/package/npm-merge-driver) when possible
 
-  * reads from TOML file and installs desired [Atom](https://atom.io/) packages
+  * reads from TOML file and (un)installs desired [Atom](https://atom.io/) packages
+
+  * reads from TOML file and (un)installs desired [`npm`](https://www.npmjs.com/) packages
 
   * reads from TOML file and installs desired [rust](https://www.rust-lang.org/) [crates](https://crates.io/)
 
-  * reads from TOML file and installs desired [Visual Studio Code](https://code.visualstudio.com) extensions
+  * reads from TOML file and (un)installs desired [Visual Studio Code](https://code.visualstudio.com) extensions
 
 * `jokeyrhyme-dotfiles update`:
 
   * updates installed Atom packages
+
+  * updates installed `npm` packages
 
   * updates rust and installed rust crates
 
