@@ -29,6 +29,8 @@ Note that you need to "Run As Administrator" in Windows so that this tool can pr
 
   * reads from TOML file and (un)installs desired [Visual Studio Code](https://code.visualstudio.com) extensions
 
+  * (un)installs vim-plug and desired vim plugins
+
 * `jokeyrhyme-dotfiles update`:
 
   * updates installed Atom packages
@@ -36,6 +38,8 @@ Note that you need to "Run As Administrator" in Windows so that this tool can pr
   * updates installed `npm` packages
 
   * updates rust and installed rust crates
+
+  * updates vim-plug and vim plugins
 
 ## Roadmap
 

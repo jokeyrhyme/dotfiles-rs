@@ -71,8 +71,7 @@ pub fn update() {
 
     println!("pkg: rust: updating to latest stable...");
 
-    utils::process::command_spawn_wait("rustup", &["override", "set", "stable"])
-        .expect(ERROR_MSG);
+    utils::process::command_spawn_wait("rustup", &["override", "set", "stable"]).expect(ERROR_MSG);
 
     utils::process::command_spawn_wait("rustup", &["update", "stable"]).expect(ERROR_MSG);
 

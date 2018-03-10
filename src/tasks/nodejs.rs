@@ -93,14 +93,10 @@ pub fn update() {
         utils::process::command_spawn_wait(
             "npx",
             &["-q", "npm-windows-upgrade", "--npm-version", "latest"],
-        )
-            .expect(ERROR_MSG);
+        ).expect(ERROR_MSG);
     }
 
-    match utils::process::command_spawn_wait(
-        "npx",
-        &["-q", "npm", "update", "--global"]
-    ) {
+    match utils::process::command_spawn_wait("npx", &["-q", "npm", "update", "--global"]) {
         Ok(_status) => {}
         Err(_error) => {
             // private packages will fail on incorrect networks, ignore this
@@ -109,7 +105,8 @@ pub fn update() {
 }
 
 fn pkgs_installed() -> Vec<String> {
-    let output = utils::process::command_output("npm", &["ls", "--global", "--depth=0"]).expect(ERROR_MSG);
+    let output = utils::process::command_output("npm", &["ls", "--global", "--depth=0"])
+        .expect(ERROR_MSG);
     let stdout = std::str::from_utf8(&output.stdout).unwrap();
 
     let mut pkgs: Vec<String> = Vec::new();
