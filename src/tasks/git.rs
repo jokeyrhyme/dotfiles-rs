@@ -16,7 +16,7 @@ pub fn sync() {
         return;
     }
 
-    if !utils::node::has_npx() {
+    if !utils::nodejs::has_npx() {
         return;
     }
 
@@ -24,7 +24,7 @@ pub fn sync() {
     utils::process::command_spawn_wait("npx", &["-q", "npm-merge-driver", "install", "--global"])
         .expect(ERROR_MSG);
 
-    if !utils::node::has_yarn() {
+    if !utils::nodejs::has_yarn() {
         return;
     }
 

@@ -12,7 +12,7 @@ mod utils {
     pub mod env;
     pub mod fs;
     pub mod git;
-    pub mod node;
+    pub mod nodejs;
     pub mod process;
 }
 

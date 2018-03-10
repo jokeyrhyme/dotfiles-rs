@@ -3,7 +3,7 @@ mod atom;
 mod dotfiles;
 mod git;
 mod hyper;
-mod node;
+mod nodejs;
 mod psql;
 mod rust;
 mod ssh;
@@ -19,7 +19,7 @@ pub fn sync() {
     atom::sync();
     git::sync();
     hyper::sync();
-    node::sync();
+    nodejs::sync();
     psql::sync();
     rust::sync();
     ssh::sync();
@@ -36,7 +36,7 @@ pub fn update() {
     atom::update();
     git::update();
     hyper::update();
-    node::update();
+    nodejs::update();
     psql::update();
     rust::update();
     ssh::update();
