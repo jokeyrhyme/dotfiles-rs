@@ -1,8 +1,12 @@
 extern crate clap;
+extern crate futures;
+extern crate hyper;
+extern crate hyper_rustls;
 extern crate regex;
 extern crate serde;
 #[macro_use]
 extern crate serde_derive;
+extern crate tokio_core;
 extern crate toml;
 
 use clap::{App, SubCommand};
@@ -12,6 +16,7 @@ mod utils {
     pub mod env;
     pub mod fs;
     pub mod git;
+    pub mod http;
     pub mod nodejs;
     pub mod process;
 }
