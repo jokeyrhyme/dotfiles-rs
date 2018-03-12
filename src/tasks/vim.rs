@@ -18,7 +18,10 @@ pub fn sync() {
     // END: remove old vim configurations
 
     let src = utils::env::home_dir().join(Path::new(".dotfiles/config/vimrc"));
+    #[cfg(not(windows))]
     let vimrc = utils::env::home_dir().join(Path::new(".vimrc"));
+    #[cfg(windows)]
+    let vimrc = utils::env::home_dir().join(Path::new("_vimrc"));
     utils::fs::symbolic_link_if_exists(&src, &vimrc);
 
     fetch_vim_plug(true);
