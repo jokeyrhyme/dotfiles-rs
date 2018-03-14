@@ -1,14 +1,22 @@
-use std;
+use std::collections::HashMap;
 use std::fs::File;
 use std::io::BufReader;
 use std::io::Read;
 use std::path::Path;
+use std::str;
 
+use serde_json;
 use toml;
 
 use utils;
 
 const ERROR_MSG: &str = "error: nodejs";
+
+#[derive(Debug, Deserialize)]
+struct Globals {
+    #[serde(default)]
+    dependencies: HashMap<String, HashMap<String, String>>,
+}
 
 #[derive(Debug, Deserialize)]
 struct Config {
@@ -105,17 +113,24 @@ pub fn update() {
 }
 
 fn pkgs_installed() -> Vec<String> {
-    let output = utils::process::command_output("npm", &["ls", "--global", "--depth=0"])
+    let output = utils::process::command_output("npm", &["ls", "--global", "--depth=0", "--json"])
         .expect(ERROR_MSG);
-    let stdout = std::str::from_utf8(&output.stdout).unwrap();
+    let stdout = str::from_utf8(&output.stdout).unwrap();
+
+    let globals: Globals = match serde_json::from_str(stdout) {
+        Ok(globals) => globals,
+        Err(error) => {
+            println!("unable to parse JSON from `npm`: {:?}", error);
+            return Vec::<String>::new();
+        }
+    };
 
     let mut pkgs: Vec<String> = Vec::new();
 
-    for line in stdout.lines() {
-        let pkg = String::from(line);
-        if pkg.len() >= 1 && !pkg.contains("(empty)") && !pkg.contains(r"\npm") {
-            pkgs.push(pkg);
-        }
+    for pair in globals.dependencies {
+        pkgs.push(pair.0);
     }
+
     return pkgs;
+
 }
