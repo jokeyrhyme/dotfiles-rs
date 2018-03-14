@@ -9,7 +9,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-* pkg: vim: Windows: _vimrc instead of .vimrc
+* pkg: nodejs: properly identify installed packages
+
+* pkg: vim: Windows: \_vimrc instead of .vimrc
 
 ## [0.6.0] - 2018-03-10
 
