@@ -23,22 +23,19 @@ pub fn sync() {
         return;
     }
 
-    let mut src = utils::env::home_dir();
-    src.push(Path::new(".dotfiles/config/vscode.json"));
+    let src = utils::env::home_dir().join(Path::new(".dotfiles/config/vscode.json"));
 
-    let mut dest = utils::env::home_dir();
     #[cfg(target_os = "macos")]
     let settings_path = "Library/Application Support/Code/User/settings.json";
     #[cfg(target_os = "windows")]
     let settings_path = "AppData/Roaming/Code/User/settings.json";
     #[cfg(not(any(target_os = "macos",windows)))]
     let settings_path = ".config/Code/User/settings.json";
-    dest.push(Path::new(settings_path));
+    let dest = utils::env::home_dir().join(Path::new(settings_path));
 
     utils::fs::symbolic_link_if_exists(&src, &dest);
 
-    let mut cfg_path = utils::env::home_dir();
-    cfg_path.push(Path::new(".dotfiles/config/vscode.toml"));
+    let cfg_path = utils::env::home_dir().join(Path::new(".dotfiles/config/vscode.toml"));
 
     let file = match File::open(cfg_path) {
         Ok(file) => file,

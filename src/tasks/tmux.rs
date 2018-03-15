@@ -7,11 +7,8 @@ pub fn sync() {
         return;
     }
 
-    let mut src = utils::env::home_dir();
-    src.push(Path::new(".dotfiles/config/tmux.conf"));
-
-    let mut dest = utils::env::home_dir();
-    dest.push(Path::new(".tmux.conf"));
+    let src = utils::env::home_dir().join(Path::new(".dotfiles/config/tmux.conf"));
+    let dest = utils::env::home_dir().join(Path::new(".tmux.conf"));
 
     utils::fs::symbolic_link_if_exists(&src, &dest);
 }
