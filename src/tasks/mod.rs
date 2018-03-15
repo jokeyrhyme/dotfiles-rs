@@ -10,10 +10,14 @@ mod ssh;
 mod tmux;
 mod vim;
 mod vscode;
+#[cfg(windows)]
+mod windows;
 
 pub fn sync() {
     // must be first
     dotfiles::sync();
+    #[cfg(windows)]
+    windows::sync();
 
     alacritty::sync();
     atom::sync();
@@ -31,6 +35,8 @@ pub fn sync() {
 pub fn update() {
     // must be first
     dotfiles::update();
+    #[cfg(windows)]
+    windows::update();
 
     alacritty::update();
     atom::update();
