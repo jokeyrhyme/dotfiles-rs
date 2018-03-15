@@ -7,11 +7,8 @@ pub fn sync() {
         return;
     }
 
-    let mut src = utils::env::home_dir();
-    src.push(Path::new(".dotfiles/config/psqlrc"));
-
-    let mut dest = utils::env::home_dir();
-    dest.push(Path::new(".psqlrc"));
+    let src = utils::env::home_dir().join(Path::new(".dotfiles/config/psqlrc"));
+    let dest = utils::env::home_dir().join(Path::new(".psqlrc"));
 
     utils::fs::symbolic_link_if_exists(&src, &dest);
 }

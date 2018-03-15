@@ -26,8 +26,7 @@ pub fn sync() {
 
     // TODO: synchronise Atom settings
 
-    let mut cfg_path = utils::env::home_dir();
-    cfg_path.push(Path::new(".dotfiles/config/atom.toml"));
+    let cfg_path = utils::env::home_dir().join(Path::new(".dotfiles/config/atom.toml"));
 
     let file = match File::open(cfg_path) {
         Ok(file) => file,
