@@ -19,6 +19,8 @@ Note that you need to "Run As Administrator" in Windows so that this tool can pr
 
   * otherwise creates and/or edits settings files in `~`
 
+  * Windows: ensures ~/bin exists in PATH
+
   * configures [npm-merge-driver](https://www.npmjs.com/package/npm-merge-driver) when possible
 
   * reads from TOML file and (un)installs desired [Atom](https://atom.io/) packages
