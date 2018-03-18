@@ -7,6 +7,8 @@ pub fn sync() {
         return;
     }
 
+    println!("pkg: psql: syncing ...");
+
     let src = utils::env::home_dir().join(Path::new(".dotfiles/config/psqlrc"));
     let dest = utils::env::home_dir().join(Path::new(".psqlrc"));
 

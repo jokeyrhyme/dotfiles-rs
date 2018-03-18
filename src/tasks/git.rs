@@ -15,10 +15,11 @@ pub fn sync() {
     if !utils::git::has_git() {
         return;
     }
-
     if !utils::nodejs::has_npx() {
         return;
     }
+
+    println!("pkg: git: syncing ...");
 
     // https://www.npmjs.com/package/npm-merge-driver
     utils::process::command_spawn_wait("npx", &["-q", "npm-merge-driver", "install", "--global"])

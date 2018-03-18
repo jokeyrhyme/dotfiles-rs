@@ -29,6 +29,8 @@ pub fn sync() {
         return;
     }
 
+    println!("pkg: nodejs: syncing ...");
+
     let cfg_path = utils::env::home_dir().join(Path::new(".dotfiles/config/nodejs.toml"));
 
     let file = match File::open(cfg_path) {
@@ -93,6 +95,8 @@ pub fn update() {
     if !utils::nodejs::has_npm() {
         return;
     }
+
+    println!("pkg: nodejs: updating ...");
 
     if utils::nodejs::has_npx() {
         // https://www.npmjs.com/package/npm-windows-upgrade

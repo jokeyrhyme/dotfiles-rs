@@ -3,6 +3,8 @@ use std::path::Path;
 use utils;
 
 pub fn sync() {
+    println!("pkg: alacritty: syncing ...");
+
     let src = utils::env::home_dir().join(Path::new(".dotfiles/config/alacritty.yml"));
     let dest = utils::env::home_dir().join(Path::new(".config/alacritty/alacritty.yml"));
 
