@@ -17,6 +17,7 @@ mod utils {
     pub mod env;
     pub mod fs;
     pub mod git;
+    pub mod github;
     pub mod http;
     pub mod nodejs;
     pub mod process;
