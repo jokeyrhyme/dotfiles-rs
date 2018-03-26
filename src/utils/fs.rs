@@ -1,6 +1,9 @@
 use std;
+use std::fs::File;
 use std::io::Error;
 use std::path::Path;
+#[cfg(unix)]
+use std::os::unix::fs::PermissionsExt;
 
 pub fn create_dir_all_or_panic(target: std::option::Option<&Path>) {
     let target = match target {
@@ -63,6 +66,19 @@ pub fn delete_if_exists(path: &Path) {
             return;
         }
     }
+}
+
+#[cfg(unix)]
+pub fn set_executable(target: &Path) -> std::io::Result<()> {
+    let file = File::open(target).unwrap();
+    let mut perms = file.metadata().unwrap().permissions();
+    perms.set_mode(0o755); // a+rx, u+w
+    file.set_permissions(perms)
+}
+
+#[cfg(not(unix))]
+pub fn set_executable(target: &Path) -> std::io::Result<()> {
+    Ok
 }
 
 pub fn symbolic_link_if_exists(src: &Path, dest: &Path) {
