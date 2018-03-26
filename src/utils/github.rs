@@ -1,6 +1,6 @@
 use std;
 use std::error::Error;
-use std::fmt::{Display,Formatter};
+use std::fmt::{Display, Formatter};
 use std::str;
 
 use serde_json;
@@ -9,15 +9,15 @@ use utils;
 
 #[derive(Debug, Deserialize)]
 pub struct Asset {
-    browser_download_url: String,
-    name: String,
+    pub browser_download_url: String,
+    pub name: String,
     state: String,
     updated_at: String,
 }
 
 #[derive(Debug, Deserialize)]
 pub struct Release {
-    assets: Vec<Asset>,
+    pub assets: Vec<Asset>,
     #[serde(default = "default_json_false")]
     draft: bool,
     name: String,
@@ -26,7 +26,9 @@ pub struct Release {
     tag_name: String,
 }
 
-fn default_json_false() -> bool { false }
+fn default_json_false() -> bool {
+    false
+}
 
 #[derive(Debug)]
 pub struct EmptyReleasesError {}
@@ -38,12 +40,17 @@ impl Display for EmptyReleasesError {
 }
 
 impl std::error::Error for EmptyReleasesError {
-    fn cause<'a>(&'a self) -> Option<&'a Error> { None }
-    fn description<'a> (&'a self) -> &'a str { &"EmptyReleasesError" }
+    fn cause<'a>(&'a self) -> Option<&'a Error> {
+        None
+    }
+    fn description<'a>(&'a self) -> &'a str {
+        &"EmptyReleasesError"
+    }
 }
 
-pub fn latest_release<'a, T: AsRef<str>>(owner: &T, repo: &T) -> Result<Release, &'a Error> {
-    let uri = format!(
+fn fetch_releases<'a, T: AsRef<str>>(owner: &T, repo: &T) -> Result<Vec<Release>, &'a Error> {
+    let uri =
+        format!(
         "https://api.github.com/repos/{}/{}/releases",
         owner.as_ref(),
         repo.as_ref(),
@@ -54,18 +61,27 @@ pub fn latest_release<'a, T: AsRef<str>>(owner: &T, repo: &T) -> Result<Release,
         Ok(r) => r,
         Err(error) => {
             println!("cannot fetch latest GitHub Release: {:?}", error);
-            return Err(&EmptyReleasesError{});
-        },
+            Vec::<Release>::new()
+        }
     };
+    Ok(releases)
+}
 
-    let latest = releases.into_iter()
+pub fn latest_release<'a, T: AsRef<str>>(owner: &T, repo: &T) -> Result<Release, &'a Error> {
+    let releases: Vec<Release> = fetch_releases(owner, repo).unwrap();
+    if releases.len() <= 0 {
+        return Err(&EmptyReleasesError {});
+    }
+    let latest = releases
+        .into_iter()
         .filter_map(|r| {
-            if r.draft || r.prelease {
+            if r.draft || r.prelease || r.assets.len() <= 0 {
                 return None;
             }
             Some(r)
         })
-        .next().unwrap();
+        .next()
+        .unwrap();
     Ok(latest)
 }
 
