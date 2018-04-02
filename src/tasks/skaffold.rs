@@ -31,13 +31,14 @@ pub fn update() {
         Ok(output) => {
             let stdout = std::str::from_utf8(&output.stdout).unwrap_or_default();
 
-            let release = match utils::github::latest_release(&"GoogleCloudPlatform", &"skaffold") {
-                Ok(r) => r,
-                Err(error) => {
-                    println!("error: pkg: skaffold: {}", error);
-                    return;
-                }
-            };
+            let release =
+                match utils::github::latest_release(&"GoogleCloudPlatform", &"skaffold") {
+                    Ok(r) => r,
+                    Err(error) => {
+                        println!("error: pkg: skaffold: {}", error);
+                        return;
+                    }
+                };
 
             {
                 let installed = stdout.trim_left_matches("v").trim();
@@ -52,7 +53,7 @@ pub fn update() {
 
             install_release_asset(release);
         }
-        Err(_error) => {},
+        Err(_error) => {}
     };
 }
 

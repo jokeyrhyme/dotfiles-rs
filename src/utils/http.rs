@@ -44,7 +44,7 @@ fn create_request<'a, T: AsRef<str>>(url: &T) -> Request {
         .unwrap()
 }
 
-fn parse_headers (headers: Vec<&str>) -> HashMap<String, String> {
+fn parse_headers(headers: Vec<&str>) -> HashMap<String, String> {
     // HTTP RFC2616 says duplicate headers are fine
     // but we deduplicate them here, which is fine for me for now
     let mut map = HashMap::<String, String>::new();
@@ -61,7 +61,7 @@ fn parse_headers (headers: Vec<&str>) -> HashMap<String, String> {
     return map;
 }
 
-fn user_agent () -> String {
+fn user_agent() -> String {
     format!(
         "rust crate {} {}",
         env!("CARGO_PKG_NAME"),
