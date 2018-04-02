@@ -55,9 +55,9 @@ fn fetch_releases<'a, T: AsRef<str>>(owner: &T, repo: &T) -> Result<Vec<Release>
         owner.as_ref(),
         repo.as_ref(),
     );
-    let bytes = utils::http::fetch(&String::from(uri)).unwrap();
+    let body = utils::http::fetch(&String::from(uri)).unwrap();
 
-    let releases: Vec<Release> = match serde_json::from_slice(&bytes[..]) {
+    let releases: Vec<Release> = match serde_json::from_str(&body) {
         Ok(r) => r,
         Err(error) => {
             println!("cannot fetch latest GitHub Release: {:?}", error);

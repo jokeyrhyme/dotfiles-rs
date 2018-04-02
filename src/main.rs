@@ -1,13 +1,10 @@
+extern crate cabot;
 extern crate clap;
-extern crate futures;
-extern crate hyper;
-extern crate hyper_rustls;
 extern crate regex;
 extern crate serde;
 #[macro_use]
 extern crate serde_derive;
 extern crate serde_json;
-extern crate tokio_core;
 extern crate toml;
 
 use clap::{App, SubCommand};
