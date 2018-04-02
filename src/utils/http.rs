@@ -18,7 +18,6 @@ pub fn download<'a, T: AsRef<str>>(url: &T, dest: &'a Path) -> Result<(), &'a Er
         301 | 302 => {
             let headers = parse_headers(res.headers());
             let location = headers.get("location").unwrap().as_str();
-            println!("download: redirect: {}", location);
             return download(&location, dest);
         }
         _ => {}

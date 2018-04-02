@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 * pkg: [skaffold](https://github.com/GoogleCloudPlatform/skaffold): `sync` downloads into ~/bin
 
+* pkg: [skaffold](https://github.com/GoogleCloudPlatform/skaffold): `update` downloads into ~/bin when version is outdated
+
 ## [0.6.1] - 2018-03-14
 
 ### Fixed

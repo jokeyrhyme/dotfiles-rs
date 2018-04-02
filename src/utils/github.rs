@@ -23,7 +23,7 @@ pub struct Release {
     name: String,
     #[serde(default = "default_json_false")]
     prelease: bool,
-    tag_name: String,
+    pub tag_name: String,
 }
 
 fn default_json_false() -> bool {
