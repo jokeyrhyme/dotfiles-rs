@@ -1,8 +1,9 @@
 use std::collections::HashMap;
 use std::error::Error;
 use std::fs::File;
-use std::io::Write;
+use std::io::{Error as IOError, ErrorKind, Write};
 use std::path::Path;
+use std::{thread, time};
 
 use cabot::{RequestBuilder, Client};
 use cabot::request::Request;
@@ -14,11 +15,17 @@ pub fn download<'a, T: AsRef<str>>(url: &T, dest: &'a Path) -> Result<(), &'a Er
     let client = Client::new();
     let res = client.execute(&req).unwrap();
 
+    println!("HTTP {} {}", res.status_code(), url.as_ref());
+
     match res.status_code() {
         301 | 302 => {
             let headers = parse_headers(res.headers());
             let location = headers.get("location").unwrap().as_str();
             return download(&location, dest);
+        }
+        429 => {
+            thread::sleep(time::Duration::from_millis(5000));
+            return download(&url, dest);
         }
         _ => {}
     };
@@ -28,12 +35,23 @@ pub fn download<'a, T: AsRef<str>>(url: &T, dest: &'a Path) -> Result<(), &'a Er
     Ok(())
 }
 
-pub fn fetch<'a, T: AsRef<str>>(url: &T) -> Result<String, &'a Error> {
+pub fn fetch<'a, T: AsRef<str>>(url: &T) -> Result<String, IOError> {
     let req = create_request(url);
     let client = Client::new();
     let res = client.execute(&req).unwrap();
 
-    Ok(res.body_as_string().unwrap())
+    println!("HTTP {} {}", res.status_code(), url.as_ref());
+
+    match res.body_as_string() {
+        Ok(body) => Ok(body),
+        Err(error) => {
+            println!("fetch error: {:?}", error);
+            println!("url: {}", url.as_ref());
+            println!("headers: {:?}", parse_headers(res.headers()));
+            let result = IOError::new(ErrorKind::Other, format!("{:?}", error));
+            Err(result)
+        }
+    }
 }
 
 fn create_request<'a, T: AsRef<str>>(url: &T) -> Request {
