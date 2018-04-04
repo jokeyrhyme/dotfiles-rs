@@ -93,9 +93,9 @@ mod tests {
 
     #[test]
     fn fetch_google() {
-        match fetch(&"https://www.google.com") {
+        match fetch(&"https://github.com/jokeyrhyme/dotfiles-rs") {
             Ok(body) => {
-                assert!(body.contains("google"));
+                assert!(body.contains("dotfiles-rs"));
             }
             Err(_error) => assert!(false),
         }
