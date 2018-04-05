@@ -3,14 +3,11 @@ use std::error::Error;
 use std::fs::File;
 use std::io::{Error as IOError, ErrorKind, Write};
 use std::path::Path;
-use std::{thread, time};
 
 use cabot::{RequestBuilder, Client};
 use cabot::request::Request;
 
 pub fn download<'a, T: AsRef<str>>(url: &T, dest: &'a Path) -> Result<(), &'a Error> {
-    let mut file = File::create(dest).expect("error creating file for download");
-
     let req = create_request(url);
     let client = Client::new();
     let res = client.execute(&req).unwrap();
@@ -23,13 +20,10 @@ pub fn download<'a, T: AsRef<str>>(url: &T, dest: &'a Path) -> Result<(), &'a Er
             let location = headers.get("location").unwrap().as_str();
             return download(&location, dest);
         }
-        429 => {
-            thread::sleep(time::Duration::from_millis(5000));
-            return download(&url, dest);
-        }
         _ => {}
     };
 
+    let mut file = File::create(dest).expect("error creating file for download");
     file.write_all(res.body().unwrap()).unwrap();
 
     Ok(())
@@ -42,11 +36,20 @@ pub fn fetch<'a, T: AsRef<str>>(url: &T) -> Result<String, IOError> {
 
     println!("HTTP {} {}", res.status_code(), url.as_ref());
 
+    match res.status_code() {
+        200 => {}
+        _ => {
+            println!("headers: {:?}", parse_headers(res.headers()));
+            println!("{}", res.body_as_string().unwrap_or_default());
+            let result = IOError::new(ErrorKind::Other, "non-success");
+            return Err(result);
+        }
+    };
+
     match res.body_as_string() {
         Ok(body) => Ok(body),
         Err(error) => {
             println!("fetch error: {:?}", error);
-            println!("url: {}", url.as_ref());
             println!("headers: {:?}", parse_headers(res.headers()));
             let result = IOError::new(ErrorKind::Other, format!("{:?}", error));
             Err(result)
@@ -92,7 +95,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn fetch_google() {
+    fn fetch_page() {
         match fetch(&"https://github.com/jokeyrhyme/dotfiles-rs") {
             Ok(body) => {
                 assert!(body.contains("dotfiles-rs"));
