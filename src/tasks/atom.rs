@@ -24,6 +24,8 @@ pub fn sync() {
         return;
     }
 
+    println!("pkg: atom: syncing ...");
+
     // TODO: synchronise Atom settings
 
     let cfg_path = utils::env::home_dir().join(Path::new(".dotfiles/config/atom.toml"));
@@ -72,7 +74,7 @@ pub fn update() {
         return;
     }
 
-    println!("pkg: atom: updating packages...");
+    println!("pkg: atom: updating ...");
 
     utils::process::command_spawn_wait(COMMAND, &["upgrade", "--confirm", "false"])
         .expect(ERROR_MSG);

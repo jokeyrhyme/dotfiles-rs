@@ -6,6 +6,7 @@ mod hyper;
 mod nodejs;
 mod psql;
 mod rust;
+mod skaffold;
 mod ssh;
 mod tmux;
 mod vim;
@@ -16,8 +17,7 @@ mod windows;
 pub fn sync() {
     // must be first
     dotfiles::sync();
-    #[cfg(windows)]
-    windows::sync();
+    #[cfg(windows)] windows::sync();
 
     alacritty::sync();
     atom::sync();
@@ -26,6 +26,7 @@ pub fn sync() {
     nodejs::sync();
     psql::sync();
     rust::sync();
+    skaffold::sync();
     ssh::sync();
     tmux::sync();
     vim::sync();
@@ -35,8 +36,7 @@ pub fn sync() {
 pub fn update() {
     // must be first
     dotfiles::update();
-    #[cfg(windows)]
-    windows::update();
+    #[cfg(windows)] windows::update();
 
     alacritty::update();
     atom::update();
@@ -45,6 +45,7 @@ pub fn update() {
     nodejs::update();
     psql::update();
     rust::update();
+    skaffold::update();
     ssh::update();
     tmux::update();
     vim::update();

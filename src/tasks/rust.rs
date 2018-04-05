@@ -23,6 +23,8 @@ pub fn sync() {
         return;
     }
 
+    println!("pkg: rust: syncing ...");
+
     let cfg_path = utils::env::home_dir().join(Path::new(".dotfiles/config/rust.toml"));
 
     let file = match File::open(cfg_path) {
@@ -68,7 +70,7 @@ pub fn update() {
         return;
     }
 
-    println!("pkg: rust: updating to latest stable...");
+    println!("pkg: rust: updating ...");
 
     utils::process::command_spawn_wait("rustup", &["override", "set", "stable"]).expect(ERROR_MSG);
 
@@ -77,8 +79,6 @@ pub fn update() {
     if !has_cargo() {
         return;
     }
-
-    println!("pkg: rust: updating crates...");
 
     let krates = cargo_installed();
 

@@ -23,6 +23,8 @@ pub fn sync() {
         return;
     }
 
+    println!("pkg: vscode: syncing ...");
+
     let src = utils::env::home_dir().join(Path::new(".dotfiles/config/vscode.json"));
 
     #[cfg(target_os = "macos")]

@@ -7,6 +7,8 @@ pub fn sync() {
         return;
     }
 
+    println!("pkg: tmux: syncing ...");
+
     let src = utils::env::home_dir().join(Path::new(".dotfiles/config/tmux.conf"));
     let dest = utils::env::home_dir().join(Path::new(".tmux.conf"));
 
