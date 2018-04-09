@@ -6,6 +6,7 @@ mod hyper;
 mod nodejs;
 mod psql;
 mod rust;
+mod shfmt;
 mod skaffold;
 mod ssh;
 mod tmux;
@@ -26,6 +27,7 @@ pub fn sync() {
     nodejs::sync();
     psql::sync();
     rust::sync();
+    shfmt::sync();
     skaffold::sync();
     ssh::sync();
     tmux::sync();
@@ -45,6 +47,7 @@ pub fn update() {
     nodejs::update();
     psql::update();
     rust::update();
+    shfmt::update();
     skaffold::update();
     ssh::update();
     tmux::update();

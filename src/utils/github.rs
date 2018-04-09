@@ -1,13 +1,14 @@
 use std;
 use std::error::Error;
 use std::fmt::{Display, Formatter};
+use std::path::Path;
 use std::str;
 
 use serde_json;
 
 use utils;
 
-#[derive(Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize)]
 pub struct Asset {
     pub browser_download_url: String,
     pub name: String,
@@ -15,7 +16,7 @@ pub struct Asset {
     updated_at: String,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize)]
 pub struct Release {
     pub assets: Vec<Asset>,
     #[serde(default = "default_json_false")]
@@ -45,6 +46,23 @@ impl std::error::Error for EmptyReleasesError {
     }
     fn description<'a>(&'a self) -> &'a str {
         &"EmptyReleasesError"
+    }
+}
+
+pub fn download_release_asset(asset: Asset, bin_path: &Path) {
+    match utils::http::download(&asset.browser_download_url, &bin_path) {
+        Ok(()) => {}
+        Err(error) => {
+            println!("error: cannot download: {}", error);
+            return;
+        }
+    };
+    match utils::fs::set_executable(&bin_path) {
+        Ok(()) => {}
+        Err(error) => {
+            println!("error: cannot chmod a+rx: {}", error);
+            return;
+        }
     }
 }
 
