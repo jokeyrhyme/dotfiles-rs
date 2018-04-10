@@ -5,6 +5,7 @@ use std::path::Path;
 use std::str;
 
 use serde_json;
+use cabot::request::Request;
 
 use utils;
 
@@ -50,7 +51,8 @@ impl std::error::Error for EmptyReleasesError {
 }
 
 pub fn download_release_asset(asset: Asset, bin_path: &Path) {
-    match utils::http::download(&asset.browser_download_url, &bin_path) {
+    let req = create_request(&asset.browser_download_url);
+    match utils::http::download_request(req, &bin_path) {
         Ok(()) => {}
         Err(error) => {
             println!("error: cannot download: {}", error);
@@ -66,6 +68,21 @@ pub fn download_release_asset(asset: Asset, bin_path: &Path) {
     }
 }
 
+fn create_request<'a, T: AsRef<str>>(url: &T) -> Request {
+    let mut headers: Vec<String> = Vec::new();
+
+    match std::env::var("GITHUB_TOKEN") {
+        Ok(token) => {
+            let auth = format!("Authorization: token {}", token);
+            headers.push(auth);
+        }
+        Err(_error) => {}
+    };
+
+    let headers_slice: Vec<&str> = headers.iter().map(|h| &**h).collect();
+    utils::http::create_request(url, &headers_slice)
+}
+
 fn fetch_releases<'a, T: AsRef<str>>(owner: &T, repo: &T) -> Result<Vec<Release>, &'a Error> {
     let uri =
         format!(
@@ -73,7 +90,8 @@ fn fetch_releases<'a, T: AsRef<str>>(owner: &T, repo: &T) -> Result<Vec<Release>
         owner.as_ref(),
         repo.as_ref(),
     );
-    let body = utils::http::fetch(&String::from(uri)).unwrap();
+    let req = create_request(&String::from(uri));
+    let body = utils::http::fetch_request(req).unwrap();
 
     let releases: Vec<Release> = match serde_json::from_str(&body) {
         Ok(r) => r,

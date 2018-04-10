@@ -7,12 +7,27 @@ use std::path::Path;
 use cabot::{RequestBuilder, Client};
 use cabot::request::Request;
 
+pub fn create_request<'a, T: AsRef<str>>(url: &T, headers: &[&str]) -> Request {
+    RequestBuilder::new(url.as_ref())
+        .set_http_method("GET")
+        .add_header(&format!("User-Agent: {}", user_agent()))
+        .add_headers(&headers)
+        .build()
+        .unwrap()
+}
+
 pub fn download<'a, T: AsRef<str>>(url: &T, dest: &'a Path) -> Result<(), &'a Error> {
-    let req = create_request(url);
+    let empty_headers: &[&str] = &[];
+    let req = create_request(url, &empty_headers);
+
+    download_request(req, dest)
+}
+
+pub fn download_request<'a>(req: Request, dest: &'a Path) -> Result<(), &'a Error> {
     let client = Client::new();
     let res = client.execute(&req).unwrap();
 
-    println!("HTTP {} {}", res.status_code(), url.as_ref());
+    println!("HTTP {} {}", res.status_code(), req.to_string());
 
     match res.status_code() {
         301 | 302 => {
@@ -30,11 +45,17 @@ pub fn download<'a, T: AsRef<str>>(url: &T, dest: &'a Path) -> Result<(), &'a Er
 }
 
 pub fn fetch<'a, T: AsRef<str>>(url: &T) -> Result<String, IOError> {
-    let req = create_request(url);
+    let empty_headers: &[&str] = &[];
+    let req = create_request(url, &empty_headers);
+
+    fetch_request(req)
+}
+
+pub fn fetch_request<'a>(req: Request) -> Result<String, IOError> {
     let client = Client::new();
     let res = client.execute(&req).unwrap();
 
-    println!("HTTP {} {}", res.status_code(), url.as_ref());
+    println!("HTTP {} {}", res.status_code(), req.to_string());
 
     match res.status_code() {
         200 => {}
@@ -55,14 +76,6 @@ pub fn fetch<'a, T: AsRef<str>>(url: &T) -> Result<String, IOError> {
             Err(result)
         }
     }
-}
-
-fn create_request<'a, T: AsRef<str>>(url: &T) -> Request {
-    RequestBuilder::new(url.as_ref())
-        .set_http_method("GET")
-        .add_header(&format!("User-Agent: {}", user_agent()))
-        .build()
-        .unwrap()
 }
 
 fn parse_headers(headers: Vec<&str>) -> HashMap<String, String> {
