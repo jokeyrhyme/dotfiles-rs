@@ -45,10 +45,10 @@ Note that you need to "Run As Administrator" in Windows so that this tool can pr
 
 ## Configuration
 
-### GITHUB\_TOKEN
+### GITHUB_TOKEN
 
 Generate a new [GitHub Personal Access Token](https://github.com/settings/tokens) without any special permissions,
-and set this as the value for the GITHUB\_TOKEN environment variable.
+and set this as the value for the GITHUB_TOKEN environment variable.
 
 This will reduce the likelihood of rate-limiting by GitHub's API.
 
