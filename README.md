@@ -43,6 +43,15 @@ Note that you need to "Run As Administrator" in Windows so that this tool can pr
 
   * updates vim-plug and vim plugins
 
+## Configuration
+
+### GITHUB\_TOKEN
+
+Generate a new [GitHub Personal Access Token](https://github.com/settings/tokens) without any special permissions,
+and set this as the value for the GITHUB\_TOKEN environment variable.
+
+This will reduce the likelihood of rate-limiting by GitHub's API.
+
 ## Roadmap
 
 * [x] automatically build and publish for new git tags
