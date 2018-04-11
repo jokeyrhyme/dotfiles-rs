@@ -3,7 +3,7 @@ use std::path::Path;
 
 use utils;
 use utils::github::{Asset, Release};
-use utils::golang::{arch,os};
+use utils::golang::{arch, os};
 
 pub fn sync() {
     println!("pkg: shfmt: syncing ...");

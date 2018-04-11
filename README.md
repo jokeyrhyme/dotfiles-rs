@@ -43,6 +43,14 @@ Note that you need to "Run As Administrator" in Windows so that this tool can pr
 
   * updates vim-plug and vim plugins
 
+* installs and updates the following tools:
+
+  * [shfmt](https://github.com/mvdan/sh)
+
+  * [skaffold](https://github.com/GoogleCloudPlatform/skaffold)
+
+  * [yq](https://github.com/mikefarah/yq)
+
 ## Configuration
 
 ### GITHUB_TOKEN
