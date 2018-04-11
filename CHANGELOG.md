@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Changed
+
+* install binaries to ~/.local/bin, expect it to be in PATH
+
+### Fixed
+
+* pkg: shfmt,skaffold: fix macOS asset detection
+
 ## [0.7.0] - 2018-04-11
 
 ### Added

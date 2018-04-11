@@ -67,7 +67,7 @@ fn install_release_asset(release: Release) {
 
     println!("pkg: shfmt: installing ...");
 
-    let bin_path = utils::env::home_dir().join(Path::new("bin/shfmt"));
+    let bin_path = utils::env::home_dir().join(Path::new(".local/bin/shfmt"));
     utils::github::download_release_asset(asset, &bin_path);
 }
 
@@ -86,11 +86,12 @@ fn latest_asset(release: &Release) -> Option<Asset> {
         .into_iter()
         .filter_map(|asset| {
             let arch = if ARCH == "x86_64" { "amd64" } else { ARCH };
+            let os = if OS == "macos" { "darwin" } else { OS };
 
             #[cfg(windows)]
-            let name = format!("shfmt_{}_{}_{}.exe", release.tag_name, OS, arch);
+            let name = format!("shfmt_{}_{}_{}.exe", release.tag_name, os, arch);
             #[cfg(not(windows))]
-            let name = format!("shfmt_{}_{}_{}", release.tag_name, OS, arch);
+            let name = format!("shfmt_{}_{}_{}", release.tag_name, os, arch);
 
             if asset.name == name {
                 Some(asset)
