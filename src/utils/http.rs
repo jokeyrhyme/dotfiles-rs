@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 use std::error::Error;
-use std::fs::File;
+use std::fs::{File, create_dir_all};
 use std::io::{Error as IOError, ErrorKind, Write};
 use std::path::Path;
 
@@ -36,6 +36,16 @@ pub fn download_request<'a>(req: Request, dest: &'a Path) -> Result<(), &'a Erro
             return download(&location, dest);
         }
         _ => {}
+    };
+
+    match dest.parent() {
+        Some(parent) => {
+            create_dir_all(&parent).expect(&format!(
+                "unable to create directories {}",
+                &parent.display()
+            ).as_str());
+        }
+        None => { /* probably at root directory, nothing to do */ }
     };
 
     let mut file = File::create(dest).expect("error creating file for download");

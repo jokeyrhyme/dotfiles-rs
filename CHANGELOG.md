@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
+* ensure target directory exists when downloading files
+
 * pkg: shfmt,skaffold: fix macOS asset detection
 
 ## [0.7.0] - 2018-04-11

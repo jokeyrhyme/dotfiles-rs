@@ -5,27 +5,6 @@ use std::path::Path;
 #[cfg(unix)]
 use std::os::unix::fs::PermissionsExt;
 
-pub fn create_dir_all_or_panic(target: std::option::Option<&Path>) {
-    let target = match target {
-        Some(target) => target,
-        None => {
-            // no path, or request to create root, so noop
-            return;
-        }
-    };
-
-    match std::fs::create_dir_all(target) {
-        Ok(_created) => _created,
-        Err(error) => {
-            panic!(
-                "unable to create directories {}: {:?}",
-                target.to_str().unwrap_or("nil"),
-                error
-            );
-        }
-    }
-}
-
 pub fn delete_if_exists(path: &Path) {
     let attr = match std::fs::symlink_metadata(path) {
         Ok(attr) => attr,
@@ -38,13 +17,13 @@ pub fn delete_if_exists(path: &Path) {
     if attr.is_dir() {
         match std::fs::remove_dir_all(path) {
             Ok(_removed) => {
-                println!("deleted {}", path.to_str().unwrap_or("nil"));
+                println!("deleted {}", path.display());
                 return;
             }
             Err(error) => {
                 println!(
                     "unable to recursively delete directory {}: {:?}",
-                    path.to_str().unwrap_or("nil"),
+                    path.display(),
                     error
                 );
                 return;
@@ -58,11 +37,7 @@ pub fn delete_if_exists(path: &Path) {
             return;
         }
         Err(error) => {
-            println!(
-                "unable to delete file {}: {:?}",
-                path.to_str().unwrap_or("nil"),
-                error
-            );
+            println!("unable to delete file {}: {:?}", path.display(), error);
             return;
         }
     }
@@ -87,8 +62,8 @@ pub fn symbolic_link_if_exists(src: &Path, dest: &Path) {
             if src == target {
                 println!(
                     "already symlinked: {:?} -> {:?}",
-                    dest.to_str().unwrap_or("nil"),
-                    target.to_str().unwrap_or("nil"),
+                    dest.display(),
+                    target.display(),
                 );
                 return;
             }
@@ -101,16 +76,20 @@ pub fn symbolic_link_if_exists(src: &Path, dest: &Path) {
     match std::fs::symlink_metadata(src) {
         Ok(attr) => attr,
         Err(error) => {
-            println!(
-                "unable to access {}: {:?}",
-                src.to_str().unwrap_or("nil"),
-                error
-            );
+            println!("unable to access {}: {:?}", src.display(), error);
             return;
         }
     };
 
-    create_dir_all_or_panic(dest.parent());
+    match dest.parent() {
+        Some(parent) => {
+            std::fs::create_dir_all(&parent).expect(&format!(
+                "unable to create directories {}",
+                &parent.display()
+            ).as_str());
+        }
+        None => { /* probably at root directory, nothing to do */ }
+    };
 
     match std::fs::symlink_metadata(dest) {
         Ok(_attr) => {
@@ -123,15 +102,15 @@ pub fn symbolic_link_if_exists(src: &Path, dest: &Path) {
         Ok(()) => {
           println!(
               "symlinked: {} -> {}",
-              dest.to_str().unwrap_or("nil"),
-              src.to_str().unwrap_or("nil"),
+              dest.display(),
+              src.display(),
           );
       }
         Err(error) => {
             println!(
                 "unable to symlink {} to {}: {:?}",
-                dest.to_str().unwrap_or("nil"),
-                src.to_str().unwrap_or("nil"),
+                dest.display(),
+                src.display(),
                 error
             );
             return;
