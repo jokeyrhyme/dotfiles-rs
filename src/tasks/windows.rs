@@ -5,8 +5,11 @@ use utils;
 pub fn sync() {
     println!("pkg: windows: syncing ...");
 
-    let bin = utils::env::home_dir().join(Path::new("bin"));
-    utils::fs::create_dir_all_or_panic(Some(&bin));
+    let bin = utils::env::home_dir().join(Path::new(".local/bin"));
+    std::fs::create_dir_all(&bin).expect(&format!(
+        "unable to create directories {}",
+        &parent.display()
+    ).as_str());
     println!("{:?}", &bin);
 
     let search_paths = utils::env::path_dirs();
