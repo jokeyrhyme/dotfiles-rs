@@ -14,6 +14,7 @@ mod vim;
 mod vscode;
 #[cfg(windows)]
 mod windows;
+mod yq;
 
 pub fn sync() {
     // must be first
@@ -33,6 +34,7 @@ pub fn sync() {
     tmux::sync();
     vim::sync();
     vscode::sync();
+    yq::sync();
 }
 
 pub fn update() {
@@ -53,4 +55,5 @@ pub fn update() {
     tmux::update();
     vim::update();
     vscode::update();
+    yq::update();
 }

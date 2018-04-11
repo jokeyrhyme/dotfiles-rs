@@ -1,9 +1,9 @@
 use std;
-use std::env::consts::{ARCH, OS};
 use std::path::Path;
 
 use utils;
 use utils::github::{Asset, Release};
+use utils::golang::{arch, os};
 
 pub fn sync() {
     println!("pkg: skaffold: syncing ...");
@@ -16,7 +16,7 @@ pub fn sync() {
                 return;
             }
         };
-        install_release_asset(&release);
+        install_release_asset(release);
     }
 }
 
@@ -31,33 +31,16 @@ pub fn update() {
         Ok(output) => {
             let stdout = std::str::from_utf8(&output.stdout).unwrap_or_default();
 
-            let release =
-                match utils::github::latest_release(&"GoogleCloudPlatform", &"skaffold") {
-                    Ok(r) => r,
-                    Err(error) => {
-                        println!("error: pkg: skaffold: {}", error);
-                        return;
-                    }
-                };
-
-            {
-                let installed = stdout.trim_left_matches("v").trim();
-                let latest = release.tag_name.trim_left_matches("v").trim();
-
-                println!("pkg: skaffold: current={} latest={}", &installed, &latest);
-
-                if installed == latest {
-                    return;
-                }
+            match utils::github::release_versus_current(&stdout, &"GoogleCloudPlatform", &"skaffold") {
+                Some(r) => install_release_asset(r),
+                None => {}
             }
-
-            install_release_asset(&release);
         }
         Err(_error) => {}
     };
 }
 
-fn install_release_asset(release: &Release) {
+fn install_release_asset(release: Release) {
     let asset = match latest_asset(&release) {
         Some(a) => a,
         None => {
@@ -85,13 +68,10 @@ fn latest_asset(release: &Release) -> Option<Asset> {
         .to_vec()
         .into_iter()
         .filter_map(|asset| {
-            let arch = if ARCH == "x86_64" { "amd64" } else { ARCH };
-            let os = if OS == "macos" { "darwin" } else { OS };
-
             #[cfg(windows)]
-            let name = format!("skaffold-{}-{}.exe", os, arch);
+            let name = format!("skaffold-{}-{}.exe", os(), arch());
             #[cfg(not(windows))]
-            let name = format!("skaffold-{}-{}", os, arch);
+            let name = format!("skaffold-{}-{}", os(), arch());
 
             if asset.name == name {
                 Some(asset)

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+* pkg: [yq](https://github.com/mikefarah/yq): `sync` (into ~/.local/bin) and `update`
+
 ### Changed
 
 * install binaries to ~/.local/bin, expect it to be in PATH

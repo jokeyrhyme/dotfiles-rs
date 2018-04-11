@@ -121,6 +121,28 @@ pub fn latest_release<'a, T: AsRef<str>>(owner: &T, repo: &T) -> Result<Release,
     Ok(latest)
 }
 
+pub fn release_versus_current<T: AsRef<str>>(current: &T, owner: &T, repo: &T) -> Option<Release> {
+    let release = match latest_release(owner, repo) {
+        Ok(r) => r,
+        Err(error) => {
+            println!("error: {}", error);
+            return None;
+        }
+    };
+
+    let installed = current.as_ref().trim_left_matches(|c: char| !c.is_digit(10)).trim();
+    let tag_name = release.tag_name.clone();
+    let latest = tag_name.trim_left_matches(|c: char| !c.is_digit(10)).trim();
+
+    println!("current={} latest={}", &installed, &latest);
+
+    if installed == latest {
+        None
+    } else {
+        Some(release)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

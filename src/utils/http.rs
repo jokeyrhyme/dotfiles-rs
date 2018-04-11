@@ -4,8 +4,7 @@ use std::fs::{File, create_dir_all};
 use std::io::{Error as IOError, ErrorKind, Write};
 use std::path::Path;
 
-use cabot::{RequestBuilder, Client};
-use cabot::request::Request;
+use cabot::{Client, RequestBuilder, request::Request, response::Response};
 
 pub fn create_request<'a, T: AsRef<str>>(url: &T, headers: &[&str]) -> Request {
     RequestBuilder::new(url.as_ref())
@@ -27,7 +26,7 @@ pub fn download_request<'a>(req: Request, dest: &'a Path) -> Result<(), &'a Erro
     let client = Client::new();
     let res = client.execute(&req).unwrap();
 
-    println!("HTTP {} {}", res.status_code(), req.to_string());
+    display(&req, &res);
 
     match res.status_code() {
         301 | 302 => {
@@ -65,7 +64,7 @@ pub fn fetch_request<'a>(req: Request) -> Result<String, IOError> {
     let client = Client::new();
     let res = client.execute(&req).unwrap();
 
-    println!("HTTP {} {}", res.status_code(), req.to_string());
+    display(&req, &res);
 
     match res.status_code() {
         200 => {}
@@ -86,6 +85,18 @@ pub fn fetch_request<'a>(req: Request) -> Result<String, IOError> {
             Err(result)
         }
     }
+}
+
+fn display(req: &Request, res: &Response) {
+    println!(
+        "{} {} {} {}://{}{}",
+        res.http_version(),
+        res.status_code(),
+        req.http_method(),
+        req.scheme(),
+        req.authority(),
+        req.request_uri(),
+    )
 }
 
 fn parse_headers(headers: Vec<&str>) -> HashMap<String, String> {
