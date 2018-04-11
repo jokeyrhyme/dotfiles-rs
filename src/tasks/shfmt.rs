@@ -1,9 +1,9 @@
 use std;
-use std::env::consts::{ARCH, OS};
 use std::path::Path;
 
 use utils;
 use utils::github::{Asset, Release};
+use utils::golang::{arch,os};
 
 pub fn sync() {
     println!("pkg: shfmt: syncing ...");
@@ -85,13 +85,10 @@ fn latest_asset(release: &Release) -> Option<Asset> {
         .to_vec()
         .into_iter()
         .filter_map(|asset| {
-            let arch = if ARCH == "x86_64" { "amd64" } else { ARCH };
-            let os = if OS == "macos" { "darwin" } else { OS };
-
             #[cfg(windows)]
-            let name = format!("shfmt_{}_{}_{}.exe", release.tag_name, os, arch);
+            let name = format!("shfmt_{}_{}_{}.exe", release.tag_name, os(), arch());
             #[cfg(not(windows))]
-            let name = format!("shfmt_{}_{}_{}", release.tag_name, os, arch);
+            let name = format!("shfmt_{}_{}_{}", release.tag_name, os(), arch());
 
             if asset.name == name {
                 Some(asset)
