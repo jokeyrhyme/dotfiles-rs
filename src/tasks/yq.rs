@@ -16,7 +16,7 @@ pub fn sync() {
                 return;
             }
         };
-        install_release_asset(&release);
+        install_release_asset(release);
     }
 }
 
@@ -31,33 +31,16 @@ pub fn update() {
         Ok(output) => {
             let stdout = std::str::from_utf8(&output.stdout).unwrap_or_default();
 
-            let release = match utils::github::latest_release(&"mikefarah", &"yq") {
-                Ok(r) => r,
-                Err(error) => {
-                    println!("error: pkg: yq: {}", error);
-                    return;
-                }
-            };
-
-            {
-                // installed stdout: yaml version 1.14.1
-                let installed = stdout.trim_left_matches(|c: char| !c.is_digit(10)).trim();
-                let latest = release.tag_name.trim_left_matches("v").trim();
-
-                println!("pkg: yq: current={} latest={}", &installed, &latest);
-
-                if installed == latest {
-                    return;
-                }
+            match utils::github::release_versus_current(&stdout, &"mikefarah", &"yq") {
+                Some(r) => install_release_asset(r),
+                None => {}
             }
-
-            install_release_asset(&release);
         }
         Err(_error) => {}
     };
 }
 
-fn install_release_asset(release: &Release) {
+fn install_release_asset(release: Release) {
     let asset = match latest_asset(&release) {
         Some(a) => a,
         None => {
