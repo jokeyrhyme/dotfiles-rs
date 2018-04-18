@@ -6,6 +6,8 @@ use std::path::Path;
 
 use cabot::{Client, RequestBuilder, request::Request, response::Response};
 
+const EMPTY_HEADERS: &[&str] = &[];
+
 pub fn create_request<'a, T: AsRef<str>>(url: &T, headers: &[&str]) -> Request {
     RequestBuilder::new(url.as_ref())
         .set_http_method("GET")
@@ -16,26 +18,13 @@ pub fn create_request<'a, T: AsRef<str>>(url: &T, headers: &[&str]) -> Request {
 }
 
 pub fn download<'a, T: AsRef<str>>(url: &T, dest: &'a Path) -> Result<(), &'a Error> {
-    let empty_headers: &[&str] = &[];
-    let req = create_request(url, &empty_headers);
+    let req = create_request(url, &EMPTY_HEADERS);
 
-    download_request(req, dest)
+    download_request(&req, dest)
 }
 
-pub fn download_request<'a>(req: Request, dest: &'a Path) -> Result<(), &'a Error> {
-    let client = Client::new();
-    let res = client.execute(&req).unwrap();
-
-    display(&req, &res);
-
-    match res.status_code() {
-        301 | 302 => {
-            let headers = parse_headers(res.headers());
-            let location = headers.get("location").unwrap().as_str();
-            return download(&location, dest);
-        }
-        _ => {}
-    };
+pub fn download_request<'a>(req: &Request, dest: &'a Path) -> Result<(), &'a Error> {
+    let res = fetch_request(&req).unwrap();
 
     match dest.parent() {
         Some(parent) => {
@@ -53,35 +42,25 @@ pub fn download_request<'a>(req: Request, dest: &'a Path) -> Result<(), &'a Erro
     Ok(())
 }
 
-pub fn fetch<'a, T: AsRef<str>>(url: &T) -> Result<String, IOError> {
-    let empty_headers: &[&str] = &[];
-    let req = create_request(url, &empty_headers);
-
-    fetch_request(req)
-}
-
-pub fn fetch_request<'a>(req: Request) -> Result<String, IOError> {
+pub fn fetch_request<'a>(req: &Request) -> Result<Response, IOError> {
     let client = Client::new();
     let res = client.execute(&req).unwrap();
 
     display(&req, &res);
 
     match res.status_code() {
-        200 => {}
+        200 => Ok(res),
+        301 | 302 => {
+            let headers = parse_headers(res.headers());
+            let location = headers.get("location").unwrap().as_str();
+            // TODO: send the origin request's headers
+            let next_request = create_request(&location, &EMPTY_HEADERS);
+            fetch_request(&next_request)
+        }
         _ => {
             println!("headers: {:?}", parse_headers(res.headers()));
             println!("{}", res.body_as_string().unwrap_or_default());
             let result = IOError::new(ErrorKind::Other, "non-success");
-            return Err(result);
-        }
-    };
-
-    match res.body_as_string() {
-        Ok(body) => Ok(body),
-        Err(error) => {
-            println!("fetch error: {:?}", error);
-            println!("headers: {:?}", parse_headers(res.headers()));
-            let result = IOError::new(ErrorKind::Other, format!("{:?}", error));
             Err(result)
         }
     }
@@ -130,12 +109,10 @@ mod tests {
 
     #[test]
     fn fetch_page() {
-        match fetch(&"https://github.com/jokeyrhyme/dotfiles-rs") {
-            Ok(body) => {
-                assert!(body.contains("dotfiles-rs"));
-            }
-            Err(_error) => assert!(false),
-        }
+        let req = create_request(&"https://github.com/jokeyrhyme/dotfiles-rs", &EMPTY_HEADERS);
+        let res = fetch_request(&req).unwrap();
+        let body = res.body_as_string().unwrap();
+        assert!(body.contains("dotfiles-rs"));
     }
 
     #[test]
