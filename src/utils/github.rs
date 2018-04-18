@@ -52,7 +52,7 @@ impl std::error::Error for EmptyReleasesError {
 
 pub fn download_release_asset(asset: Asset, bin_path: &Path) {
     let req = create_request(&asset.browser_download_url);
-    match utils::http::download_request(req, &bin_path) {
+    match utils::http::download_request(&req, &bin_path) {
         Ok(()) => {}
         Err(error) => {
             println!("error: cannot download: {}", error);
@@ -91,7 +91,8 @@ fn fetch_releases<'a, T: AsRef<str>>(owner: &T, repo: &T) -> Result<Vec<Release>
         repo.as_ref(),
     );
     let req = create_request(&String::from(uri));
-    let body = utils::http::fetch_request(req).unwrap();
+    let res = utils::http::fetch_request(&req).unwrap();
+    let body = res.body_as_string().unwrap();
 
     let releases: Vec<Release> = match serde_json::from_str(&body) {
         Ok(r) => r,
