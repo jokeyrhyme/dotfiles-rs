@@ -98,6 +98,16 @@ pub fn update() {
 
     println!("pkg: nodejs: updating ...");
 
+    println!(
+        "pkg: nodes: latest nodejs version: {}",
+        utils::nodejs::latest_version()
+    );
+    // TODO: compare to current nodejs version
+    // TODO: download to temporary directory
+    // TODO: windows: unzip/un-7zip to ~/.local/node/
+    // TODO: not-windows: gunzip+untar to ~/.local/node/
+    // TODO: delete temporary file(s)
+
     if utils::nodejs::has_npx() {
         // https://www.npmjs.com/package/npm-windows-upgrade
         #[cfg(windows)]
@@ -135,5 +145,4 @@ fn pkgs_installed() -> Vec<String> {
     }
 
     return pkgs;
-
 }
