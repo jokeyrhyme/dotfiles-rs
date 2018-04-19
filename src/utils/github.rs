@@ -131,7 +131,10 @@ pub fn release_versus_current<T: AsRef<str>>(current: &T, owner: &T, repo: &T) -
         }
     };
 
-    let installed = current.as_ref().trim_left_matches(|c: char| !c.is_digit(10)).trim();
+    let installed = current
+        .as_ref()
+        .trim_left_matches(|c: char| !c.is_digit(10))
+        .trim();
     let tag_name = release.tag_name.clone();
     let latest = tag_name.trim_left_matches(|c: char| !c.is_digit(10)).trim();
 
