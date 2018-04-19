@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.9.0] - 2018-04-19
+
 ### Added
 
 * pkg: [dep](https://github.com/golang/dep): `sync` (into ~/.local/bin) and `update`
