@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+* pkg: [dep](https://github.com/golang/dep): `sync` (into ~/.local/bin) and `update`
+
 ### Fixed
 
 * `utils::http::fetch_request()` follows redirects

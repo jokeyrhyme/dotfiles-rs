@@ -31,7 +31,11 @@ pub fn update() {
         Ok(output) => {
             let stdout = std::str::from_utf8(&output.stdout).unwrap_or_default();
 
-            match utils::github::release_versus_current(&stdout, &"GoogleCloudPlatform", &"skaffold") {
+            match utils::github::release_versus_current(
+                &stdout,
+                &"GoogleCloudPlatform",
+                &"skaffold",
+            ) {
                 Some(r) => install_release_asset(r),
                 None => {}
             }
