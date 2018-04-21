@@ -55,7 +55,11 @@ fn install_release_asset(release: Release) {
 
     println!("pkg: skaffold: installing ...");
 
+    #[cfg(windows)]
+    let bin_path = utils::env::home_dir().join(Path::new(".local/bin/skaffold.exe"));
+    #[cfg(not(windows))]
     let bin_path = utils::env::home_dir().join(Path::new(".local/bin/skaffold"));
+
     utils::github::download_release_asset(asset, &bin_path);
 }
 

@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 * Windows: fix the build again :S
 
+* pkg: dep,shfmt,skaffold,yq: Windows needs .exe extension
+
 ## [0.9.0] - 2018-04-19
 
 ### Added

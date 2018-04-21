@@ -51,7 +51,11 @@ fn install_release_asset(release: Release) {
 
     println!("pkg: yq: installing ...");
 
+    #[cfg(windows)]
+    let bin_path = utils::env::home_dir().join(Path::new(".local/bin/yq.exe"));
+    #[cfg(not(windows))]
     let bin_path = utils::env::home_dir().join(Path::new(".local/bin/yq"));
+
     utils::github::download_release_asset(asset, &bin_path);
 }
 
