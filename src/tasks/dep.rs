@@ -51,7 +51,11 @@ fn install_release_asset(release: Release) {
 
     println!("pkg: dep: installing ...");
 
+    #[cfg(windows)]
+    let bin_path = utils::env::home_dir().join(Path::new(".local/bin/dep.exe"));
+    #[cfg(not(windows))]
     let bin_path = utils::env::home_dir().join(Path::new(".local/bin/dep"));
+
     utils::github::download_release_asset(asset, &bin_path);
 }
 
