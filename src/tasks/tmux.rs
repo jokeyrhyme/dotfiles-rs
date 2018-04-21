@@ -1,5 +1,3 @@
-use std::path::Path;
-
 use utils;
 
 const ERROR_MSG: &str = "error: tmux";

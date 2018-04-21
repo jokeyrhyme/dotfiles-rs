@@ -1,5 +1,4 @@
 use std;
-use std::path::Path;
 
 use utils;
 use utils::github::{Asset, Release};

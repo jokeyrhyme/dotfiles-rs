@@ -1,7 +1,6 @@
 use std::fs::File;
 use std::io::BufReader;
 use std::io::Read;
-use std::path::Path;
 use std::str;
 
 use toml;
