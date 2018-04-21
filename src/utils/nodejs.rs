@@ -1,4 +1,6 @@
+use std;
 use std::env::consts::{ARCH, OS};
+use std::string::String;
 
 use serde_json;
 
@@ -17,6 +19,30 @@ pub fn arch() -> &'static str {
     match ARCH {
         "x86_64" => "x64",
         _ => ARCH,
+    }
+}
+
+pub fn current_version() -> String {
+    match utils::process::command_output("node", &["--version"]) {
+        Ok(output) => {
+            String::from(
+                std::str::from_utf8(&output.stdout)
+                    .unwrap_or_default()
+                    .trim(),
+            )
+        }
+        Err(_error) => String::from(""),
+    }
+}
+
+pub fn has_node() -> bool {
+    match utils::process::command_output("node", &["--version"]) {
+        Ok(output) => {
+            return output.status.success();
+        }
+        Err(_error) => {
+            return false; // npx probably not installed
+        }
     }
 }
 
@@ -74,7 +100,7 @@ pub fn latest_version() -> String {
         .next()
         .unwrap();
 
-    latest_release.version.clone()
+    String::from(latest_release.version.as_str().trim())
 }
 
 pub fn os() -> &'static str {
