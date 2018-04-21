@@ -1,3 +1,4 @@
+use std;
 use std::path::Path;
 
 use utils;
@@ -8,7 +9,7 @@ pub fn sync() {
     let bin = utils::env::home_dir().join(Path::new(".local/bin"));
     std::fs::create_dir_all(&bin).expect(&format!(
         "unable to create directories {}",
-        &parent.display()
+        &bin.display()
     ).as_str());
     println!("{:?}", &bin);
 
