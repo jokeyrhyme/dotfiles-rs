@@ -25,7 +25,7 @@ pub fn sync() {
 
     println!("pkg: vscode: syncing ...");
 
-    let src = utils::env::home_dir().join(Path::new(".dotfiles/config/vscode.json"));
+    let src = utils::env::home_dir().join(".dotfiles/config/vscode.json");
 
     #[cfg(target_os = "macos")]
     let settings_path = "Library/Application Support/Code/User/settings.json";
@@ -37,7 +37,7 @@ pub fn sync() {
 
     utils::fs::symbolic_link_if_exists(&src, &dest);
 
-    let cfg_path = utils::env::home_dir().join(Path::new(".dotfiles/config/vscode.toml"));
+    let cfg_path = utils::env::home_dir().join(".dotfiles/config/vscode.toml");
 
     let file = match File::open(cfg_path) {
         Ok(file) => file,
