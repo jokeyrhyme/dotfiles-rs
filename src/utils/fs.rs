@@ -53,7 +53,7 @@ pub fn set_executable(target: &Path) -> std::io::Result<()> {
 
 #[cfg(not(unix))]
 pub fn set_executable(target: &Path) -> std::io::Result<()> {
-    Ok
+    Ok(())
 }
 
 pub fn symbolic_link_if_exists(src: &Path, dest: &Path) {
