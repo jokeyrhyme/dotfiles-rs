@@ -41,6 +41,8 @@ pub fn sync() {
         utils::process::command_spawn_wait("node", &[npm_cli_path_str, "install", "--global", "npm"]).expect(ERROR_MSG);
     }
 
+    configure_npm();
+
     let cfg_path = utils::env::home_dir().join(".dotfiles/config/nodejs.toml");
 
     let file = match File::open(cfg_path) {
@@ -131,6 +133,10 @@ pub fn update() {
             }
         }
     }
+}
+
+fn configure_npm() {
+    utils::process::command_spawn_wait("npm", &["config", "set", "send-metric", "true"]).expect(ERROR_MSG);
 }
 
 fn install_nodejs(version: &str) {

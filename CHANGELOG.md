@@ -9,7 +9,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-* pkg: [nodejs](https://nodejs.org); `sync` and `update` install the latest version of Node.js on Linux, macOS, and Windows
+* pkg: [nodejs](https://nodejs.org): `sync` and `update` install the latest version of Node.js on Linux, macOS, and Windows
+
+* pkg: nodejs: `sync` enables metrics in `npm`
 
 ### Fixed
 
