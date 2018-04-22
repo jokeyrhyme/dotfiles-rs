@@ -1,16 +1,21 @@
 extern crate cabot;
 extern crate clap;
+extern crate libflate;
+extern crate mktemp;
 extern crate regex;
 extern crate serde;
 #[macro_use]
 extern crate serde_derive;
 extern crate serde_json;
+extern crate tar;
 extern crate toml;
+extern crate zip;
 
 use clap::{App, SubCommand};
 
 mod tasks;
 mod utils {
+    pub mod archive;
     pub mod env;
     pub mod fs;
     pub mod git;

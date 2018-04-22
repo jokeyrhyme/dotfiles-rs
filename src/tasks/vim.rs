@@ -1,5 +1,4 @@
 use std;
-use std::path::Path;
 
 use utils;
 
@@ -13,15 +12,15 @@ pub fn sync() {
     println!("pkg: vim: syncing...");
 
     // BEGIN: remove old vim configurations
-    let vim_runtime = utils::env::home_dir().join(Path::new(".vim_runtime"));
+    let vim_runtime = utils::env::home_dir().join(".vim_runtime");
     utils::fs::delete_if_exists(&vim_runtime);
     // END: remove old vim configurations
 
-    let src = utils::env::home_dir().join(Path::new(".dotfiles/config/vimrc"));
+    let src = utils::env::home_dir().join(".dotfiles/config/vimrc");
     #[cfg(not(windows))]
-    let vimrc = utils::env::home_dir().join(Path::new(".vimrc"));
+    let vimrc = utils::env::home_dir().join(".vimrc");
     #[cfg(windows)]
-    let vimrc = utils::env::home_dir().join(Path::new("_vimrc"));
+    let vimrc = utils::env::home_dir().join("_vimrc");
     utils::fs::symbolic_link_if_exists(&src, &vimrc);
 
     fetch_vim_plug(true);
@@ -64,9 +63,9 @@ fn has_vim() -> bool {
 
 fn fetch_vim_plug(skip_if_exists: bool) {
     #[cfg(not(windows))]
-    let autoload = utils::env::home_dir().join(Path::new(".vim/autoload"));
+    let autoload = utils::env::home_dir().join(".vim/autoload");
     #[cfg(windows)]
-    let autoload = utils::env::home_dir().join(Path::new("vimfiles/autoload"));
+    let autoload = utils::env::home_dir().join("vimfiles/autoload");
 
     match std::fs::create_dir_all(&autoload) {
         Ok(_created) => _created,
@@ -79,7 +78,7 @@ fn fetch_vim_plug(skip_if_exists: bool) {
         }
     }
 
-    let vim_plug = autoload.join(Path::new("plug.vim"));
+    let vim_plug = autoload.join("plug.vim");
     match std::fs::symlink_metadata(&vim_plug) {
         Ok(_metadata) => {
             if skip_if_exists {

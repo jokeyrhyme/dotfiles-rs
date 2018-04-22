@@ -6,7 +6,7 @@ use std::path::Path;
 
 use cabot::{Client, RequestBuilder, request::Request, response::Response};
 
-const EMPTY_HEADERS: &[&str] = &[];
+pub const EMPTY_HEADERS: &[&str] = &[];
 
 pub fn create_request<'a, T: AsRef<str>>(url: &T, headers: &[&str]) -> Request {
     RequestBuilder::new(url.as_ref())

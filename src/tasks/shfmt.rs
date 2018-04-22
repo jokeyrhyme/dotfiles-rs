@@ -1,5 +1,4 @@
 use std;
-use std::path::Path;
 
 use utils;
 use utils::github::{Asset, Release};
@@ -52,9 +51,9 @@ fn install_release_asset(release: Release) {
     println!("pkg: shfmt: installing ...");
 
     #[cfg(windows)]
-    let bin_path = utils::env::home_dir().join(Path::new(".local/bin/shfmt.exe"));
+    let bin_path = utils::env::home_dir().join(".local/bin/shfmt.exe");
     #[cfg(not(windows))]
-    let bin_path = utils::env::home_dir().join(Path::new(".local/bin/shfmt"));
+    let bin_path = utils::env::home_dir().join(".local/bin/shfmt");
 
     utils::github::download_release_asset(asset, &bin_path);
 }

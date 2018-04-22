@@ -1,7 +1,6 @@
 use std::fs::File;
 use std::io::BufReader;
 use std::io::Read;
-use std::path::Path;
 use std::str;
 
 use toml;
@@ -28,7 +27,7 @@ pub fn sync() {
 
     // TODO: synchronise Atom settings
 
-    let cfg_path = utils::env::home_dir().join(Path::new(".dotfiles/config/atom.toml"));
+    let cfg_path = utils::env::home_dir().join(".dotfiles/config/atom.toml");
 
     let file = match File::open(cfg_path) {
         Ok(file) => file,

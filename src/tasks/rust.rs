@@ -2,7 +2,6 @@ use std::collections::HashMap;
 use std::fs::File;
 use std::io::BufReader;
 use std::io::Read;
-use std::path::Path;
 use std::result::Result;
 use std::str;
 
@@ -25,7 +24,7 @@ pub fn sync() {
 
     println!("pkg: rust: syncing ...");
 
-    let cfg_path = utils::env::home_dir().join(Path::new(".dotfiles/config/rust.toml"));
+    let cfg_path = utils::env::home_dir().join(".dotfiles/config/rust.toml");
 
     let file = match File::open(cfg_path) {
         Ok(file) => file,

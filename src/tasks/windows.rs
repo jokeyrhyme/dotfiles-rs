@@ -6,7 +6,7 @@ use utils;
 pub fn sync() {
     println!("pkg: windows: syncing ...");
 
-    let bin = utils::env::home_dir().join(Path::new(".local/bin"));
+    let bin = utils::env::home_dir().join(".local/bin");
     std::fs::create_dir_all(&bin).expect(&format!(
         "unable to create directories {}",
         &bin.display()

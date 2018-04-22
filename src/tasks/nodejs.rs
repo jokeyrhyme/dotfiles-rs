@@ -1,14 +1,15 @@
+use std;
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::BufReader;
 use std::io::Read;
-use std::path::Path;
 use std::str;
 
+use mktemp;
 use serde_json;
 use toml;
 
-use utils;
+use utils::{self, nodejs::{arch,os}};
 
 const ERROR_MSG: &str = "error: nodejs";
 
@@ -25,13 +26,24 @@ struct Config {
 }
 
 pub fn sync() {
-    if !utils::nodejs::has_npm() {
-        return;
-    }
-
     println!("pkg: nodejs: syncing ...");
 
-    let cfg_path = utils::env::home_dir().join(Path::new(".dotfiles/config/nodejs.toml"));
+    if !utils::nodejs::has_node() {
+        let latest = utils::nodejs::latest_version();
+        install_nodejs(&latest);
+    }
+
+    if !utils::nodejs::has_npm() {
+        let npm_cli_path = utils::env::home_dir().join(".local/node/lib/node_modules/npm/bin/npm-cli.js");
+        let npm_cli_path_string = npm_cli_path.as_os_str().to_string_lossy().into_owned();
+        let npm_cli_path_str = npm_cli_path_string.as_str();
+
+        utils::process::command_spawn_wait("node", &[npm_cli_path_str, "install", "--global", "npm"]).expect(ERROR_MSG);
+    }
+
+    configure_npm();
+
+    let cfg_path = utils::env::home_dir().join(".dotfiles/config/nodejs.toml");
 
     let file = match File::open(cfg_path) {
         Ok(file) => file,
@@ -92,11 +104,19 @@ pub fn sync() {
 }
 
 pub fn update() {
-    if !utils::nodejs::has_npm() {
+    if !utils::nodejs::has_node() {
         return;
     }
 
     println!("pkg: nodejs: updating ...");
+
+    let current = utils::nodejs::current_version();
+    let latest = utils::nodejs::latest_version();
+    println!("current={} latest={}", &current, &latest);
+
+    if current != latest {
+        install_nodejs(&latest);
+    }
 
     if utils::nodejs::has_npx() {
         // https://www.npmjs.com/package/npm-windows-upgrade
@@ -105,14 +125,60 @@ pub fn update() {
             "npx",
             &["-q", "npm-windows-upgrade", "--npm-version", "latest"],
         ).expect(ERROR_MSG);
-    }
 
-    match utils::process::command_spawn_wait("npx", &["-q", "npm", "update", "--global"]) {
-        Ok(_status) => {}
-        Err(_error) => {
-            // private packages will fail on incorrect networks, ignore this
+        match utils::process::command_spawn_wait("npx", &["-q", "npm", "update", "--global"]) {
+            Ok(_status) => {}
+            Err(_error) => {
+                // private packages will fail on incorrect networks, ignore this
+            }
         }
     }
+}
+
+fn configure_npm() {
+    utils::process::command_spawn_wait("npm", &["config", "set", "send-metric", "true"]).expect(ERROR_MSG);
+}
+
+fn install_nodejs(version: &str) {
+    let temp_path;
+    {
+        let mut temp = mktemp::Temp::new_file().unwrap();
+        temp_path = temp.to_path_buf();
+        temp.release();
+    }
+
+    let prefix = format!("node-{}-{}-{}", version, os(), arch());
+
+    #[cfg(windows)]
+    let remote_url = format!("https://nodejs.org/dist/{}/{}.zip", version, &prefix);
+    #[cfg(not(windows))]
+    let remote_url = format!("https://nodejs.org/dist/{}/{}.tar.gz", version, &prefix);
+
+    match utils::http::download(&remote_url, &temp_path) {
+        Ok(()) => {}
+        Err(error) => {
+            println!("error: cannot download: {}", error);
+            return;
+        }
+    };
+
+    let local_path = utils::env::home_dir().join(".local");
+
+    // archive contains a directory with name matching `prefix`
+    let interim_path = local_path.join(&prefix);
+    utils::fs::delete_if_exists(&interim_path);
+
+    #[cfg(windows)]
+    utils::archive::extract_zip(&temp_path, &local_path);
+    #[cfg(not(windows))]
+    utils::archive::extract_tar_gz(&temp_path, &local_path);
+
+    let target_path = local_path.join("node");
+    utils::fs::delete_if_exists(&target_path);
+
+    std::fs::rename(&interim_path, &target_path).unwrap();
+
+    utils::fs::delete_if_exists(&temp_path);
 }
 
 fn pkgs_installed() -> Vec<String> {
@@ -135,5 +201,4 @@ fn pkgs_installed() -> Vec<String> {
     }
 
     return pkgs;
-
 }
