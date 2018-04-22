@@ -1,3 +1,4 @@
+use std;
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::BufReader;
@@ -8,7 +9,7 @@ use mktemp;
 use serde_json;
 use toml;
 
-use utils::{self,nodejs::{arch,os}};
+use utils::{self, nodejs::{arch,os}};
 
 const ERROR_MSG: &str = "error: nodejs";
 
@@ -140,10 +141,12 @@ fn install_nodejs(version: &str) {
         temp.release();
     }
 
+    let prefix = format!("node-{}-{}-{}", version, os(), arch());
+
     #[cfg(windows)]
-    let remote_url = format!("https://nodejs.org/dist/{}/node-{}-{}-{}.zip", version, version, os(), arch());
+    let remote_url = format!("https://nodejs.org/dist/{}/{}.zip", version, &prefix);
     #[cfg(not(windows))]
-    let remote_url = format!("https://nodejs.org/dist/{}/node-{}-{}-{}.tar.gz", version, version, os(), arch());
+    let remote_url = format!("https://nodejs.org/dist/{}/{}.tar.gz", version, &prefix);
 
     match utils::http::download(&remote_url, &temp_path) {
         Ok(()) => {}
@@ -153,15 +156,21 @@ fn install_nodejs(version: &str) {
         }
     };
 
-    let prefix = format!("node-{}-{}-{}", version, os(), arch());
+    let local_path = utils::env::home_dir().join(".local");
 
-    let target_path = utils::env::home_dir().join(".local/node");
+    // archive contains a directory with name matching `prefix`
+    let interim_path = local_path.join(&prefix);
+    utils::fs::delete_if_exists(&interim_path);
+
+    #[cfg(windows)]
+    utils::archive::extract_zip(&temp_path, &local_path);
+    #[cfg(not(windows))]
+    utils::archive::extract_tar_gz(&temp_path, &local_path);
+
+    let target_path = local_path.join("node");
     utils::fs::delete_if_exists(&target_path);
 
-    // TODO: windows: unzip/un-7zip to ~/.local/node/
-
-    #[cfg(not(windows))]
-    utils::archive::extract_tar_gz(&temp_path, &target_path, &prefix);
+    std::fs::rename(&interim_path, &target_path).unwrap();
 
     utils::fs::delete_if_exists(&temp_path);
 }
