@@ -92,7 +92,7 @@ pub fn latest_version() -> String {
                 r.files.iter().any(|f| {
                     f.starts_with(&format!(
                         "{}-{}",
-                        utils::nodejs::os(),
+                        utils::nodejs::release_os(),
                         utils::nodejs::arch()
                     ))
                 })
@@ -105,9 +105,17 @@ pub fn latest_version() -> String {
 
 pub fn os() -> &'static str {
     match OS {
-        "macos" => "osx",
+        "macos" => "darwin",
         "windows" => "win",
         _ => OS,
+    }
+}
+
+// the OS information in the release JSON is a bit different again :shrug:
+pub fn release_os() -> &'static str {
+    match OS {
+        "macos" => "osx",
+        _ => os(),
     }
 }
 
