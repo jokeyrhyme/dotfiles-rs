@@ -14,7 +14,6 @@ pub fn sync() {
     println!("{:?}", &bin);
 
     let search_paths = utils::env::path_dirs();
-    println!("{:?}", &search_paths);
 
     if !search_paths.contains(&bin) {
         panic!("%PATH% does not include {:?}, set this first!", &bin);
