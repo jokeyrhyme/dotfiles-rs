@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 * pkg: nodejs: macOS: fix OS mappings
 
+* pkg: nodejs: Windows: handle path differences
+
 ## [0.10.0] - 2018-04-22
 
 ### Added

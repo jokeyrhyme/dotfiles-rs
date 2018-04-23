@@ -1,6 +1,7 @@
 use std;
 use std::collections::HashMap;
 use std::fs::File;
+use std::path::Path;
 use std::io::BufReader;
 use std::io::Read;
 use std::str;
@@ -33,8 +34,24 @@ pub fn sync() {
         install_nodejs(&latest);
     }
 
+    #[cfg(windows)]
+    let nodejs_bin_dir: &Path = &utils::env::home_dir().join(".local/node");
+    #[cfg(not(windows))]
+    let nodejs_bin_dir: &Path = &utils::env::home_dir().join(".local/node/bin");
+
+    // these often are included with the Windows version,
+    // and prevent `npm` from updating itself
+    for filename in &["npm", "npm.cmd", "npx", "npx.cmd"] {
+        utils::fs::delete_if_exists(&nodejs_bin_dir.join(Path::new(&filename)));
+    }
+
+    #[cfg(windows)]
+    let nodejs_lib_dir: &Path = &utils::env::home_dir().join(".local/node");
+    #[cfg(not(windows))]
+    let nodejs_lib_dir: &Path = &utils::env::home_dir().join(".local/node/lib");
+
     if !utils::nodejs::has_npm() {
-        let npm_cli_path = utils::env::home_dir().join(".local/node/lib/node_modules/npm/bin/npm-cli.js");
+        let npm_cli_path = nodejs_lib_dir.join("node_modules/npm/bin/npm-cli.js");
         let npm_cli_path_string = npm_cli_path.as_os_str().to_string_lossy().into_owned();
         let npm_cli_path_str = npm_cli_path_string.as_str();
 
@@ -119,13 +136,6 @@ pub fn update() {
     }
 
     if utils::nodejs::has_npx() {
-        // https://www.npmjs.com/package/npm-windows-upgrade
-        #[cfg(windows)]
-        utils::process::command_spawn_wait(
-            "npx",
-            &["-q", "npm-windows-upgrade", "--npm-version", "latest"],
-        ).expect(ERROR_MSG);
-
         match utils::process::command_spawn_wait("npx", &["-q", "npm", "update", "--global"]) {
             Ok(_status) => {}
             Err(_error) => {
