@@ -60,7 +60,7 @@ fn install_release_asset(release: Release) {
 
 fn installed_version() -> String {
     let output = utils::process::command_output("dep", &["version"]).expect(ERROR_MSG);
-    let stdout = std::str::from_utf8(&output.stdout).unwrap();
+    let stdout = std::str::from_utf8(&output.stdout).unwrap_or_default();
     for line in stdout.lines() {
         let parts: Vec<&str> = line.splitn(2, ":").collect();
         if parts[0].trim() == "version" {

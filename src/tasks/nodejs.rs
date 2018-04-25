@@ -2,8 +2,7 @@ use std;
 use std::collections::HashMap;
 use std::fs::File;
 use std::path::Path;
-use std::io::BufReader;
-use std::io::Read;
+use std::io::{self, BufReader, Read};
 use std::str;
 
 use mktemp;
@@ -149,10 +148,10 @@ fn configure_npm() {
     utils::process::command_spawn_wait("npm", &["config", "set", "send-metric", "true"]).expect(ERROR_MSG);
 }
 
-fn install_nodejs(version: &str) {
+fn install_nodejs(version: &str) -> io::Result<()> {
     let temp_path;
     {
-        let mut temp = mktemp::Temp::new_file().unwrap();
+        let mut temp = mktemp::Temp::new_file()?;
         temp_path = temp.to_path_buf();
         temp.release();
     }
@@ -168,7 +167,7 @@ fn install_nodejs(version: &str) {
         Ok(()) => {}
         Err(error) => {
             println!("error: cannot download: {}", error);
-            return;
+            return Err(error);
         }
     };
 
@@ -179,16 +178,18 @@ fn install_nodejs(version: &str) {
     utils::fs::delete_if_exists(&interim_path);
 
     #[cfg(windows)]
-    utils::archive::extract_zip(&temp_path, &local_path);
+    utils::archive::extract_zip(&temp_path, &local_path)?;
     #[cfg(not(windows))]
-    utils::archive::extract_tar_gz(&temp_path, &local_path);
+    utils::archive::extract_tar_gz(&temp_path, &local_path)?;
 
     let target_path = local_path.join("node");
     utils::fs::delete_if_exists(&target_path);
 
-    std::fs::rename(&interim_path, &target_path).unwrap();
+    std::fs::rename(&interim_path, &target_path)?;
 
     utils::fs::delete_if_exists(&temp_path);
+
+    Ok(())
 }
 
 fn pkgs_installed() -> Vec<String> {
