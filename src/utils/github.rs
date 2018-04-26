@@ -136,12 +136,7 @@ pub fn latest_release<'a, T: AsRef<str>>(owner: &T, repo: &T) -> Result<Release,
     }
     match releases
         .into_iter()
-        .filter_map(|r| {
-            if r.draft || r.prelease || r.assets.len() <= 0 {
-                return None;
-            }
-            Some(r)
-        })
+        .filter(|r| !r.draft && !r.prelease && r.assets.len() > 0)
         .next() {
         Some(latest) => Ok(latest),
         None => Err(GitHubError::ValidReleaseNotFoundError {}),

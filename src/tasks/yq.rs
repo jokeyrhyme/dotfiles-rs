@@ -70,17 +70,13 @@ fn latest_asset(release: &Release) -> Option<Asset> {
         .assets
         .to_vec()
         .into_iter()
-        .filter_map(|asset| {
+        .filter(|asset| {
             #[cfg(windows)]
             let name = format!("yq_{}_{}.exe", os(), arch());
             #[cfg(not(windows))]
             let name = format!("yq_{}_{}", os(), arch());
 
-            if asset.name == name {
-                Some(asset)
-            } else {
-                None
-            }
+            asset.name == name
         })
         .next();
 }

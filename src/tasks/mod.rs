@@ -4,6 +4,7 @@ mod dep;
 mod dotfiles;
 mod git;
 mod hyper;
+mod jq;
 mod nodejs;
 mod psql;
 mod rust;
@@ -27,6 +28,7 @@ pub fn sync() {
     dep::sync();
     git::sync();
     hyper::sync();
+    jq::sync();
     nodejs::sync();
     psql::sync();
     rust::sync();
@@ -49,6 +51,7 @@ pub fn update() {
     dep::update();
     git::update();
     hyper::update();
+    jq::update();
     nodejs::update();
     psql::update();
     rust::update();
