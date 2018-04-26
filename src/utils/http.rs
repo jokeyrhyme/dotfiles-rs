@@ -1,7 +1,6 @@
 use std::collections::HashMap;
-use std::error::Error;
 use std::fs::{File, create_dir_all};
-use std::io::{Error as IOError, ErrorKind, Write};
+use std::io::{self, ErrorKind, Write};
 use std::path::Path;
 
 use cabot::{Client, RequestBuilder, request::Request, response::Response};
@@ -17,32 +16,35 @@ pub fn create_request<'a, T: AsRef<str>>(url: &T, headers: &[&str]) -> Request {
         .unwrap()
 }
 
-pub fn download<'a, T: AsRef<str>>(url: &T, dest: &'a Path) -> Result<(), &'a Error> {
+pub fn download<'a, T: AsRef<str>>(url: &T, dest: &'a Path) -> io::Result<()> {
     let req = create_request(url, &EMPTY_HEADERS);
 
     download_request(&req, dest)
 }
 
-pub fn download_request<'a>(req: &Request, dest: &'a Path) -> Result<(), &'a Error> {
-    let res = fetch_request(&req).unwrap();
+pub fn download_request<'a>(req: &Request, dest: &'a Path) -> io::Result<()> {
+    let res = fetch_request(&req)?;
 
     match dest.parent() {
         Some(parent) => {
-            create_dir_all(&parent).expect(&format!(
-                "unable to create directories {}",
-                &parent.display()
-            ).as_str());
+            create_dir_all(&parent)?;
         }
         None => { /* probably at root directory, nothing to do */ }
     };
 
-    let mut file = File::create(dest).expect("error creating file for download");
-    file.write_all(res.body().unwrap()).unwrap();
+    let mut file = match File::create(dest) {
+        Ok(f) => f,
+        Err(error) => {
+            println!("download_request: error creating file");
+            return Err(error);
+        }
+    };
+    file.write_all(res.body().unwrap_or_default())?;
 
     Ok(())
 }
 
-pub fn fetch_request<'a>(req: &Request) -> Result<Response, IOError> {
+pub fn fetch_request<'a>(req: &Request) -> io::Result<Response> {
     let client = Client::new();
     let res = client.execute(&req).unwrap();
 
@@ -60,7 +62,7 @@ pub fn fetch_request<'a>(req: &Request) -> Result<Response, IOError> {
         _ => {
             println!("headers: {:?}", parse_headers(res.headers()));
             println!("{}", res.body_as_string().unwrap_or_default());
-            let result = IOError::new(ErrorKind::Other, "non-success");
+            let result = io::Error::new(ErrorKind::Other, "non-success");
             Err(result)
         }
     }

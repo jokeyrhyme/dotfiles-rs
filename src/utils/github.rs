@@ -1,6 +1,7 @@
 use std;
 use std::error::Error;
-use std::fmt::{Display, Formatter};
+use std::fmt;
+use std::io;
 use std::path::Path;
 use std::str;
 
@@ -33,20 +34,37 @@ fn default_json_false() -> bool {
 }
 
 #[derive(Debug)]
-pub struct EmptyReleasesError {}
+pub enum GitHubError {
+    EmptyReleasesError,
+    IoError(io::Error),
+    ValidReleaseNotFoundError,
+}
 
-impl Display for EmptyReleasesError {
-    fn fmt(&self, f: &mut Formatter) -> std::fmt::Result {
-        write!(f, "EmptyReleasesError")
+impl fmt::Display for GitHubError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> std::fmt::Result {
+        match self {
+            &GitHubError::EmptyReleasesError => fmt::Display::fmt(&"EmptyReleasesError", f),
+            &GitHubError::IoError(ref err) => fmt::Display::fmt(err, f),
+            &GitHubError::ValidReleaseNotFoundError => fmt::Display::fmt(&"ValidReleaseNotFoundError", f),
+        }
     }
 }
 
-impl std::error::Error for EmptyReleasesError {
-    fn cause<'a>(&'a self) -> Option<&'a Error> {
-        None
+impl Error for GitHubError {
+    fn cause(&self) -> Option<&Error> {
+        match self {
+            &GitHubError::EmptyReleasesError => None,
+            &GitHubError::IoError(ref err) => Some(err as &Error),
+            &GitHubError::ValidReleaseNotFoundError => None,
+        }
     }
-    fn description<'a>(&'a self) -> &'a str {
-        &"EmptyReleasesError"
+
+    fn description(&self) -> &str {
+        match self {
+            &GitHubError::EmptyReleasesError => &"EmptyReleasesError",
+            &GitHubError::IoError(ref err) => err.description(),
+            &GitHubError::ValidReleaseNotFoundError => &"ValidReleaseNotFoundError",
+        }
     }
 }
 
@@ -83,7 +101,7 @@ fn create_request<'a, T: AsRef<str>>(url: &T) -> Request {
     utils::http::create_request(url, &headers_slice)
 }
 
-fn fetch_releases<'a, T: AsRef<str>>(owner: &T, repo: &T) -> Result<Vec<Release>, &'a Error> {
+fn fetch_releases<'a, T: AsRef<str>>(owner: &T, repo: &T) -> io::Result<Vec<Release>> {
     let uri =
         format!(
         "https://api.github.com/repos/{}/{}/releases",
@@ -91,8 +109,8 @@ fn fetch_releases<'a, T: AsRef<str>>(owner: &T, repo: &T) -> Result<Vec<Release>
         repo.as_ref(),
     );
     let req = create_request(&String::from(uri));
-    let res = utils::http::fetch_request(&req).unwrap();
-    let body = res.body_as_string().unwrap();
+    let res = utils::http::fetch_request(&req)?;
+    let body = res.body_as_string().unwrap_or_default();
 
     let releases: Vec<Release> = match serde_json::from_str(&body) {
         Ok(r) => r,
@@ -104,12 +122,17 @@ fn fetch_releases<'a, T: AsRef<str>>(owner: &T, repo: &T) -> Result<Vec<Release>
     Ok(releases)
 }
 
-pub fn latest_release<'a, T: AsRef<str>>(owner: &T, repo: &T) -> Result<Release, &'a Error> {
-    let releases: Vec<Release> = fetch_releases(owner, repo).unwrap();
+pub fn latest_release<'a, T: AsRef<str>>(owner: &T, repo: &T) -> Result<Release, GitHubError> {
+    let releases = match fetch_releases(owner, repo) {
+        Ok(r) => r,
+        Err(error) => {
+            return Err(GitHubError::IoError(error));
+        }
+    };
     if releases.len() <= 0 {
-        return Err(&EmptyReleasesError {});
+        return Err(GitHubError::EmptyReleasesError{});
     }
-    let latest = releases
+    match releases
         .into_iter()
         .filter_map(|r| {
             if r.draft || r.prelease || r.assets.len() <= 0 {
@@ -117,9 +140,10 @@ pub fn latest_release<'a, T: AsRef<str>>(owner: &T, repo: &T) -> Result<Release,
             }
             Some(r)
         })
-        .next()
-        .unwrap();
-    Ok(latest)
+        .next() {
+            Some(latest) => Ok(latest),
+            None => Err(GitHubError::ValidReleaseNotFoundError{})
+        }
 }
 
 pub fn release_versus_current<T: AsRef<str>>(current: &T, owner: &T, repo: &T) -> Option<Release> {
