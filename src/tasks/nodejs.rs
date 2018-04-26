@@ -25,98 +25,30 @@ struct Config {
     uninstall: Vec<String>,
 }
 
+impl Config {
+    fn new() -> Config {
+        Config {
+            install: Vec::<String>::new(),
+            uninstall: Vec::<String>::new(),
+        }
+    }
+}
+
 pub fn sync() {
     println!("pkg: nodejs: syncing ...");
 
     if !utils::nodejs::has_node() {
         let latest = utils::nodejs::latest_version();
-        install_nodejs(&latest);
-    }
-
-    #[cfg(windows)]
-    let nodejs_bin_dir: &Path = &utils::env::home_dir().join(".local/node");
-    #[cfg(not(windows))]
-    let nodejs_bin_dir: &Path = &utils::env::home_dir().join(".local/node/bin");
-
-    // these often are included with the Windows version,
-    // and prevent `npm` from updating itself
-    for filename in &["npm", "npm.cmd", "npx", "npx.cmd"] {
-        utils::fs::delete_if_exists(&nodejs_bin_dir.join(Path::new(&filename)));
-    }
-
-    #[cfg(windows)]
-    let nodejs_lib_dir: &Path = &utils::env::home_dir().join(".local/node");
-    #[cfg(not(windows))]
-    let nodejs_lib_dir: &Path = &utils::env::home_dir().join(".local/node/lib");
-
-    if !utils::nodejs::has_npm() {
-        let npm_cli_path = nodejs_lib_dir.join("node_modules/npm/bin/npm-cli.js");
-        let npm_cli_path_string = npm_cli_path.as_os_str().to_string_lossy().into_owned();
-        let npm_cli_path_str = npm_cli_path_string.as_str();
-
-        utils::process::command_spawn_wait("node", &[npm_cli_path_str, "install", "--global", "npm"]).expect(ERROR_MSG);
+        match install_nodejs(&latest) {
+            Ok(()) => {}
+            Err(error) => {
+                println!("error: pkg: nodejs: unable to install Node.js: {:?}", error)
+            }
+        };
     }
 
     configure_npm();
-
-    let cfg_path = utils::env::home_dir().join(".dotfiles/config/nodejs.toml");
-
-    let file = match File::open(cfg_path) {
-        Ok(file) => file,
-        Err(_error) => {
-            // probably doesn't exist
-            return;
-        }
-    };
-    let mut buf_reader = BufReader::new(file);
-    let mut contents = String::new();
-    buf_reader.read_to_string(&mut contents).expect(
-        "cannot read .../nodejs.toml",
-    );
-
-    let config: Config = toml::from_str(&contents).expect("cannot parse .../nodejs.toml");
-
-    let pkgs = pkgs_installed();
-
-    let missing: Vec<String> = config
-        .install
-        .into_iter()
-        .filter_map(|pkg| {
-            if pkgs.contains(&pkg) {
-                return None;
-            }
-            return Some(String::from(pkg));
-        })
-        .collect();
-
-    if missing.len() <= 0 {
-        return; // nothing to do
-    }
-
-    let mut install_args = vec![String::from("install"), String::from("--global")];
-    install_args.extend(missing);
-
-    utils::process::command_spawn_wait("npm", &install_args).expect(ERROR_MSG);
-
-    let found: Vec<String> = config
-        .uninstall
-        .into_iter()
-        .filter_map(|pkg| {
-            if pkgs.contains(&pkg) {
-                return Some(String::from(pkg));
-            }
-            return None;
-        })
-        .collect();
-
-    if found.len() <= 0 {
-        return; // nothing to do
-    }
-
-    let mut uninstall_args = vec![String::from("uninstall"), String::from("--global")];
-    uninstall_args.extend(found);
-
-    utils::process::command_spawn_wait("npm", &uninstall_args).expect(ERROR_MSG);
+    sync_npm_packages();
 }
 
 pub fn update() {
@@ -131,7 +63,13 @@ pub fn update() {
     println!("current={} latest={}", &current, &latest);
 
     if current != latest {
-        install_nodejs(&latest);
+        match install_nodejs(&latest) {
+            Ok(()) => {}
+            Err(error) => {
+                println!("error: pkg: nodejs: unable to install Node.js: {:?}", error)
+            }
+        };
+        sync_npm_packages();
     }
 
     if utils::nodejs::has_npx() {
@@ -145,7 +83,12 @@ pub fn update() {
 }
 
 fn configure_npm() {
-    utils::process::command_spawn_wait("npm", &["config", "set", "send-metric", "true"]).expect(ERROR_MSG);
+    match utils::process::command_spawn_wait("npm", &["config", "set", "send-metric", "true"]) {
+        Ok(_status) => {}
+        Err(error) => {
+            println!("warning: pkg: nodejs: unable to enable npm metrics: {}", error);
+        }
+    }
 }
 
 fn install_nodejs(version: &str) -> io::Result<()> {
@@ -212,4 +155,113 @@ fn pkgs_installed() -> Vec<String> {
     }
 
     return pkgs;
+}
+
+fn read_config() -> Config {
+    let cfg_path = utils::env::home_dir().join(".dotfiles/config/nodejs.toml");
+
+    let file = match File::open(&cfg_path) {
+        Ok(file) => file,
+        Err(error) => {
+            println!("warning: pkg: nodejs: unable to open {}, {}", &cfg_path.display(), error);
+            return Config::new();
+        }
+    };
+    let mut buf_reader = BufReader::new(file);
+    let mut contents = String::new();
+    buf_reader.read_to_string(&mut contents).expect(
+        "cannot read .../nodejs.toml",
+    );
+
+    match toml::from_str(&contents) {
+        Ok(c) => c,
+        Err(error) => {
+            println!("warning: pkg: nodejs: unable to parse {}, {}", &cfg_path.display(), error);
+            Config::new()
+        }
+    }
+}
+
+fn sync_npm_packages() {
+    #[cfg(windows)]
+    let nodejs_bin_dir: &Path = &utils::env::home_dir().join(".local/node");
+    #[cfg(not(windows))]
+    let nodejs_bin_dir: &Path = &utils::env::home_dir().join(".local/node/bin");
+
+    // these often are included with the Windows version,
+    // and prevent `npm` from updating itself
+    for filename in &["npm", "npm.cmd", "npx", "npx.cmd"] {
+        utils::fs::delete_if_exists(&nodejs_bin_dir.join(Path::new(&filename)));
+    }
+
+    #[cfg(windows)]
+    let nodejs_lib_dir: &Path = &utils::env::home_dir().join(".local/node");
+    #[cfg(not(windows))]
+    let nodejs_lib_dir: &Path = &utils::env::home_dir().join(".local/node/lib");
+
+    if !utils::nodejs::has_npm() {
+        let npm_cli_path = nodejs_lib_dir.join("node_modules/npm/bin/npm-cli.js");
+        let npm_cli_path_string = npm_cli_path.as_os_str().to_string_lossy().into_owned();
+        let npm_cli_path_str = npm_cli_path_string.as_str();
+
+        match utils::process::command_spawn_wait("node", &[npm_cli_path_str, "install", "--global", "npm"]) {
+            Ok(_status) => {}
+            Err(error) => {
+                println!("warning: pkg: nodejs: unable to bootstrap npm: {}", error);
+            }
+        };
+    }
+
+    let config = read_config();
+    let pkgs = pkgs_installed();
+
+    let missing: Vec<String> = config
+        .install
+        .into_iter()
+        .filter_map(|pkg| {
+            if pkgs.contains(&pkg) {
+                return None;
+            }
+            return Some(String::from(pkg));
+        })
+        .collect();
+
+    if missing.len() <= 0 {
+        return; // nothing to do
+    }
+
+    let mut install_args = vec![String::from("install"), String::from("--global")];
+    install_args.extend(missing);
+
+    match utils::process::command_spawn_wait("npm", &install_args) {
+        Ok(_status) => {}
+        Err(error) => {
+            println!("warning: pkg: nodejs: unable to install missing npm packages: {}", error)
+        }
+    };
+
+    let found: Vec<String> = config
+        .uninstall
+        .into_iter()
+        .filter_map(|pkg| {
+            if pkgs.contains(&pkg) {
+                return Some(String::from(pkg));
+            }
+            return None;
+        })
+        .collect();
+
+    if found.len() <= 0 {
+        return; // nothing to do
+    }
+
+    let mut uninstall_args = vec![String::from("uninstall"), String::from("--global")];
+    uninstall_args.extend(found);
+
+    match utils::process::command_spawn_wait("npm", &uninstall_args) {
+        Ok(_status) => {}
+        Err(error) => {
+            println!("warning: pkg: nodejs: unable to uninstall unused npm packages: {}", error)
+        }
+    };
 }
