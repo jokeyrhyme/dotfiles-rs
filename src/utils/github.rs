@@ -45,7 +45,9 @@ impl fmt::Display for GitHubError {
         match self {
             &GitHubError::EmptyReleasesError => fmt::Display::fmt(&"EmptyReleasesError", f),
             &GitHubError::IoError(ref err) => fmt::Display::fmt(err, f),
-            &GitHubError::ValidReleaseNotFoundError => fmt::Display::fmt(&"ValidReleaseNotFoundError", f),
+            &GitHubError::ValidReleaseNotFoundError => {
+                fmt::Display::fmt(&"ValidReleaseNotFoundError", f)
+            }
         }
     }
 }
@@ -130,20 +132,15 @@ pub fn latest_release<'a, T: AsRef<str>>(owner: &T, repo: &T) -> Result<Release,
         }
     };
     if releases.len() <= 0 {
-        return Err(GitHubError::EmptyReleasesError{});
+        return Err(GitHubError::EmptyReleasesError {});
     }
     match releases
         .into_iter()
-        .filter_map(|r| {
-            if r.draft || r.prelease || r.assets.len() <= 0 {
-                return None;
-            }
-            Some(r)
-        })
+        .filter(|r| !r.draft && !r.prelease && r.assets.len() > 0)
         .next() {
-            Some(latest) => Ok(latest),
-            None => Err(GitHubError::ValidReleaseNotFoundError{})
-        }
+        Some(latest) => Ok(latest),
+        None => Err(GitHubError::ValidReleaseNotFoundError {}),
+    }
 }
 
 pub fn release_versus_current<T: AsRef<str>>(current: &T, owner: &T, repo: &T) -> Option<Release> {

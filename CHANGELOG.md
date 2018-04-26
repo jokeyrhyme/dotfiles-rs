@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+* pkg: [jq](https://github.com/stedolan/jq): `sync` and `update`
+
 ### Fixed
 
 * pkg: nodejs: macOS: fix OS mappings

@@ -71,17 +71,13 @@ fn latest_asset(release: &Release) -> Option<Asset> {
         .assets
         .to_vec()
         .into_iter()
-        .filter_map(|asset| {
+        .filter(|asset| {
             #[cfg(windows)]
             let name = format!("shfmt_{}_{}_{}.exe", release.tag_name, os(), arch());
             #[cfg(not(windows))]
             let name = format!("shfmt_{}_{}_{}", release.tag_name, os(), arch());
 
-            if asset.name == name {
-                Some(asset)
-            } else {
-                None
-            }
+            asset.name == name
         })
         .next();
 }
