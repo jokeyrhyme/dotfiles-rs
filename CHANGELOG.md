@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 * pkg: nodejs: Windows: handle path differences
 
+* pkg: nodejs: install/update NPM packages after updating Node.js
+
 * slightly better error handling
 
 ## [0.10.0] - 2018-04-22
