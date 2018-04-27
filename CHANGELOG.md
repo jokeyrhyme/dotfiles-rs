@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+* pkg: vscode: macOS: added a work-around to fix app auto-update
+
 ## [0.11.0] - 2018-04-26
 
 ### Added

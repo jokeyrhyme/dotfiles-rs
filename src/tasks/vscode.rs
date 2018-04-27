@@ -69,6 +69,8 @@ pub fn sync() {
                 .expect(ERROR_MSG);
         }
     }
+
+    #[cfg(target_os = "macos")] fix_macos();
 }
 
 pub fn update() {}
@@ -86,6 +88,27 @@ fn exts_installed() -> Vec<String> {
         }
     }
     return exts;
+}
+
+// fix self-update on macOS
+// https://github.com/Microsoft/vscode/issues/7426#issuecomment-277737150
+#[cfg(target_os = "macos")]
+fn fix_macos() {
+    let app_dir = Path::new("/Applications/Visual Studio Code.app");
+    if utils::fs::is_dir(&app_dir) {
+        match utils::process::command_spawn_wait(
+            "xattr",
+            &[
+                "xattr",
+                "-dr",
+                "com.apple.quarantine",
+                "/Applications/Visual Studio Code.app",
+            ],
+        ) {
+            Ok(_status) => {}
+            Err(_error) => {}
+        }
+    }
 }
 
 fn has_code() -> bool {

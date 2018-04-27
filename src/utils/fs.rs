@@ -43,6 +43,20 @@ pub fn delete_if_exists(path: &Path) {
     }
 }
 
+pub fn is_dir(target: &Path) -> bool {
+    match std::fs::metadata(target) {
+        Ok(m) => m.is_dir(),
+        Err(_error) => false,
+    }
+}
+
+pub fn is_file(target: &Path) -> bool {
+    match std::fs::metadata(target) {
+        Ok(m) => m.is_file(),
+        Err(_error) => false,
+    }
+}
+
 #[cfg(unix)]
 pub fn set_executable(target: &Path) -> std::io::Result<()> {
     let file = File::open(target).unwrap();
@@ -137,4 +151,23 @@ fn symbolic_link(src: &Path, dest: &Path) -> Result<(), Error> {
     }
 
     return std::os::windows::fs::symlink_file(src, dest);
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn check_cargo() {
+        let file_path = Path::new(env!("CARGO"));
+        assert!(!is_dir(&file_path));
+        assert!(is_file(&file_path));
+    }
+
+    #[test]
+    fn check_cargo_manifest_dir() {
+        let project_dir = Path::new(env!("CARGO_MANIFEST_DIR"));
+        assert!(is_dir(&project_dir));
+        assert!(!is_file(&project_dir));
+    }
 }
