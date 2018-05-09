@@ -33,6 +33,13 @@ fn default_json_false() -> bool {
     false
 }
 
+#[derive(Clone, Debug, Deserialize)]
+pub struct Tag {
+    #[serde(rename = "ref")]
+    pub id: String,
+    pub url: String,
+}
+
 #[derive(Debug)]
 pub enum GitHubError {
     EmptyReleasesError,
@@ -117,11 +124,41 @@ fn fetch_releases<'a, T: AsRef<str>>(owner: &T, repo: &T) -> io::Result<Vec<Rele
     let releases: Vec<Release> = match serde_json::from_str(&body) {
         Ok(r) => r,
         Err(error) => {
-            println!("cannot fetch latest GitHub Release: {:?}", error);
+            println!("cannot fetch GitHub Releases: {:?}", error);
             Vec::<Release>::new()
         }
     };
     Ok(releases)
+}
+
+pub fn fetch_tags<T: AsRef<str>>(owner: &T, repo: &T) -> io::Result<Vec<Tag>> {
+    let uri =
+        format!(
+        "https://api.github.com/repos/{}/{}/git/refs/tags",
+        owner.as_ref(),
+        repo.as_ref(),
+    );
+    let req = create_request(&String::from(uri));
+    let res = utils::http::fetch_request(&req)?;
+    let body = res.body_as_string().unwrap_or_default();
+
+    let tags: Vec<Tag> = match serde_json::from_str(&body) {
+        Ok(t) => t,
+        Err(error) => {
+            println!("cannot fetch GitHub tags");
+            Vec::<Tag>::new()
+        }
+    };
+    Ok(
+        tags.into_iter()
+            .map(|t| {
+                Tag{
+                    id: str::replace(&t.id, "refs/tags/", ""),
+                    url: t.url,
+                }
+            })
+            .collect(),
+    )
 }
 
 pub fn latest_release<'a, T: AsRef<str>>(owner: &T, repo: &T) -> Result<Release, GitHubError> {
@@ -171,6 +208,19 @@ pub fn release_versus_current<T: AsRef<str>>(current: &T, owner: &T, repo: &T) -
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn fetch_tags_github_hub() {
+        match fetch_tags(&"github", &"hub") {
+            Ok(tags) => {
+                assert!(tags.len() > 0);
+                let first = tags.into_iter().next().unwrap();
+                assert!(first.id.len() > 0);
+                assert!(first.url.len() > 0);
+            }
+            Err(_error) => assert!(false),
+        }
+    }
 
     #[test]
     fn latest_release_github_hub() {

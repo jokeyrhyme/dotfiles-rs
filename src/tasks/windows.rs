@@ -1,23 +1,18 @@
-use std;
-use std::path::Path;
-
 use utils;
 
 pub fn sync() {
-    println!("pkg: windows: syncing ...");
+    println!("pkg: windows: manually configure %PATH% to include:");
 
-    let bin = utils::env::home_dir().join(".local/bin");
-    std::fs::create_dir_all(&bin).expect(&format!(
-        "unable to create directories {}",
-        &bin.display()
-    ).as_str());
-    println!("{:?}", &bin);
+    let bin_path = utils::env::home_dir().join(".local").join("bin");
+    println!("- {}", bin_path.display());
 
-    let search_paths = utils::env::path_dirs();
+    let go_bin_path = utils::env::home_dir().join(".local").join("go").join("bin");
+    println!("- {}", go_bin_path.display());
 
-    if !search_paths.contains(&bin) {
-        panic!("%PATH% does not include {:?}, set this first!", &bin);
-    }
+    let node_bin_path = utils::env::home_dir().join(".local").join("node").join(
+        "bin",
+    );
+    println!("- {}", node_bin_path.display());
 }
 
 pub fn update() {}

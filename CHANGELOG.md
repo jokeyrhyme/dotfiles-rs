@@ -9,7 +9,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
+* pkg: [golang](https://golang.org/): `sync` and `update`
+
 * pkg: vscode: macOS: added a work-around to fix app auto-update
+
+### Fixed
+
+* os: Windows: replace `%PATH%` checks with static instructions
 
 ## [0.11.0] - 2018-04-26
 
