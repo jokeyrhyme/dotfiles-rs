@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 * pkg: vscode: macOS: added a work-around to fix app auto-update
 
+### Fixed
+
+* os: Windows: replace `%PATH%` checks with static instructions
+
 ## [0.11.0] - 2018-04-26
 
 ### Added
