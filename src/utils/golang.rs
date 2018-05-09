@@ -1,4 +1,4 @@
-use std::{self, fmt, io};
+use std::{self, fmt, io, str};
 use std::env::consts::{ARCH, OS};
 use std::error::Error;
 use std::path::PathBuf;
@@ -36,8 +36,32 @@ impl Error for GolangError {
     }
 }
 
+impl From<io::Error> for GolangError {
+    fn from(error: io::Error) -> GolangError {
+        GolangError::IoError(error)
+    }
+}
+
 pub fn arch() -> &'static str {
     if ARCH == "x86_64" { "amd64" } else { ARCH }
+}
+
+pub fn current_version() -> String {
+    #[cfg(windows)]
+    let exe_path = install_path().join("bin").join("go.exe");
+    #[cfg(not(windows))]
+    let exe_path = install_path().join("bin").join("go");
+
+    match utils::process::command_output(exe_path.to_str().unwrap(), &["version"]) {
+        Ok(output) => {
+            let stdout = str::from_utf8(&output.stdout).unwrap_or_default().trim();
+            let trailer = format!(" {}/{}", os(), arch());
+            let headless = str::replace(stdout, "go version ", "");
+            let version = str::replace(&headless, &trailer, "");
+            String::from(version)
+        }
+        Err(_error) => String::from(""),
+    }
 }
 
 pub fn install_path() -> PathBuf {
@@ -56,22 +80,24 @@ pub fn is_installed() -> bool {
 pub fn latest_version() -> Result<String, GolangError> {
     let tags: Vec<utils::github::Tag> = match utils::github::fetch_tags(&"golang", &"go") {
         Ok(t) => {
-            t.into_iter().filter(|t| {
-                // release tags look like "go1.10.2"
-                // other tags start with "weekly.", or "release.", etc
-                t.id.starts_with("go") && !t.id.contains("beta") && !t.id.contains("rc")
-            }).collect()
+            t.into_iter()
+                .filter(|t| {
+                    // release tags look like "go1.10.2"
+                    // other tags start with "weekly.", or "release.", etc
+                    t.id.starts_with("go") && !t.id.contains("beta") && !t.id.contains("rc")
+                })
+                .collect()
         }
         Err(error) => {
             return Err(GolangError::IoError(error));
         }
     };
     if tags.len() < 1 {
-        return Err(GolangError::NoTagsError{});
+        return Err(GolangError::NoTagsError {});
     }
     match tags.last() {
         Some(latest) => Ok(latest.clone().id),
-        None => Err(GolangError::NoTagsError{}),
+        None => Err(GolangError::NoTagsError {}),
     }
 }
 
