@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.12.0] - 2018-05-10
+
 ### Added
 
 * pkg: [golang](https://golang.org/): `sync` and `update`
@@ -14,6 +16,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 * pkg: vscode: macOS: added a work-around to fix app auto-update
 
 ### Changed
+
+* update dependencies
 
 * HTTP request logs no longer include query string or fragment
 
