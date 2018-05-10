@@ -145,14 +145,14 @@ pub fn fetch_tags<T: AsRef<str>>(owner: &T, repo: &T) -> io::Result<Vec<Tag>> {
     let tags: Vec<Tag> = match serde_json::from_str(&body) {
         Ok(t) => t,
         Err(error) => {
-            println!("cannot fetch GitHub tags");
+            println!("cannot fetch GitHub tags: {:?}", error);
             Vec::<Tag>::new()
         }
     };
     Ok(
         tags.into_iter()
             .map(|t| {
-                Tag{
+                Tag {
                     id: str::replace(&t.id, "refs/tags/", ""),
                     url: t.url,
                 }

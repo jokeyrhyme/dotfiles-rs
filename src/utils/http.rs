@@ -3,7 +3,24 @@ use std::fs::{File, create_dir_all};
 use std::io::{self, ErrorKind, Write};
 use std::path::Path;
 
-use cabot::{Client, RequestBuilder, request::Request, response::Response};
+use cabot::{self, Client, RequestBuilder, request::Request, response::Response};
+
+struct HTTPCall<'a>(&'a Request, &'a Response);
+
+impl<'a> HTTPCall<'a> {
+    fn display(&self) -> String {
+        let request_path = self.0.request_uri().splitn(2, "?").next().unwrap();
+        format!(
+            "{} {} {} {}://{}{}",
+            self.1.http_version(),
+            self.1.status_code(),
+            self.0.http_method(),
+            self.0.scheme(),
+            self.0.authority(),
+            request_path,
+        )
+    }
+}
 
 pub const EMPTY_HEADERS: &[&str] = &[];
 
@@ -48,7 +65,7 @@ pub fn fetch_request<'a>(req: &Request) -> io::Result<Response> {
     let client = Client::new();
     let res = client.execute(&req).unwrap();
 
-    display(&req, &res);
+    println!("{}", HTTPCall(&req, &res).display());
 
     match res.status_code() {
         200 => Ok(res),
@@ -66,18 +83,6 @@ pub fn fetch_request<'a>(req: &Request) -> io::Result<Response> {
             Err(result)
         }
     }
-}
-
-fn display(req: &Request, res: &Response) {
-    println!(
-        "{} {} {} {}://{}{}",
-        res.http_version(),
-        res.status_code(),
-        req.http_method(),
-        req.scheme(),
-        req.authority(),
-        req.request_uri(),
-    )
 }
 
 fn parse_headers(headers: Vec<&str>) -> HashMap<String, String> {
@@ -108,6 +113,14 @@ fn user_agent() -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn display_shows_no_search_or_fragment() {
+        let req = RequestBuilder::new("https://www.google.com/?q=search#foo").build().unwrap();
+        let res = cabot::response::ResponseBuilder::new().set_status_line("HTTP/1.1 200 Ok").build().unwrap();;
+        let call = HTTPCall(&req, &res);
+        assert_eq!(call.display(), "HTTP/1.1 200 GET https://www.google.com:443/");
+    }
 
     #[test]
     fn fetch_page() {

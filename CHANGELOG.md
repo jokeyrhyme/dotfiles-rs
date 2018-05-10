@@ -13,11 +13,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 * pkg: vscode: macOS: added a work-around to fix app auto-update
 
+### Changed
+
+* HTTP request logs no longer include query string or fragment
+
 ### Fixed
 
 * os: Windows: replace `%PATH%` checks with static instructions
-
-* pkg: nodejs: ignore other copies of Node.js in `has_node()`
 
 ## [0.11.0] - 2018-04-26
 
