@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 * os: Windows: replace `%PATH%` checks with static instructions
 
+* pkg: nodejs: ignore other copies of Node.js in `has_node()`
+
 ## [0.11.0] - 2018-04-26
 
 ### Added
