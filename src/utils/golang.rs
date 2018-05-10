@@ -64,7 +64,7 @@ pub fn current_version() -> String {
     }
 }
 
-pub fn install_path() -> PathBuf {
+fn install_path() -> PathBuf {
     utils::env::home_dir().join(".local").join("go")
 }
 

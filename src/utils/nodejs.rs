@@ -1,5 +1,6 @@
 use std;
 use std::env::consts::{ARCH, OS};
+use std::path::PathBuf;
 use std::string::String;
 
 use serde_json;
@@ -36,14 +37,12 @@ pub fn current_version() -> String {
 }
 
 pub fn has_node() -> bool {
-    match utils::process::command_output("node", &["--version"]) {
-        Ok(output) => {
-            return output.status.success();
-        }
-        Err(_error) => {
-            return false; // npx probably not installed
-        }
-    }
+    #[cfg(windows)]
+    let exe_path = install_path().join("bin").join("node.exe");
+    #[cfg(not(windows))]
+    let exe_path = install_path().join("bin").join("node");
+
+    exe_path.is_file()
 }
 
 pub fn has_npm() -> bool {
@@ -74,9 +73,13 @@ pub fn has_yarn() -> bool {
             return output.status.success();
         }
         Err(_error) => {
-            return false; // npx probably not installed
+            return false; // yarn probably not installed
         }
     }
+}
+
+fn install_path() -> PathBuf {
+    utils::env::home_dir().join(".local").join("node")
 }
 
 pub fn latest_version() -> String {
