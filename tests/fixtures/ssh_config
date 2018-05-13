@@ -1,0 +1,13 @@
+# comment
+AddKeysToAgent confirm
+ConnectTimeout 10
+VisualHostKey yes
+
+# comment
+Host foo
+  Ciphers aes128-ctr,aes192-ctr,aes256-ctr
+  IdentityFile ~/.ssh/id_rsa
+
+# comment
+Match exec true
+  StrictHostKeyChecking ask
