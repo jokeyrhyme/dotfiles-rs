@@ -24,6 +24,7 @@ mod utils {
     pub mod http;
     pub mod nodejs;
     pub mod process;
+    pub mod ssh;
 }
 
 fn main() {
