@@ -505,14 +505,17 @@ mod tests {
         want.ConnectTimeout = Some(10);
         want.VisualHostKey = Some(true);
 
-        let mut h = Config::new();
-        h.Ciphers = Some(vec![
+        let mut h1 = Config::new();
+        h1.Ciphers = Some(vec![
             String::from("aes128-ctr"),
             String::from("aes192-ctr"),
             String::from("aes256-ctr"),
         ]);
-        h.IdentityFile = Some(PathBuf::new().join("~").join(".ssh").join("id_rsa"));
-        want.Hosts.insert(String::from("foo"), h);
+        want.Hosts.insert(String::from("foo"), h1);
+
+        let mut h2 = Config::new();
+        h2.IdentityFile = Some(PathBuf::new().join("~").join(".ssh").join("id_rsa"));
+        want.Hosts.insert(String::from("bar"), h2);
 
         let mut m = Config::new();
         m.EscapeChar = Some('%');
@@ -538,14 +541,17 @@ mod tests {
         config.ConnectTimeout = Some(10);
         config.VisualHostKey = Some(true);
 
-        let mut h = Config::new();
-        h.Ciphers = Some(vec![
+        let mut h1 = Config::new();
+        h1.Ciphers = Some(vec![
             String::from("aes128-ctr"),
             String::from("aes192-ctr"),
             String::from("aes256-ctr"),
         ]);
-        h.IdentityFile = Some(PathBuf::new().join("~").join(".ssh").join("id_rsa"));
-        config.Hosts.insert(String::from("foo"), h);
+        config.Hosts.insert(String::from("foo"), h1);
+
+        let mut h2 = Config::new();
+        h2.IdentityFile = Some(PathBuf::new().join("~").join(".ssh").join("id_rsa"));
+        config.Hosts.insert(String::from("bar"), h2);
 
         let mut m = Config::new();
         m.EscapeChar = Some('%');

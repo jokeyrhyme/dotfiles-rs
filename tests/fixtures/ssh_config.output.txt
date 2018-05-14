@@ -4,6 +4,8 @@ VisualHostKey yes
 
 Host foo
   Ciphers aes128-ctr,aes192-ctr,aes256-ctr
+
+Host bar
   IdentityFile ~/.ssh/id_rsa
 
 Match exec true
