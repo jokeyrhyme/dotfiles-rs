@@ -1,9 +1,6 @@
-use std;
+use std::{self, fs, io, str};
 use std::collections::HashMap;
-use std::fs::File;
 use std::path::Path;
-use std::io::{self, BufReader, Read};
-use std::str;
 
 use mktemp;
 use serde_json;
@@ -160,18 +157,13 @@ fn pkgs_installed() -> Vec<String> {
 fn read_config() -> Config {
     let cfg_path = utils::env::home_dir().join(".dotfiles/config/nodejs.toml");
 
-    let file = match File::open(&cfg_path) {
-        Ok(file) => file,
+    let contents = match fs::read_to_string(&cfg_path) {
+        Ok(s) => s,
         Err(error) => {
-            println!("warning: pkg: nodejs: unable to open {}, {}", &cfg_path.display(), error);
+            println!("pkg: nodejs: ignoring config: {}", error);
             return Config::new();
         }
     };
-    let mut buf_reader = BufReader::new(file);
-    let mut contents = String::new();
-    buf_reader.read_to_string(&mut contents).expect(
-        "cannot read .../nodejs.toml",
-    );
 
     match toml::from_str(&contents) {
         Ok(c) => c,

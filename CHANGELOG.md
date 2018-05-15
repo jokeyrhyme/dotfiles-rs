@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+* pkg: ssh: `sync` merges ~/.dotfiles/config/ssh into ~/.ssh/config
+
+* pkg: ssh: `sync` blacklists weak ciphers / algorithms
+
 ### Fixed
 
 * pkg: vscode: fix copy-pasta with macOS xattr fix
