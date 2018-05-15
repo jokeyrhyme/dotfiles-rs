@@ -4,6 +4,7 @@ use std::ops::BitOr;
 use std::path::{Path, PathBuf};
 
 use textwrap;
+use which;
 
 #[allow(non_snake_case)]
 #[derive(Clone, Debug, Default, PartialEq)]
@@ -901,6 +902,13 @@ fn format_config_yesnoask(key: &str, value: Option<YesNoAsk>) -> String {
     match value {
         Some(v) => format!("{} {}\n", key, String::from(v)),
         None => String::from(""),
+    }
+}
+
+pub fn has_ssh() -> bool {
+    match which::which("ssh") {
+        Ok(_) => true,
+        Err(_) => false,
     }
 }
 

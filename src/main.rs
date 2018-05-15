@@ -10,6 +10,7 @@ extern crate serde_json;
 extern crate tar;
 extern crate textwrap;
 extern crate toml;
+extern crate which;
 extern crate zip;
 
 use clap::{App, SubCommand};
