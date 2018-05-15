@@ -1,11 +1,11 @@
 use std::collections::HashMap;
-use std::fs::File;
-use std::io::{BufReader, Read};
+use std::fs;
 use std::ops::BitOr;
 use std::path::{Path, PathBuf};
 
 use textwrap;
 
+#[allow(non_snake_case)]
 #[derive(Clone, Debug, Default, PartialEq)]
 pub struct Config {
     // Hosts contains any Host sections found
@@ -966,10 +966,7 @@ mod tests {
         let config_path =
             Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/ssh_config.input.txt");
 
-        let extracted = File::open(&config_path).unwrap();
-        let mut reader = BufReader::new(extracted);
-        let mut got = String::new();
-        reader.read_to_string(&mut got).unwrap();
+        let got = fs::read_to_string(&config_path).unwrap();
 
         let config = Config::from(got.as_str());
 
@@ -1005,10 +1002,7 @@ mod tests {
         let config_path =
             Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/ssh_config.output.txt");
 
-        let extracted = File::open(&config_path).unwrap();
-        let mut reader = BufReader::new(extracted);
-        let mut want = String::new();
-        reader.read_to_string(&mut want).unwrap();
+        let want = fs::read_to_string(&config_path).unwrap();
 
         let mut config = Config::new();
         config.AddKeysToAgent = Some(String::from("confirm"));

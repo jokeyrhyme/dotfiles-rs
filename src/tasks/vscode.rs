@@ -1,8 +1,5 @@
-use std::fs::File;
-use std::io::BufReader;
-use std::io::Read;
+use std::{fs, str};
 use std::path::Path;
-use std::str;
 
 use toml;
 
@@ -39,18 +36,13 @@ pub fn sync() {
 
     let cfg_path = utils::env::home_dir().join(".dotfiles/config/vscode.toml");
 
-    let file = match File::open(cfg_path) {
-        Ok(file) => file,
-        Err(_error) => {
-            // probably doesn't exist
+    let contents = match fs::read_to_string(&cfg_path) {
+        Ok(s) => s,
+        Err(error) => {
+            println!("pkg: vscode: ignoring config: {}", error);
             return;
         }
     };
-    let mut buf_reader = BufReader::new(file);
-    let mut contents = String::new();
-    buf_reader.read_to_string(&mut contents).expect(
-        "cannot read .../vscode.toml",
-    );
 
     let config: Config = toml::from_str(&contents).expect("cannot parse .../vscode.toml");
 
