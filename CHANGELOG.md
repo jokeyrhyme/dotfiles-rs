@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 * pkg: ssh: `sync` merges ~/.dotfiles/config/ssh into ~/.ssh/config
 
+* pkg: ssh: `sync` blacklists weak ciphers / algorithms
+
 ## [0.12.0] - 2018-05-10
 
 ### Added
