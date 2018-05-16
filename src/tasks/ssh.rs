@@ -94,7 +94,7 @@ pub fn sync() {
         Err(_error) => {}
     }
 
-    match fs::write(&target_path, String::from(config)) {
+    match fs::write(&target_path, String::from(&config)) {
         Ok(()) => {}
         Err(error) => {
             println!("error: pkg: ssh: unable to write config: {}", error);

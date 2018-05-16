@@ -541,273 +541,278 @@ impl<'a> From<&'a str> for Config {
     }
 }
 
-impl From<Config> for String {
-    fn from(source: Config) -> String {
+impl<'a> From<&'a Config> for String {
+    fn from(source: &Config) -> String {
         let mut result = String::from("");
 
         result.push_str(&format_config_string(
             &"AddKeysToAgent",
-            source.AddKeysToAgent,
+            &source.AddKeysToAgent,
         ));
         result.push_str(&format_config_string(
             &"AddressFamily",
-            source.AddressFamily,
+            &source.AddressFamily,
         ));
-        result.push_str(&format_config_bool(&"BatchMode", source.BatchMode));
-        result.push_str(&format_config_bool(&"BindAddress", source.BindAddress));
-        result.push_str(&format_config_bool(&"BindInterface", source.BindInterface));
+        result.push_str(&format_config_bool(&"BatchMode", &source.BatchMode));
+        result.push_str(&format_config_bool(&"BindAddress", &source.BindAddress));
+        result.push_str(&format_config_bool(&"BindInterface", &source.BindInterface));
         result.push_str(&format_config_bool(
             &"CanonicalDomains",
-            source.CanonicalDomains,
+            &source.CanonicalDomains,
         ));
         result.push_str(&format_config_bool(
             &"CanonicalizeFallbackLocal",
-            source.CanonicalizeFallbackLocal,
+            &source.CanonicalizeFallbackLocal,
         ));
         result.push_str(&format_config_bool(
             &"CanonicalizeHostname",
-            source.CanonicalizeHostname,
+            &source.CanonicalizeHostname,
         ));
         result.push_str(&format_config_bool(
             &"CanonicalizeMaxDots",
-            source.CanonicalizeMaxDots,
+            &source.CanonicalizeMaxDots,
         ));
         result.push_str(&format_config_bool(
             &"CanonicalisePermittedCNAMEs",
-            source.CanonicalisePermittedCNAMEs,
+            &source.CanonicalisePermittedCNAMEs,
         ));
         result.push_str(&format_config_pathbuf(
             &"CertificateFile",
-            source.CertificateFile,
+            &source.CertificateFile,
         ));
         result.push_str(&format_config_bool(
             &"ChallengeResponseAuthentication",
-            source.ChallengeResponseAuthentication,
+            &source.ChallengeResponseAuthentication,
         ));
-        result.push_str(&format_config_bool(&"CheckHostIP", source.CheckHostIP));
-        result.push_str(&format_config_strings(&"Ciphers", source.Ciphers));
+        result.push_str(&format_config_bool(&"CheckHostIP", &source.CheckHostIP));
+        result.push_str(&format_config_strings(&"Ciphers", &source.Ciphers));
         result.push_str(&format_config_bool(
             &"ClearAllForwardings",
-            source.ClearAllForwardings,
+            &source.ClearAllForwardings,
         ));
-        result.push_str(&format_config_bool(&"Compression", source.Compression));
+        result.push_str(&format_config_bool(&"Compression", &source.Compression));
         result.push_str(&format_config_number(
             &"ConnectionAttempts",
-            source.ConnectionAttempts,
+            &source.ConnectionAttempts,
         ));
         result.push_str(&format_config_number(
             &"ConnectTimeout",
-            source.ConnectTimeout,
+            &source.ConnectTimeout,
         ));
         result.push_str(&format_config_string(
             &"ControlMaster",
-            source.ControlMaster,
+            &source.ControlMaster,
         ));
-        result.push_str(&format_config_pathbuf(&"ControlPath", source.ControlPath));
+        result.push_str(&format_config_pathbuf(&"ControlPath", &source.ControlPath));
         result.push_str(&format_config_number(
             &"ControlPersist",
-            source.ControlPersist,
+            &source.ControlPersist,
         ));
         result.push_str(&format_config_string(
             &"DynamicForward",
-            source.DynamicForward,
+            &source.DynamicForward,
         ));
         result.push_str(&format_config_bool(
             &"EnableSSHKeysing",
-            source.EnableSSHKeysing,
+            &source.EnableSSHKeysing,
         ));
-        result.push_str(&format_config_char(&"EscapeChar", source.EscapeChar));
+        result.push_str(&format_config_char(&"EscapeChar", &source.EscapeChar));
         result.push_str(&format_config_bool(
             &"ExitOnForwardFailure",
-            source.ExitOnForwardFailure,
+            &source.ExitOnForwardFailure,
         ));
         result.push_str(&format_config_string(
             &"FingerprintHash",
-            source.FingerprintHash,
+            &source.FingerprintHash,
         ));
-        result.push_str(&format_config_bool(&"ForwardAgent", source.ForwardAgent));
-        result.push_str(&format_config_bool(&"ForwardX11", source.ForwardX11));
+        result.push_str(&format_config_bool(&"ForwardAgent", &source.ForwardAgent));
+        result.push_str(&format_config_bool(&"ForwardX11", &source.ForwardX11));
         result.push_str(&format_config_number(
             &"ForwardX11Timeout",
-            source.ForwardX11Timeout,
+            &source.ForwardX11Timeout,
         ));
         result.push_str(&format_config_bool(
             &"ForwardX11Trusted",
-            source.ForwardX11Trusted,
+            &source.ForwardX11Trusted,
         ));
-        result.push_str(&format_config_bool(&"GatewayPorts", source.GatewayPorts));
+        result.push_str(&format_config_bool(&"GatewayPorts", &source.GatewayPorts));
         result.push_str(&format_config_pathbuf(
             &"GlobalKnownHostsFile",
-            source.GlobalKnownHostsFile,
+            &source.GlobalKnownHostsFile,
         ));
         result.push_str(&format_config_bool(
             &"GSSAPIAuthentication",
-            source.GSSAPIAuthentication,
+            &source.GSSAPIAuthentication,
         ));
         result.push_str(&format_config_bool(
             &"GSSAPIDelegateCredentials",
-            source.GSSAPIDelegateCredentials,
+            &source.GSSAPIDelegateCredentials,
         ));
         result.push_str(&format_config_bool(
             &"HashKnownHosts",
-            source.HashKnownHosts,
+            &source.HashKnownHosts,
         ));
         result.push_str(&format_config_bool(
             &"HostbasedAuthentication",
-            source.HostbasedAuthentication,
+            &source.HostbasedAuthentication,
         ));
         result.push_str(&format_config_string(
             &"HostbasedKeyTypes",
-            source.HostbasedKeyTypes,
+            &source.HostbasedKeyTypes,
         ));
         result.push_str(&format_config_string(
             &"HostKeyAlgorithms",
-            source.HostKeyAlgorithms,
+            &source.HostKeyAlgorithms,
         ));
-        result.push_str(&format_config_string(&"HostKeyAlias", source.HostKeyAlias));
-        result.push_str(&format_config_string(&"HostName", source.HostName));
+        result.push_str(&format_config_string(&"HostKeyAlias", &source.HostKeyAlias));
+        result.push_str(&format_config_string(&"HostName", &source.HostName));
         result.push_str(&format_config_bool(
             &"IdentitiesOnly",
-            source.IdentitiesOnly,
+            &source.IdentitiesOnly,
         ));
         result.push_str(&format_config_string(
             &"IdentityAgent",
-            source.IdentityAgent,
+            &source.IdentityAgent,
         ));
-        result.push_str(&format_config_pathbuf(&"IdentityFile", source.IdentityFile));
+        result.push_str(&format_config_pathbuf(&"IdentityFile", &source.IdentityFile));
         result.push_str(&format_config_string(
             &"IgnoreUnknown",
-            source.IgnoreUnknown,
+            &source.IgnoreUnknown,
         ));
-        result.push_str(&format_config_string(&"Include", source.Include));
-        result.push_str(&format_config_string(&"IPQoS", source.IPQoS));
+        result.push_str(&format_config_string(&"Include", &source.Include));
+        result.push_str(&format_config_string(&"IPQoS", &source.IPQoS));
         result.push_str(&format_config_bool(
             &"KbdInteractiveAuthentication",
-            source.KbdInteractiveAuthentication,
+            &source.KbdInteractiveAuthentication,
         ));
         result.push_str(&format_config_string(
             &"KbdInteractiveDevices",
-            source.KbdInteractiveDevices,
+            &source.KbdInteractiveDevices,
         ));
         result.push_str(&format_config_strings(
             &"KexAlgorithms",
-            source.KexAlgorithms,
+            &source.KexAlgorithms,
         ));
-        result.push_str(&format_config_string(&"LocalCommand", source.LocalCommand));
-        result.push_str(&format_config_string(&"LocalForward", source.LocalForward));
-        result.push_str(&format_config_string(&"LogLevel", source.LogLevel));
-        result.push_str(&format_config_strings(&"MACs", source.MACs));
+        result.push_str(&format_config_string(&"LocalCommand", &source.LocalCommand));
+        result.push_str(&format_config_string(&"LocalForward", &source.LocalForward));
+        result.push_str(&format_config_string(&"LogLevel", &source.LogLevel));
+        result.push_str(&format_config_strings(&"MACs", &source.MACs));
         result.push_str(&format_config_bool(
             &"NoHostAuthenticationForLocalhost",
-            source.NoHostAuthenticationForLocalhost,
+            &source.NoHostAuthenticationForLocalhost,
         ));
         result.push_str(&format_config_number(
             &"NumberOfPasswordPrompts",
-            source.NumberOfPasswordPrompts,
+            &source.NumberOfPasswordPrompts,
         ));
         result.push_str(&format_config_bool(
             &"PasswordAuthentication",
-            source.PasswordAuthentication,
+            &source.PasswordAuthentication,
         ));
         result.push_str(&format_config_bool(
             &"PermitLocalCommand",
-            source.PermitLocalCommand,
+            &source.PermitLocalCommand,
         ));
         result.push_str(&format_config_string(
             &"PKCS11Provider",
-            source.PKCS11Provider,
+            &source.PKCS11Provider,
         ));
-        result.push_str(&format_config_number(&"Port", source.Port));
+        result.push_str(&format_config_number(&"Port", &source.Port));
         result.push_str(&format_config_string(
             &"PreferredAuthentications",
-            source.PreferredAuthentications,
+            &source.PreferredAuthentications,
         ));
-        result.push_str(&format_config_string(&"ProxyCommand", source.ProxyCommand));
-        result.push_str(&format_config_string(&"ProxyJump", source.ProxyJump));
+        result.push_str(&format_config_string(&"ProxyCommand", &source.ProxyCommand));
+        result.push_str(&format_config_string(&"ProxyJump", &source.ProxyJump));
         result.push_str(&format_config_bool(
             &"ProxyUseFdpass",
-            source.ProxyUseFdpass,
+            &source.ProxyUseFdpass,
         ));
         result.push_str(&format_config_string(
             &"PubkeyAcceptedKeyTypes",
-            source.PubkeyAcceptedKeyTypes,
+            &source.PubkeyAcceptedKeyTypes,
         ));
         result.push_str(&format_config_bool(
             &"PubkeyAuthentication",
-            source.PubkeyAuthentication,
+            &source.PubkeyAuthentication,
         ));
-        result.push_str(&format_config_string(&"RekeyLimit", source.RekeyLimit));
+        result.push_str(&format_config_string(&"RekeyLimit", &source.RekeyLimit));
         result.push_str(&format_config_string(
             &"RemoteCommand",
-            source.RemoteCommand,
+            &source.RemoteCommand,
         ));
         result.push_str(&format_config_string(
             &"RemoteForward",
-            source.RemoteForward,
+            &source.RemoteForward,
         ));
-        result.push_str(&format_config_string(&"RequestTTY", source.RequestTTY));
+        result.push_str(&format_config_string(&"RequestTTY", &source.RequestTTY));
         result.push_str(&format_config_string(
             &"RevokedHostKeys",
-            source.RevokedHostKeys,
+            &source.RevokedHostKeys,
         ));
-        result.push_str(&format_config_string(&"SendEnv", source.SendEnv));
+        result.push_str(&format_config_string(&"SendEnv", &source.SendEnv));
         result.push_str(&format_config_number(
             &"ServerAliveCountMax",
-            source.ServerAliveCountMax,
+            &source.ServerAliveCountMax,
         ));
         result.push_str(&format_config_number(
             &"ServerAliveInterval",
-            source.ServerAliveInterval,
+            &source.ServerAliveInterval,
         ));
         result.push_str(&format_config_string(
             &"StreamLocalBindMask",
-            source.StreamLocalBindMask,
+            &source.StreamLocalBindMask,
         ));
         result.push_str(&format_config_bool(
             &"StreamLocalBindUnlink",
-            source.StreamLocalBindUnlink,
+            &source.StreamLocalBindUnlink,
         ));
         result.push_str(&format_config_yesnoask(
             &"StrictHostKeyChecking",
-            source.StrictHostKeyChecking,
+            &source.StrictHostKeyChecking,
         ));
         result.push_str(&format_config_string(
             &"SyslogFacility",
-            source.SyslogFacility,
+            &source.SyslogFacility,
         ));
-        result.push_str(&format_config_bool(&"TCPKeepAlive", source.TCPKeepAlive));
-        result.push_str(&format_config_string(&"Tunnel", source.Tunnel));
-        result.push_str(&format_config_string(&"TunnelDevice", source.TunnelDevice));
+        result.push_str(&format_config_bool(&"TCPKeepAlive", &source.TCPKeepAlive));
+        result.push_str(&format_config_string(&"Tunnel", &source.Tunnel));
+        result.push_str(&format_config_string(&"TunnelDevice", &source.TunnelDevice));
         result.push_str(&format_config_yesnoask(
             &"UpdateHostKeys",
-            source.UpdateHostKeys,
+            &source.UpdateHostKeys,
         ));
         result.push_str(&format_config_bool(
             &"UsePrivilegedPort",
-            source.UsePrivilegedPort,
+            &source.UsePrivilegedPort,
         ));
-        result.push_str(&format_config_string(&"User", source.User));
+        result.push_str(&format_config_string(&"User", &source.User));
         result.push_str(&format_config_pathbuf(
             &"UserKnownHostsFile",
-            source.UserKnownHostsFile,
+            &source.UserKnownHostsFile,
         ));
         result.push_str(&format_config_yesnoask(
             &"VerifyHostKeyDNS",
-            source.VerifyHostKeyDNS,
+            &source.VerifyHostKeyDNS,
         ));
-        result.push_str(&format_config_bool(&"VisualHostKey", source.VisualHostKey));
+        result.push_str(&format_config_bool(&"VisualHostKey", &source.VisualHostKey));
         result.push_str(&format_config_pathbuf(
             &"XAuthLocation",
-            source.XAuthLocation,
+            &source.XAuthLocation,
         ));
 
-        for (h, h_config) in source.Hosts {
+        let host_keys = source.Hosts.keys();
+        let mut sorted_host_keys: Vec<&String> = host_keys.collect();
+        sorted_host_keys.sort();
+        for h in sorted_host_keys {
+            let h_config = source.Hosts.get(h).unwrap();
             result.push_str(&format!("\nHost {}\n", h));
             result.push_str(
                 textwrap::indent(String::from(h_config).as_str(), &"  ").as_str(),
             );
         }
-        for (m, m_config) in source.Matches {
+
+        for (m, m_config) in &source.Matches {
             result.push_str(&format!("\nMatch {}\n", m));
             result.push_str(
                 textwrap::indent(String::from(m_config).as_str(), &"  ").as_str(),
@@ -842,8 +847,8 @@ impl<'a> From<&'a str> for YesNoAsk {
     }
 }
 
-impl From<YesNoAsk> for String {
-    fn from(source: YesNoAsk) -> String {
+impl<'a> From<&'a YesNoAsk> for String {
+    fn from(source: &YesNoAsk) -> String {
         match source {
             YesNoAsk::Yes => String::from("yes"),
             YesNoAsk::No => String::from("no"),
@@ -852,45 +857,45 @@ impl From<YesNoAsk> for String {
     }
 }
 
-fn format_config_bool(key: &str, value: Option<bool>) -> String {
+fn format_config_bool(key: &str, value: &Option<bool>) -> String {
     match value {
         Some(v) => {
-            let display = if v { "yes" } else { "no" };
+            let display = if *v { "yes" } else { "no" };
             format!("{} {}\n", key, display)
         }
         None => String::from(""),
     }
 }
 
-fn format_config_char(key: &str, value: Option<char>) -> String {
+fn format_config_char(key: &str, value: &Option<char>) -> String {
     match value {
         Some(v) => format!("{} {}\n", key, v),
         None => String::from(""),
     }
 }
 
-fn format_config_number(key: &str, value: Option<i32>) -> String {
+fn format_config_number(key: &str, value: &Option<i32>) -> String {
     match value {
         Some(v) => format!("{} {}\n", key, v),
         None => String::from(""),
     }
 }
 
-fn format_config_pathbuf(key: &str, value: Option<PathBuf>) -> String {
+fn format_config_pathbuf(key: &str, value: &Option<PathBuf>) -> String {
     match value {
         Some(v) => format!("{} {}\n", key, v.display()),
         None => String::from(""),
     }
 }
 
-fn format_config_string(key: &str, value: Option<String>) -> String {
+fn format_config_string(key: &str, value: &Option<String>) -> String {
     match value {
         Some(v) => format!("{} {}\n", key, v),
         None => String::from(""),
     }
 }
 
-fn format_config_strings(key: &str, value: Option<Vec<String>>) -> String {
+fn format_config_strings(key: &str, value: &Option<Vec<String>>) -> String {
     match value {
         Some(v) => format!("{} {}\n", key, v.join(",")),
         None => String::from(""),
@@ -898,7 +903,7 @@ fn format_config_strings(key: &str, value: Option<Vec<String>>) -> String {
 }
 
 
-fn format_config_yesnoask(key: &str, value: Option<YesNoAsk>) -> String {
+fn format_config_yesnoask(key: &str, value: &Option<YesNoAsk>) -> String {
     match value {
         Some(v) => format!("{} {}\n", key, String::from(v)),
         None => String::from(""),
@@ -1034,6 +1039,6 @@ mod tests {
         m.StrictHostKeyChecking = Some(YesNoAsk::Ask);
         config.Matches.insert(String::from("exec true"), m);
 
-        assert_eq!(String::from(config), want);
+        assert_eq!(String::from(&config), want);
     }
 }

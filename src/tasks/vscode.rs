@@ -91,7 +91,6 @@ fn fix_macos() {
         match utils::process::command_spawn_wait(
             "xattr",
             &[
-                "xattr",
                 "-dr",
                 "com.apple.quarantine",
                 "/Applications/Visual Studio Code.app",

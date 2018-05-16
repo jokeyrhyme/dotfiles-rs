@@ -13,6 +13,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 * pkg: ssh: `sync` blacklists weak ciphers / algorithms
 
+### Fixed
+
+* pkg: ssh: deterministic Host and Match section order
+
+* pkg: vscode: fix copy-pasta with macOS xattr fix
+
 ## [0.12.0] - 2018-05-10
 
 ### Added
