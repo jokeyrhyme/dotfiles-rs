@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.13.0] - 2018-05-17
+
 ### Added
 
 * pkg: ssh: `sync` merges ~/.dotfiles/config/ssh into ~/.ssh/config
