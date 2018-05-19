@@ -674,7 +674,10 @@ impl<'a> From<&'a Config> for String {
             &"IdentityAgent",
             &source.IdentityAgent,
         ));
-        result.push_str(&format_config_pathbuf(&"IdentityFile", &source.IdentityFile));
+        result.push_str(&format_config_pathbuf(
+            &"IdentityFile",
+            &source.IdentityFile,
+        ));
         result.push_str(&format_config_string(
             &"IgnoreUnknown",
             &source.IgnoreUnknown,
