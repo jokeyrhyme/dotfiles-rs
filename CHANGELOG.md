@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+* pkg: git: fix installation of yarn merge driver
+
 ## [0.13.0] - 2018-05-17
 
 ### Added

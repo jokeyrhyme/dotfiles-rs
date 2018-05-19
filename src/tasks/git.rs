@@ -25,26 +25,24 @@ pub fn sync() {
     utils::process::command_spawn_wait("npx", &["-q", "npm-merge-driver", "install", "--global"])
         .expect(ERROR_MSG);
 
-    if !utils::nodejs::has_yarn() {
-        return;
+    if utils::nodejs::has_yarn() {
+        // https://www.npmjs.com/package/npm-merge-driver
+        utils::process::command_spawn_wait(
+            "npx",
+            &[
+                "-q",
+                "npm-merge-driver",
+                "install",
+                "--global",
+                "--driver-name",
+                "yarn-merge-driver",
+                "--driver",
+                "npx npm-merge-driver merge %A %O %B %P -c yarn",
+                "--files",
+                "yarn.lock",
+            ],
+        ).expect(ERROR_MSG);
     }
-
-    // https://www.npmjs.com/package/npm-merge-driver
-    utils::process::command_spawn_wait(
-        "npx",
-        &[
-            "-q",
-            "npm-merge-driver",
-            "install",
-            "--global",
-            "--driver-name",
-            "yarn-merge-driver",
-            "--driver",
-            r#""npx npm-merge-driver merge %A %O %B %P -c yarn""#,
-            "--files",
-            "yarn.lock",
-        ],
-    ).expect(ERROR_MSG);
 }
 
 pub fn update() {}
