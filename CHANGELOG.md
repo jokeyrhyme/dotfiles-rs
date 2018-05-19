@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+* pkg: tmux: `sync` installs [tpm](https://github.com/tmux-plugins/tpm)
+
 ### Fixed
 
 * pkg: git: fix installation of yarn merge driver

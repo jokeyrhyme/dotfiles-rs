@@ -15,9 +15,20 @@ pub fn sync() {
     utils::fs::symbolic_link_if_exists(&src, &dest);
 
     let tpm_path = utils::env::home_dir().join(".tmux/plugins/tpm");
-    if utils::git::path_is_git_repository(&tpm_path) {
-        // TODO: install tpm plugin for tmux when it is absent
 
+    if !tpm_path.is_dir() {
+        utils::fs::delete_if_exists(&tpm_path);
+    }
+
+    if !utils::git::path_is_git_repository(&tpm_path) {
+        let tpm_url = "https://github.com/tmux-plugins/tpm.git";
+        match utils::git::shallow_clone(&tpm_url, &tpm_path.to_str().unwrap()) {
+            Ok(()) => {}
+            Err(error) => println!("pkg: tmux: unable to install tpm: {}", error),
+        }
+    }
+
+    if utils::git::path_is_git_repository(&tpm_path) {
         let empty_args: &[&str] = &[];
 
         let tpm_install_path = tpm_path.join("bin/install_plugins");
@@ -43,7 +54,10 @@ pub fn update() {
 
     let tpm_path = utils::env::home_dir().join(".tmux/plugins/tpm");
     if utils::git::path_is_git_repository(&tpm_path) {
-        utils::git::pull(&tpm_path);
+        match utils::git::shallow_fetch(&tpm_path.to_str().unwrap()) {
+            Ok(()) => {}
+            Err(error) => println!("pkg: tmux: unable to update tpm: {}", error),
+        }
 
         let tpm_update_path = tpm_path.join("bin/update_plugins");
         utils::process::command_spawn_wait(
