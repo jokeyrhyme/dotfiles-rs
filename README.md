@@ -13,43 +13,43 @@ Note that you need to "Run As Administrator" in Windows so that this tool can pr
 
 ## Features
 
-* `jokeyrhyme-dotfiles sync`:
+- `jokeyrhyme-dotfiles sync`:
 
-  * copies or creates symbolic links from `~/.dotfiles` into `~` for settings
+  - copies or creates symbolic links from `~/.dotfiles` into `~` for settings
 
-  * otherwise creates and/or edits settings files in `~`
+  - otherwise creates and/or edits settings files in `~`
 
-  * Windows: ensures ~/bin exists in PATH
+  - Windows: ensures ~/bin exists in PATH
 
-  * configures [npm-merge-driver](https://www.npmjs.com/package/npm-merge-driver) when possible
+  - configures [npm-merge-driver](https://www.npmjs.com/package/npm-merge-driver) when possible
 
-  * reads from TOML file and (un)installs desired [Atom](https://atom.io/) packages
+  - reads from TOML file and (un)installs desired [Atom](https://atom.io/) packages
 
-  * reads from TOML file and (un)installs desired [`npm`](https://www.npmjs.com/) packages
+  - reads from TOML file and (un)installs desired [`npm`](https://www.npmjs.com/) packages
 
-  * reads from TOML file and installs desired [rust](https://www.rust-lang.org/) [crates](https://crates.io/)
+  - reads from TOML file and installs desired [rust](https://www.rust-lang.org/) [crates](https://crates.io/)
 
-  * reads from TOML file and (un)installs desired [Visual Studio Code](https://code.visualstudio.com) extensions
+  - reads from TOML file and (un)installs desired [Visual Studio Code](https://code.visualstudio.com) extensions
 
-  * (un)installs vim-plug and desired vim plugins
+  - (un)installs vim-plug and desired vim plugins
 
-* `jokeyrhyme-dotfiles update`:
+- `jokeyrhyme-dotfiles update`:
 
-  * updates installed Atom packages
+  - updates installed Atom packages
 
-  * updates installed `npm` packages
+  - updates installed `npm` packages
 
-  * updates rust and installed rust crates
+  - updates rust and installed rust crates
 
-  * updates vim-plug and vim plugins
+  - updates vim-plug and vim plugins
 
-* installs and updates the following tools:
+- installs and updates the following tools:
 
-  * [shfmt](https://github.com/mvdan/sh)
+  - [shfmt](https://github.com/mvdan/sh)
 
-  * [skaffold](https://github.com/GoogleCloudPlatform/skaffold)
+  - [skaffold](https://github.com/GoogleCloudPlatform/skaffold)
 
-  * [yq](https://github.com/mikefarah/yq)
+  - [yq](https://github.com/mikefarah/yq)
 
 ## Configuration
 
@@ -62,8 +62,8 @@ This will reduce the likelihood of rate-limiting by GitHub's API.
 
 ## Roadmap
 
-* [x] automatically build and publish for new git tags
+- [x] automatically build and publish for new git tags
 
 ## See Also
 
-* https://github.com/jokeyrhyme/dotfiles
+- https://github.com/jokeyrhyme/dotfiles
