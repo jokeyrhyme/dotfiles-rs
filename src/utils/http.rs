@@ -63,7 +63,12 @@ pub fn download_request<'a>(req: &Request, dest: &'a Path) -> io::Result<()> {
 
 pub fn fetch_request<'a>(req: &Request) -> io::Result<Response> {
     let client = Client::new();
-    let res = client.execute(&req).unwrap();
+    let res = match client.execute(&req) {
+        Ok(r) => r,
+        Err(error) => {
+            return Err(io::Error::new(ErrorKind::Other, format!("{:?}", error)));
+        }
+    };
 
     println!("{}", HTTPCall(&req, &res).display());
 
@@ -72,7 +77,7 @@ pub fn fetch_request<'a>(req: &Request) -> io::Result<Response> {
         301 | 302 => {
             let headers = parse_headers(res.headers());
             let location = headers.get("location").unwrap().as_str();
-            // TODO: send the origin request's headers
+            // TODO: send the original request's headers
             let next_request = create_request(&location, &EMPTY_HEADERS);
             fetch_request(&next_request)
         }
