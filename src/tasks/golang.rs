@@ -2,6 +2,7 @@ use std::fs;
 
 use mktemp;
 use toml;
+use which;
 
 use utils::{self, golang::{arch, os}};
 
@@ -52,6 +53,18 @@ pub fn sync () {
             }
         };
     }
+
+    match which::which("gometalinter") {
+        Ok(_) => {
+            match utils::process::command_spawn_wait("gometalinter", &["--install"]) {
+                Ok(_status) => {}
+                Err(error) => {
+                    println!("warning: golang: unable to install linters: {}", error)
+                }
+            };
+        }
+        Err(_) => {}
+    };
 }
 
 pub fn update () {
@@ -91,6 +104,18 @@ pub fn update () {
         Err(error) => {
             println!("warning: golang: unable to update packages: {}", error)
         }
+    };
+
+    match which::which("gometalinter") {
+        Ok(_) => {
+            match utils::process::command_spawn_wait("gometalinter", &["--install", "--force"]) {
+                Ok(_status) => {}
+                Err(error) => {
+                    println!("warning: golang: unable to update linters: {}", error)
+                }
+            };
+        }
+        Err(_) => {}
     };
 }
 

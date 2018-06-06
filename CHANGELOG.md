@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - golang: `sync`/`update` grab favourite packages listed in TOML
 
+- golang: `sync`/`update` grab linters with [gometalinter](https://github.com/alecthomas/gometalinter)
+
 ### Changed
 
 - drop "pkg: " prefix from log output, etc
