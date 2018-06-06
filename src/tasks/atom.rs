@@ -20,7 +20,7 @@ pub fn sync() {
         return;
     }
 
-    println!("pkg: atom: syncing ...");
+    println!("atom: syncing ...");
 
     // TODO: synchronise Atom settings
 
@@ -29,7 +29,7 @@ pub fn sync() {
     let contents = match fs::read_to_string(&cfg_path) {
         Ok(s) => s,
         Err(error) => {
-            println!("pkg: atom: ignoring config: {}", error);
+            println!("atom: ignoring config: {}", error);
             return;
         }
     };
@@ -65,7 +65,7 @@ pub fn update() {
         return;
     }
 
-    println!("pkg: atom: updating ...");
+    println!("atom: updating ...");
 
     utils::process::command_spawn_wait(COMMAND, &["upgrade", "--confirm", "false"])
         .expect(ERROR_MSG);

@@ -1,7 +1,7 @@
 use utils;
 
 pub fn sync() {
-    println!("pkg: hyper: syncing ...");
+    println!("hyper: syncing ...");
 
     let src = utils::env::home_dir().join(".dotfiles/config/hyper.js");
     let dest = utils::env::home_dir().join(".hyper.js");

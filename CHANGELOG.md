@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - golang: `sync`/`update` grab favourite packages listed in TOML
 
+### Changed
+
+- drop "pkg: " prefix from log output, etc
+
 ### Fixed
 
 - fix `.unwrap()` panic when HTTP requests time out
@@ -19,33 +23,33 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- pkg: tmux: `sync` installs [tpm](https://github.com/tmux-plugins/tpm)
+- tmux: `sync` installs [tpm](https://github.com/tmux-plugins/tpm)
 
 ### Fixed
 
-- pkg: git: fix installation of yarn merge driver
+- git: fix installation of yarn merge driver
 
 ## [0.13.0] - 2018-05-17
 
 ### Added
 
-- pkg: ssh: `sync` merges ~/.dotfiles/config/ssh into ~/.ssh/config
+- ssh: `sync` merges ~/.dotfiles/config/ssh into ~/.ssh/config
 
-- pkg: ssh: `sync` blacklists weak ciphers / algorithms
+- ssh: `sync` blacklists weak ciphers / algorithms
 
 ### Fixed
 
-- pkg: ssh: deterministic Host and Match section order
+- ssh: deterministic Host and Match section order
 
-- pkg: vscode: fix copy-pasta with macOS xattr fix
+- vscode: fix copy-pasta with macOS xattr fix
 
 ## [0.12.0] - 2018-05-10
 
 ### Added
 
-- pkg: [golang](https://golang.org/): `sync` and `update`
+- [golang](https://golang.org/): `sync` and `update`
 
-- pkg: vscode: macOS: added a work-around to fix app auto-update
+- vscode: macOS: added a work-around to fix app auto-update
 
 ### Changed
 
@@ -61,15 +65,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- pkg: [jq](https://github.com/stedolan/jq): `sync` and `update`
+- [jq](https://github.com/stedolan/jq): `sync` and `update`
 
 ### Fixed
 
-- pkg: nodejs: macOS: fix OS mappings
+- nodejs: macOS: fix OS mappings
 
-- pkg: nodejs: Windows: handle path differences
+- nodejs: Windows: handle path differences
 
-- pkg: nodejs: install/update NPM packages after updating Node.js
+- nodejs: install/update NPM packages after updating Node.js
 
 - slightly better error handling
 
@@ -77,21 +81,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- pkg: [nodejs](https://nodejs.org): `sync` and `update` install the latest version of Node.js on Linux, macOS, and Windows
+- [nodejs](https://nodejs.org): `sync` and `update` install the latest version of Node.js on Linux, macOS, and Windows
 
-- pkg: nodejs: `sync` enables metrics in `npm`
+- nodejs: `sync` enables metrics in `npm`
 
 ### Fixed
 
 - Windows: fix the build again :S
 
-- pkg: dep,shfmt,skaffold,yq: Windows needs .exe extension
+- dep,shfmt,skaffold,yq: Windows needs .exe extension
 
 ## [0.9.0] - 2018-04-19
 
 ### Added
 
-- pkg: [dep](https://github.com/golang/dep): `sync` (into ~/.local/bin) and `update`
+- [dep](https://github.com/golang/dep): `sync` (into ~/.local/bin) and `update`
 
 ### Fixed
 
@@ -101,7 +105,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- pkg: [yq](https://github.com/mikefarah/yq): `sync` (into ~/.local/bin) and `update`
+- [yq](https://github.com/mikefarah/yq): `sync` (into ~/.local/bin) and `update`
 
 ### Changed
 
@@ -111,7 +115,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - ensure target directory exists when downloading files
 
-- pkg: shfmt,skaffold: fix macOS asset detection
+- shfmt,skaffold: fix macOS asset detection
 
 ## [0.7.0] - 2018-04-11
 
@@ -119,33 +123,33 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Windows: ensure ~/bin exists in PATH
 
-- pkg: [shfmt](https://github.com/mvdan/sh): `sync` (into ~/bin) and `update`
+- [shfmt](https://github.com/mvdan/sh): `sync` (into ~/bin) and `update`
 
-- pkg: [skaffold](https://github.com/GoogleCloudPlatform/skaffold): `sync` (into ~/bin) and `update`
+- [skaffold](https://github.com/GoogleCloudPlatform/skaffold): `sync` (into ~/bin) and `update`
 
-- pkg: tmux: `sync` and `update` install, clean, and update [tpm plugins](https://github.com/tmux-plugins/tpm/blob/master/docs/managing_plugins_via_cmd_line.md)
+- tmux: `sync` and `update` install, clean, and update [tpm plugins](https://github.com/tmux-plugins/tpm/blob/master/docs/managing_plugins_via_cmd_line.md)
 
 ## [0.6.1] - 2018-03-14
 
 ### Fixed
 
-- pkg: nodejs: properly identify installed packages
+- nodejs: properly identify installed packages
 
-- pkg: vim: Windows: \_vimrc instead of .vimrc
+- vim: Windows: \_vimrc instead of .vimrc
 
 ## [0.6.0] - 2018-03-10
 
 ### Added
 
-- pkg: git: configure [npm-merge-driver](https://www.npmjs.com/package/npm-merge-driver) when possible
+- git: configure [npm-merge-driver](https://www.npmjs.com/package/npm-merge-driver) when possible
 
-- pkg: nodejs: `sync` will (un)install `npm` packages as listed in TOML
+- nodejs: `sync` will (un)install `npm` packages as listed in TOML
 
-- pkg: nodejs: `update` will update `npm` and global packages
+- nodejs: `update` will update `npm` and global packages
 
-- pkg: vim: `sync` will (un)install vim-plug and symlink .vimrc
+- vim: `sync` will (un)install vim-plug and symlink .vimrc
 
-- pkg: vim: `update` will update vim-plug and plugins
+- vim: `update` will update vim-plug and plugins
 
 ### Fixed
 
@@ -155,35 +159,35 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- pkg: atom: `sync` can now disable packages listed in TOML
+- atom: `sync` can now disable packages listed in TOML
 
-- pkg: dotfiles: `sync` calls `git pull` in ~/.dotfiles
+- dotfiles: `sync` calls `git pull` in ~/.dotfiles
 
 ## [0.4.1] - 2018-03-04
 
 ### Fixed
 
-- pkg: atom: fix `apm install` bug caused by accidental whitespace
+- atom: fix `apm install` bug caused by accidental whitespace
 
 ## [0.4.0] - 2018-03-03
 
 ### Added
 
-- pkg: atom: implement `sync` and `update`
+- atom: implement `sync` and `update`
 
 ### Fixed
 
-- pkg: vscode: `update` now works on Windows
+- vscode: `update` now works on Windows
 
-- pkg: vscode: link settings in the correct macOS-specific place
+- vscode: link settings in the correct macOS-specific place
 
-- pkg: vscode: use the correct settings path on Windows
+- vscode: use the correct settings path on Windows
 
 ## [0.3.1] - 2018-02-26
 
 ### Fixed
 
-- pkg: vscode: check for "code.cmd" on Windows
+- vscode: check for "code.cmd" on Windows
 
 ## [0.3.0] - 2018-02-25
 

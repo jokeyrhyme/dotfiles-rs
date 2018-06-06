@@ -19,13 +19,13 @@ impl Config {
 }
 
 pub fn sync () {
-    println!("pkg: golang: syncing ...");
+    println!("golang: syncing ...");
 
     if !utils::golang::is_installed() {
         let latest_version = match utils::golang::latest_version() {
             Ok(v) => v,
             Err(error) => {
-                println!("error: pkg: golang: unable to check for updates: {:?}", error);
+                println!("error: golang: unable to check for updates: {:?}", error);
                 return;
             }
         };
@@ -33,7 +33,7 @@ pub fn sync () {
         match install_golang(&latest_version) {
             Ok(_) => {}
             Err(error) => {
-                println!("error: pkg: golang: unable to install: {:?}", error);
+                println!("error: golang: unable to install: {:?}", error);
                 return;
             }
         };
@@ -48,7 +48,7 @@ pub fn sync () {
         match utils::process::command_spawn_wait("go", &install_args) {
             Ok(_status) => {}
             Err(error) => {
-                println!("warning: pkg: golang: unable to install packages: {}", error)
+                println!("warning: golang: unable to install packages: {}", error)
             }
         };
     }
@@ -59,13 +59,13 @@ pub fn update () {
         return;
     }
 
-    println!("pkg: golang: updating ...");
+    println!("golang: updating ...");
 
     let current_version = utils::golang::current_version();
     let latest_version = match utils::golang::latest_version() {
         Ok(v) => v,
         Err(error) => {
-            println!("error: pkg: golang: unable to check for updates: {:?}", error);
+            println!("error: golang: unable to check for updates: {:?}", error);
             return;
         }
     };
@@ -75,7 +75,7 @@ pub fn update () {
         match install_golang(&latest_version) {
             Ok(_) => {}
             Err(error) => {
-                println!("error: pkg: golang: unable to install: {:?}", error);
+                println!("error: golang: unable to install: {:?}", error);
                 return;
             }
         };
@@ -89,13 +89,13 @@ pub fn update () {
     match utils::process::command_spawn_wait("go", &install_args) {
         Ok(_status) => {}
         Err(error) => {
-            println!("warning: pkg: golang: unable to update packages: {}", error)
+            println!("warning: golang: unable to update packages: {}", error)
         }
     };
 }
 
 fn install_golang(version: &str) -> Result<(), utils::golang::GolangError> {
-    println!("pkg: golang: installing {} ...", &version);
+    println!("golang: installing {} ...", &version);
 
     let temp_path;
     {
@@ -131,7 +131,7 @@ fn read_config() -> Config {
     let contents = match fs::read_to_string(&cfg_path) {
         Ok(s) => s,
         Err(error) => {
-            println!("pkg: golang: ignoring config: {}", error);
+            println!("golang: ignoring config: {}", error);
             return Config::new();
         }
     };
@@ -139,7 +139,7 @@ fn read_config() -> Config {
     match toml::from_str(&contents) {
         Ok(c) => c,
         Err(error) => {
-            println!("warning: pkg: golang: unable to parse {}, {}", &cfg_path.display(), error);
+            println!("warning: golang: unable to parse {}, {}", &cfg_path.display(), error);
             Config::new()
         }
     }

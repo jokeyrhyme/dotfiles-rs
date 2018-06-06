@@ -32,14 +32,14 @@ impl Config {
 }
 
 pub fn sync() {
-    println!("pkg: nodejs: syncing ...");
+    println!("nodejs: syncing ...");
 
     if !utils::nodejs::has_node() {
         let latest = utils::nodejs::latest_version();
         match install_nodejs(&latest) {
             Ok(()) => {}
             Err(error) => {
-                println!("error: pkg: nodejs: unable to install Node.js: {:?}", error)
+                println!("error: nodejs: unable to install Node.js: {:?}", error)
             }
         };
     }
@@ -53,7 +53,7 @@ pub fn update() {
         return;
     }
 
-    println!("pkg: nodejs: updating ...");
+    println!("nodejs: updating ...");
 
     let current = utils::nodejs::current_version();
     let latest = utils::nodejs::latest_version();
@@ -63,7 +63,7 @@ pub fn update() {
         match install_nodejs(&latest) {
             Ok(()) => {}
             Err(error) => {
-                println!("error: pkg: nodejs: unable to install Node.js: {:?}", error)
+                println!("error: nodejs: unable to install Node.js: {:?}", error)
             }
         };
         sync_npm_packages();
@@ -83,7 +83,7 @@ fn configure_npm() {
     match utils::process::command_spawn_wait("npm", &["config", "set", "send-metric", "true"]) {
         Ok(_status) => {}
         Err(error) => {
-            println!("warning: pkg: nodejs: unable to enable npm metrics: {}", error);
+            println!("warning: nodejs: unable to enable npm metrics: {}", error);
         }
     }
 }
@@ -160,7 +160,7 @@ fn read_config() -> Config {
     let contents = match fs::read_to_string(&cfg_path) {
         Ok(s) => s,
         Err(error) => {
-            println!("pkg: nodejs: ignoring config: {}", error);
+            println!("nodejs: ignoring config: {}", error);
             return Config::new();
         }
     };
@@ -168,7 +168,7 @@ fn read_config() -> Config {
     match toml::from_str(&contents) {
         Ok(c) => c,
         Err(error) => {
-            println!("warning: pkg: nodejs: unable to parse {}, {}", &cfg_path.display(), error);
+            println!("warning: nodejs: unable to parse {}, {}", &cfg_path.display(), error);
             Config::new()
         }
     }
@@ -199,7 +199,7 @@ fn sync_npm_packages() {
         match utils::process::command_spawn_wait("node", &[npm_cli_path_str, "install", "--global", "npm"]) {
             Ok(_status) => {}
             Err(error) => {
-                println!("warning: pkg: nodejs: unable to bootstrap npm: {}", error);
+                println!("warning: nodejs: unable to bootstrap npm: {}", error);
             }
         };
     }
@@ -228,7 +228,7 @@ fn sync_npm_packages() {
     match utils::process::command_spawn_wait("npm", &install_args) {
         Ok(_status) => {}
         Err(error) => {
-            println!("warning: pkg: nodejs: unable to install missing npm packages: {}", error)
+            println!("warning: nodejs: unable to install missing npm packages: {}", error)
         }
     };
 
@@ -253,7 +253,7 @@ fn sync_npm_packages() {
     match utils::process::command_spawn_wait("npm", &uninstall_args) {
         Ok(_status) => {}
         Err(error) => {
-            println!("warning: pkg: nodejs: unable to uninstall unused npm packages: {}", error)
+            println!("warning: nodejs: unable to uninstall unused npm packages: {}", error)
         }
     };
 }

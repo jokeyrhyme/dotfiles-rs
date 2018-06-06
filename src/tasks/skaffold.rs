@@ -5,13 +5,13 @@ use utils::github::{Asset, Release};
 use utils::golang::{arch, os};
 
 pub fn sync() {
-    println!("pkg: skaffold: syncing ...");
+    println!("skaffold: syncing ...");
 
     if !is_installed() {
         let release = match utils::github::latest_release(&"GoogleCloudPlatform", &"skaffold") {
             Ok(r) => r,
             Err(error) => {
-                println!("error: pkg: skaffold: {}", error);
+                println!("error: skaffold: {}", error);
                 return;
             }
         };
@@ -24,7 +24,7 @@ pub fn update() {
         return;
     }
 
-    println!("pkg: skaffold: updating ...");
+    println!("skaffold: updating ...");
 
     match utils::process::command_output("skaffold", &["version"]) {
         Ok(output) => {
@@ -47,12 +47,12 @@ fn install_release_asset(release: Release) {
     let asset = match latest_asset(&release) {
         Some(a) => a,
         None => {
-            println!("pkg: skaffold: no asset matches OS and ARCH");
+            println!("skaffold: no asset matches OS and ARCH");
             return;
         }
     };
 
-    println!("pkg: skaffold: installing ...");
+    println!("skaffold: installing ...");
 
     #[cfg(windows)]
     let bin_path = utils::env::home_dir().join(".local/bin/skaffold.exe");

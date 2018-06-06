@@ -10,7 +10,7 @@ pub fn sync() {
         return;
     }
 
-    println!("pkg: ssh: syncing ...");
+    println!("ssh: syncing ...");
 
     let bits96_re = regex::Regex::new(r"\b96\b").unwrap();
     let cbc_re = regex::Regex::new(r"\bcbc\b").unwrap();
@@ -97,7 +97,7 @@ pub fn sync() {
     match fs::write(&target_path, String::from(&config)) {
         Ok(()) => {}
         Err(error) => {
-            println!("error: pkg: ssh: unable to write config: {}", error);
+            println!("error: ssh: unable to write config: {}", error);
         }
     }
 }

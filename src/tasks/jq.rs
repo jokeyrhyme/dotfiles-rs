@@ -5,13 +5,13 @@ use utils;
 use utils::github::{Asset, Release};
 
 pub fn sync() {
-    println!("pkg: jq: syncing ...");
+    println!("jq: syncing ...");
 
     if !is_installed() {
         let release = match utils::github::latest_release(&"stedolan", &"jq") {
             Ok(r) => r,
             Err(error) => {
-                println!("error: pkg: jq: {}", error);
+                println!("error: jq: {}", error);
                 return;
             }
         };
@@ -24,7 +24,7 @@ pub fn update() {
         return;
     }
 
-    println!("pkg: jq: updating ...");
+    println!("jq: updating ...");
 
     match utils::process::command_output("jq", &["--version"]) {
         Ok(output) => {
@@ -43,12 +43,12 @@ fn install_release_asset(release: Release) {
     let asset = match latest_asset(&release) {
         Some(a) => a,
         None => {
-            println!("pkg: jq: no asset matches OS and ARCH");
+            println!("jq: no asset matches OS and ARCH");
             return;
         }
     };
 
-    println!("pkg: jq: installing ...");
+    println!("jq: installing ...");
 
     #[cfg(windows)]
     let bin_path = utils::env::home_dir().join(".local/bin/jq.exe");

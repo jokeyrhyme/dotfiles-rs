@@ -5,13 +5,13 @@ use utils::github::{Asset, Release};
 use utils::golang::{arch, os};
 
 pub fn sync() {
-    println!("pkg: yq: syncing ...");
+    println!("yq: syncing ...");
 
     if !is_installed() {
         let release = match utils::github::latest_release(&"mikefarah", &"yq") {
             Ok(r) => r,
             Err(error) => {
-                println!("error: pkg: yq: {}", error);
+                println!("error: yq: {}", error);
                 return;
             }
         };
@@ -24,7 +24,7 @@ pub fn update() {
         return;
     }
 
-    println!("pkg: yq: updating ...");
+    println!("yq: updating ...");
 
     match utils::process::command_output("yq", &["--version"]) {
         Ok(output) => {
@@ -43,12 +43,12 @@ fn install_release_asset(release: Release) {
     let asset = match latest_asset(&release) {
         Some(a) => a,
         None => {
-            println!("pkg: yq: no asset matches OS and ARCH");
+            println!("yq: no asset matches OS and ARCH");
             return;
         }
     };
 
-    println!("pkg: yq: installing ...");
+    println!("yq: installing ...");
 
     #[cfg(windows)]
     let bin_path = utils::env::home_dir().join(".local/bin/yq.exe");

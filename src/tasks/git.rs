@@ -19,7 +19,7 @@ pub fn sync() {
         return;
     }
 
-    println!("pkg: git: syncing ...");
+    println!("git: syncing ...");
 
     // https://www.npmjs.com/package/npm-merge-driver
     utils::process::command_spawn_wait("npx", &["-q", "npm-merge-driver", "install", "--global"])

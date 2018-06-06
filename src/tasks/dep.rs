@@ -7,13 +7,13 @@ use utils::golang::{arch, os};
 const ERROR_MSG: &str = "error: dep";
 
 pub fn sync() {
-    println!("pkg: dep: syncing ...");
+    println!("dep: syncing ...");
 
     if !is_installed() {
         let release = match utils::github::latest_release(&"golang", &"dep") {
             Ok(r) => r,
             Err(error) => {
-                println!("error: pkg: dep: {}", error);
+                println!("error: dep: {}", error);
                 return;
             }
         };
@@ -26,7 +26,7 @@ pub fn update() {
         return;
     }
 
-    println!("pkg: dep: updating ...");
+    println!("dep: updating ...");
 
     let current = installed_version();
     match utils::github::release_versus_current(
@@ -43,12 +43,12 @@ fn install_release_asset(release: Release) {
     let asset = match latest_asset(&release) {
         Some(a) => a,
         None => {
-            println!("pkg: dep: no asset matches OS and ARCH");
+            println!("dep: no asset matches OS and ARCH");
             return;
         }
     };
 
-    println!("pkg: dep: installing ...");
+    println!("dep: installing ...");
 
     #[cfg(windows)]
     let bin_path = utils::env::home_dir().join(".local/bin/dep.exe");
