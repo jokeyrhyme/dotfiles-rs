@@ -1,7 +1,6 @@
 use std::collections::HashMap;
-use std::fs;
 use std::ops::BitOr;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 use textwrap;
 use which;
@@ -961,6 +960,9 @@ fn parse_config_yesnoask(text: String) -> Option<YesNoAsk> {
 
 #[cfg(test)]
 mod tests {
+    use std::fs;
+    use std::path::Path;
+
     use super::*;
 
     #[test]

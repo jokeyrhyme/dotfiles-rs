@@ -52,8 +52,6 @@ pub fn extract_tar(source: &Path, target: &Path) -> io::Result<()> {
         // Make sure there wasn't an I/O error
         let mut entry = entry?;
 
-        let entry_path = entry.header().path()?.into_owned();
-
         if !entry.header().entry_type().is_file() {
             continue;
         }

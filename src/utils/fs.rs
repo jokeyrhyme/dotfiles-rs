@@ -50,13 +50,6 @@ pub fn is_dir(target: &Path) -> bool {
     }
 }
 
-pub fn is_file(target: &Path) -> bool {
-    match std::fs::metadata(target) {
-        Ok(m) => m.is_file(),
-        Err(_error) => false,
-    }
-}
-
 #[cfg(unix)]
 pub fn set_executable(target: &Path) -> std::io::Result<()> {
     let file = File::open(target).unwrap();
@@ -161,13 +154,11 @@ mod tests {
     fn check_cargo() {
         let file_path = Path::new(env!("CARGO"));
         assert!(!is_dir(&file_path));
-        assert!(is_file(&file_path));
     }
 
     #[test]
     fn check_cargo_manifest_dir() {
         let project_dir = Path::new(env!("CARGO_MANIFEST_DIR"));
         assert!(is_dir(&project_dir));
-        assert!(!is_file(&project_dir));
     }
 }

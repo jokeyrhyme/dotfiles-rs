@@ -1,5 +1,4 @@
 use std::{fs, str};
-use std::path::Path;
 
 use regex;
 

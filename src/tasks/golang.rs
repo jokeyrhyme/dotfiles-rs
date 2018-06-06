@@ -22,6 +22,15 @@ impl Config {
 pub fn sync () {
     println!("golang: syncing ...");
 
+    let home_dir = utils::env::home_dir();
+
+    // uninstall `dep` installed by `go get -u ...`
+    // we install `dep` via GitHub Release instead as recommended
+    utils::fs::delete_if_exists(&home_dir.join("go").join("bin").join("dep"));
+    utils::fs::delete_if_exists(&home_dir.join("go").join("bin").join("dep.exe"));
+    utils::fs::delete_if_exists(&home_dir.join("go").join("pkg").join("src").join("github.com").join("golang").join("dep"));
+    utils::fs::delete_if_exists(&home_dir.join("go").join("src").join("src").join("github.com").join("golang").join("dep"));
+
     if !utils::golang::is_installed() {
         let latest_version = match utils::golang::latest_version() {
             Ok(v) => v,
