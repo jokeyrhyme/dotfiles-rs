@@ -58,11 +58,13 @@ pub fn extract_tar(source: &Path, target: &Path) -> io::Result<()> {
             continue;
         }
 
-        println!("{}", &entry_path.display());
+        print!("."); // progress indicator
 
         entry.set_preserve_permissions(true);
         entry.unpack_in(&target)?;
     }
+
+    println!(""); // done
 
     Ok(())
 }
@@ -107,16 +109,16 @@ pub fn extract_zip(source: &Path, target: &Path) -> io::Result<()> {
             continue; // skip directories
         }
 
-        println!("{}", entry_path.display());
-
         let output_path = target.join(entry_path);
         std::fs::create_dir_all(&output_path.parent().unwrap_or(&output_path))?;
 
-        println!("{}", output_path.display());
+        print!("."); // progress indicator
 
         let mut output_file = File::create(&output_path).expect("unable to open destination file");
         std::io::copy(&mut entry, &mut output_file)?;
     }
+
+    println!(""); // done
 
     Ok(())
 }
