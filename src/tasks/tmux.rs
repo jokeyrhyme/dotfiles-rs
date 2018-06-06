@@ -7,7 +7,7 @@ pub fn sync() {
         return;
     }
 
-    println!("pkg: tmux: syncing ...");
+    println!("tmux: syncing ...");
 
     let src = utils::env::home_dir().join(".dotfiles/config/tmux.conf");
     let dest = utils::env::home_dir().join(".tmux.conf");
@@ -24,7 +24,7 @@ pub fn sync() {
         let tpm_url = "https://github.com/tmux-plugins/tpm.git";
         match utils::git::shallow_clone(&tpm_url, &tpm_path.to_str().unwrap()) {
             Ok(()) => {}
-            Err(error) => println!("pkg: tmux: unable to install tpm: {}", error),
+            Err(error) => println!("tmux: unable to install tpm: {}", error),
         }
     }
 
@@ -50,13 +50,13 @@ pub fn update() {
         return;
     }
 
-    println!("pkg: tmux: updating ...");
+    println!("tmux: updating ...");
 
     let tpm_path = utils::env::home_dir().join(".tmux/plugins/tpm");
     if utils::git::path_is_git_repository(&tpm_path) {
         match utils::git::shallow_fetch(&tpm_path.to_str().unwrap()) {
             Ok(()) => {}
-            Err(error) => println!("pkg: tmux: unable to update tpm: {}", error),
+            Err(error) => println!("tmux: unable to update tpm: {}", error),
         }
 
         let tpm_update_path = tpm_path.join("bin/update_plugins");

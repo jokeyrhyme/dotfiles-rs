@@ -1,7 +1,7 @@
 use utils;
 
 pub fn sync() {
-    println!("pkg: dotfiles: syncing ...");
+    println!("dotfiles: syncing ...");
 
     let target = utils::env::home_dir().join(".dotfiles");
 

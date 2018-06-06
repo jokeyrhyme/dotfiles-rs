@@ -2,14 +2,14 @@ use std;
 
 use utils;
 
-const ERROR_MSG: &str = "pkg: vim";
+const ERROR_MSG: &str = "vim";
 
 pub fn sync() {
     if !has_vim() {
         return;
     }
 
-    println!("pkg: vim: syncing...");
+    println!("vim: syncing...");
 
     // BEGIN: remove old vim configurations
     let vim_runtime = utils::env::home_dir().join(".vim_runtime");
@@ -40,7 +40,7 @@ pub fn update() {
         return;
     }
 
-    println!("pkg: vim: updating...");
+    println!("vim: updating...");
 
     fetch_vim_plug(false);
 

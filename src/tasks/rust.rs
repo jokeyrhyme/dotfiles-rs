@@ -18,14 +18,14 @@ pub fn sync() {
         return;
     }
 
-    println!("pkg: rust: syncing ...");
+    println!("rust: syncing ...");
 
     let cfg_path = utils::env::home_dir().join(".dotfiles/config/rust.toml");
 
     let contents = match fs::read_to_string(&cfg_path) {
         Ok(s) => s,
         Err(error) => {
-            println!("pkg: rust: ignoring config: {}", error);
+            println!("rust: ignoring config: {}", error);
             return;
         }
     };
@@ -60,7 +60,7 @@ pub fn update() {
         return;
     }
 
-    println!("pkg: rust: updating ...");
+    println!("rust: updating ...");
 
     utils::process::command_spawn_wait("rustup", &["override", "set", "stable"]).expect(ERROR_MSG);
 

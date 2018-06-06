@@ -5,13 +5,13 @@ use utils::github::{Asset, Release};
 use utils::golang::{arch, os};
 
 pub fn sync() {
-    println!("pkg: shfmt: syncing ...");
+    println!("shfmt: syncing ...");
 
     if !is_installed() {
         let release = match utils::github::latest_release(&"mvdan", &"sh") {
             Ok(r) => r,
             Err(error) => {
-                println!("error: pkg: shfmt: {}", error);
+                println!("error: shfmt: {}", error);
                 return;
             }
         };
@@ -24,7 +24,7 @@ pub fn update() {
         return;
     }
 
-    println!("pkg: shfmt: updating ...");
+    println!("shfmt: updating ...");
 
     match utils::process::command_output("shfmt", &["--version"]) {
         Ok(output) => {
@@ -43,12 +43,12 @@ fn install_release_asset(release: Release) {
     let asset = match latest_asset(&release) {
         Some(a) => a,
         None => {
-            println!("pkg: shfmt: no asset matches OS and ARCH");
+            println!("shfmt: no asset matches OS and ARCH");
             return;
         }
     };
 
-    println!("pkg: shfmt: installing ...");
+    println!("shfmt: installing ...");
 
     #[cfg(windows)]
     let bin_path = utils::env::home_dir().join(".local/bin/shfmt.exe");

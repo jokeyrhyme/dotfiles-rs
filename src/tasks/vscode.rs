@@ -20,7 +20,7 @@ pub fn sync() {
         return;
     }
 
-    println!("pkg: vscode: syncing ...");
+    println!("vscode: syncing ...");
 
     let src = utils::env::home_dir().join(".dotfiles/config/vscode.json");
 
@@ -39,7 +39,7 @@ pub fn sync() {
     let contents = match fs::read_to_string(&cfg_path) {
         Ok(s) => s,
         Err(error) => {
-            println!("pkg: vscode: ignoring config: {}", error);
+            println!("vscode: ignoring config: {}", error);
             return;
         }
     };

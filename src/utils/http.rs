@@ -3,7 +3,7 @@ use std::fs::{File, create_dir_all};
 use std::io::{self, ErrorKind, Write};
 use std::path::Path;
 
-use cabot::{self, Client, RequestBuilder, request::Request, response::Response};
+use cabot::{Client, RequestBuilder, request::Request, response::Response};
 
 struct HTTPCall<'a>(&'a Request, &'a Response);
 
@@ -117,6 +117,8 @@ fn user_agent() -> String {
 
 #[cfg(test)]
 mod tests {
+    use cabot;
+
     use super::*;
 
     #[test]

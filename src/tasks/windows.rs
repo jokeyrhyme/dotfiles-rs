@@ -1,7 +1,7 @@
 use utils;
 
 pub fn sync() {
-    println!("pkg: windows: manually configure %PATH% to include:");
+    println!("windows: manually configure %PATH% to include:");
 
     let bin_path = utils::env::home_dir().join(".local").join("bin");
     println!("- {}", bin_path.display());

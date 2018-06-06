@@ -1,8 +1,6 @@
 use std::io;
 use std::path::Path;
 
-use mktemp;
-
 use utils;
 
 pub fn has_git() -> bool {
@@ -61,6 +59,8 @@ pub fn shallow_fetch<T: AsRef<str>>(target: &T) -> io::Result<()> {
 
 #[cfg(test)]
 mod tests {
+    use mktemp;
+
     use super::*;
 
     #[test]

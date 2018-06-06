@@ -1,7 +1,7 @@
 use utils;
 
 pub fn sync() {
-    println!("pkg: alacritty: syncing ...");
+    println!("alacritty: syncing ...");
 
     let src = utils::env::home_dir().join(".dotfiles/config/alacritty.yml");
     let dest = utils::env::home_dir().join(".config/alacritty/alacritty.yml");
