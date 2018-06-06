@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- golang: `sync`/`update` grab favourite packages listed in TOML
+
 ### Fixed
 
 - fix `.unwrap()` panic when HTTP requests time out

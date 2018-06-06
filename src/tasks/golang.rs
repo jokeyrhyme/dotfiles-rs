@@ -1,29 +1,57 @@
+use std::fs;
+
 use mktemp;
+use toml;
 
 use utils::{self, golang::{arch, os}};
 
-pub fn sync () {
-    if utils::golang::is_installed() {
-        return;
-    }
+#[derive(Debug, Deserialize)]
+struct Config {
+    install: Vec<String>,
+}
 
+impl Config {
+    fn new() -> Config {
+        Config {
+            install: Vec::<String>::new(),
+        }
+    }
+}
+
+pub fn sync () {
     println!("pkg: golang: syncing ...");
 
-    let latest_version = match utils::golang::latest_version() {
-        Ok(v) => v,
-        Err(error) => {
-            println!("error: pkg: golang: unable to check for updates: {:?}", error);
-            return;
-        }
-    };
+    if !utils::golang::is_installed() {
+        let latest_version = match utils::golang::latest_version() {
+            Ok(v) => v,
+            Err(error) => {
+                println!("error: pkg: golang: unable to check for updates: {:?}", error);
+                return;
+            }
+        };
 
-    match install_golang(&latest_version) {
-        Ok(_) => {}
-        Err(error) => {
-            println!("error: pkg: golang: unable to install: {:?}", error);
-            return;
-        }
-    };
+        match install_golang(&latest_version) {
+            Ok(_) => {}
+            Err(error) => {
+                println!("error: pkg: golang: unable to install: {:?}", error);
+                return;
+            }
+        };
+    }
+
+    if utils::golang::is_installed() {
+        let config = read_config();
+
+        let mut install_args = vec![String::from("get"), String::from("-v")];
+        install_args.extend(config.install);
+
+        match utils::process::command_spawn_wait("go", &install_args) {
+            Ok(_status) => {}
+            Err(error) => {
+                println!("warning: pkg: golang: unable to install packages: {}", error)
+            }
+        };
+    }
 }
 
 pub fn update () {
@@ -52,6 +80,18 @@ pub fn update () {
             }
         };
     }
+
+    let config = read_config();
+
+    let mut install_args = vec![String::from("get"), String::from("-u"), String::from("-v")];
+    install_args.extend(config.install);
+
+    match utils::process::command_spawn_wait("go", &install_args) {
+        Ok(_status) => {}
+        Err(error) => {
+            println!("warning: pkg: golang: unable to update packages: {}", error)
+        }
+    };
 }
 
 fn install_golang(version: &str) -> Result<(), utils::golang::GolangError> {
@@ -83,4 +123,24 @@ fn install_golang(version: &str) -> Result<(), utils::golang::GolangError> {
     utils::fs::delete_if_exists(&temp_path);
 
     Ok(())
+}
+
+fn read_config() -> Config {
+    let cfg_path = utils::env::home_dir().join(".dotfiles/config/golang.toml");
+
+    let contents = match fs::read_to_string(&cfg_path) {
+        Ok(s) => s,
+        Err(error) => {
+            println!("pkg: golang: ignoring config: {}", error);
+            return Config::new();
+        }
+    };
+
+    match toml::from_str(&contents) {
+        Ok(c) => c,
+        Err(error) => {
+            println!("warning: pkg: golang: unable to parse {}, {}", &cfg_path.display(), error);
+            Config::new()
+        }
+    }
 }
