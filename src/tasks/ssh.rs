@@ -53,7 +53,7 @@ pub fn sync() {
             }).collect());
         }
         Err(_error) => {}
-    }
+    };
 
     match utils::process::command_output("ssh", &["-Q", "kex"]) {
         Ok(output) => {
@@ -68,7 +68,7 @@ pub fn sync() {
             }).collect());
         }
         Err(_error) => {}
-    }
+    };
 
     match utils::process::command_output("ssh", &["-Q", "mac"]) {
         Ok(output) => {
@@ -91,14 +91,21 @@ pub fn sync() {
             }).collect());
         }
         Err(_error) => {}
-    }
+    };
 
-    match fs::write(&target_path, String::from(&config)) {
-        Ok(()) => {}
-        Err(error) => {
-            println!("error: ssh: unable to write config: {}", error);
+    match fs::create_dir_all(&target_path.parent().unwrap()) {
+        Ok(()) => {
+            match fs::write(&target_path, String::from(&config)) {
+                Ok(()) => {}
+                Err(error) => {
+                    println!("error: ssh: unable to write config: {}", error);
+                }
+            }
         }
-    }
+        Err(error) => {
+            println!("error: ssh: unable to create ~/.ssh: {}", error);
+        }
+    };
 }
 
 pub fn update() {}

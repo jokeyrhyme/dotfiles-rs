@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+- ssh: create ~/.ssh if missing
+
 ## [0.15.0] - 2018-06-06
 
 ### Added
