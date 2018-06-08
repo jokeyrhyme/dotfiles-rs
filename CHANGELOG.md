@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
+- nodejs: Windows: look for node.exe in the correct place
+
 - ssh: create ~/.ssh if missing
 
 ## [0.15.0] - 2018-06-06

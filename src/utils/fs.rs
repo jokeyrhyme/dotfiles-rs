@@ -1,4 +1,5 @@
 use std;
+#[cfg(unix)]
 use std::fs::File;
 use std::io::Error;
 use std::path::Path;
@@ -59,7 +60,7 @@ pub fn set_executable(target: &Path) -> std::io::Result<()> {
 }
 
 #[cfg(not(unix))]
-pub fn set_executable(target: &Path) -> std::io::Result<()> {
+pub fn set_executable(_target: &Path) -> std::io::Result<()> {
     Ok(())
 }
 

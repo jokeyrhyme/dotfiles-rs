@@ -175,24 +175,14 @@ fn read_config() -> Config {
 }
 
 fn sync_npm_packages() {
-    #[cfg(windows)]
-    let nodejs_bin_dir: &Path = &utils::env::home_dir().join(".local/node");
-    #[cfg(not(windows))]
-    let nodejs_bin_dir: &Path = &utils::env::home_dir().join(".local/node/bin");
-
     // these often are included with the Windows version,
     // and prevent `npm` from updating itself
     for filename in &["npm", "npm.cmd", "npx", "npx.cmd"] {
-        utils::fs::delete_if_exists(&nodejs_bin_dir.join(Path::new(&filename)));
+        utils::fs::delete_if_exists(&utils::nodejs::bin_dir().join(Path::new(&filename)));
     }
 
-    #[cfg(windows)]
-    let nodejs_lib_dir: &Path = &utils::env::home_dir().join(".local/node");
-    #[cfg(not(windows))]
-    let nodejs_lib_dir: &Path = &utils::env::home_dir().join(".local/node/lib");
-
     if !utils::nodejs::has_npm() {
-        let npm_cli_path = nodejs_lib_dir.join("node_modules/npm/bin/npm-cli.js");
+        let npm_cli_path = utils::nodejs::lib_dir().join("node_modules/npm/bin/npm-cli.js");
         let npm_cli_path_string = npm_cli_path.as_os_str().to_string_lossy().into_owned();
         let npm_cli_path_str = npm_cli_path_string.as_str();
 
