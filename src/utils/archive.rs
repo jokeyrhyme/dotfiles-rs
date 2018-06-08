@@ -1,6 +1,6 @@
 use std;
 use std::fs::File;
-use std::io::{self, BufReader, BufWriter, Read};
+use std::io::{self, BufReader, BufWriter};
 use std::path::Path;
 
 use libflate;
@@ -123,6 +123,8 @@ pub fn extract_zip(source: &Path, target: &Path) -> io::Result<()> {
 
 #[cfg(test)]
 mod tests {
+    use std::io::Read;
+
     use super::*;
 
     #[test]

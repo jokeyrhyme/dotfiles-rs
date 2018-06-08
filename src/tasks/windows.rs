@@ -9,9 +9,7 @@ pub fn sync() {
     let go_bin_path = utils::env::home_dir().join(".local").join("go").join("bin");
     println!("- {}", go_bin_path.display());
 
-    let node_bin_path = utils::env::home_dir().join(".local").join("node").join(
-        "bin",
-    );
+    let node_bin_path = utils::env::home_dir().join(".local").join("node");
     println!("- {}", node_bin_path.display());
 }
 
