@@ -24,10 +24,8 @@ pub fn arch() -> &'static str {
 }
 
 pub fn bin_dir() -> PathBuf {
-    #[cfg(windows)]
-    return install_path();
-    #[cfg(not(windows))]
-    return install_path().join("bin");
+    #[cfg(windows)] return install_path();
+    #[cfg(not(windows))] return install_path().join("bin");
 }
 
 pub fn current_version() -> String {
@@ -114,10 +112,8 @@ pub fn latest_version() -> String {
 }
 
 pub fn lib_dir() -> PathBuf {
-    #[cfg(windows)]
-    return install_path();
-    #[cfg(not(windows))]
-    return install_path().join("lib");
+    #[cfg(windows)] return install_path();
+    #[cfg(not(windows))] return install_path().join("lib");
 }
 
 pub fn os() -> &'static str {
