@@ -6,6 +6,8 @@ mod git;
 mod golang;
 mod hyper;
 mod jq;
+#[cfg(target_os = "macos")]
+mod macos;
 mod nodejs;
 mod psql;
 mod rust;
@@ -30,6 +32,8 @@ pub fn sync() {
     golang::sync();
     hyper::sync();
     jq::sync();
+    #[cfg(target_os = "macos")]
+    macos::sync();
     nodejs::sync();
     psql::sync();
     rust::sync();
@@ -55,6 +59,8 @@ pub fn update() {
     golang::update();
     hyper::update();
     jq::update();
+    #[cfg(target_os = "macos")]
+    macos::update();
     nodejs::update();
     psql::update();
     rust::update();
