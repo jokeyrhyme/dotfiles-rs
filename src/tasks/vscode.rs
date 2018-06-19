@@ -26,7 +26,7 @@ pub fn sync() {
 
     #[cfg(target_os = "macos")]
     let settings_path = "Library/Application Support/Code/User/settings.json";
-    #[cfg(target_os = "windows")]
+    #[cfg(windows)]
     let settings_path = "AppData/Roaming/Code/User/settings.json";
     #[cfg(not(any(target_os = "macos",windows)))]
     let settings_path = ".config/Code/User/settings.json";
