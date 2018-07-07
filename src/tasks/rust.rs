@@ -1,5 +1,5 @@
-use std::{fs, str};
 use std::collections::HashMap;
+use std::{fs, str};
 
 use regex::Regex;
 use toml;
@@ -56,7 +56,8 @@ pub fn sync() {
 
     if has_rustup() {
         // we need to ensure that rustup is managing rustfmt
-        utils::process::command_spawn_wait("rustup", &["component", "add", "rustfmt-preview"]).expect(ERROR_MSG);
+        utils::process::command_spawn_wait("rustup", &["component", "add", "rustfmt-preview"])
+            .expect(ERROR_MSG);
     }
 }
 

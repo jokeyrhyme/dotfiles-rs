@@ -5,8 +5,8 @@ use std::io;
 use std::path::Path;
 use std::str;
 
-use serde_json;
 use cabot::request::Request;
+use serde_json;
 
 use utils;
 
@@ -111,8 +111,7 @@ fn create_request<'a, T: AsRef<str>>(url: &T) -> Request {
 }
 
 fn fetch_releases<'a, T: AsRef<str>>(owner: &T, repo: &T) -> io::Result<Vec<Release>> {
-    let uri =
-        format!(
+    let uri = format!(
         "https://api.github.com/repos/{}/{}/releases",
         owner.as_ref(),
         repo.as_ref(),
@@ -132,8 +131,7 @@ fn fetch_releases<'a, T: AsRef<str>>(owner: &T, repo: &T) -> io::Result<Vec<Rele
 }
 
 pub fn fetch_tags<T: AsRef<str>>(owner: &T, repo: &T) -> io::Result<Vec<Tag>> {
-    let uri =
-        format!(
+    let uri = format!(
         "https://api.github.com/repos/{}/{}/git/refs/tags",
         owner.as_ref(),
         repo.as_ref(),
@@ -149,16 +147,12 @@ pub fn fetch_tags<T: AsRef<str>>(owner: &T, repo: &T) -> io::Result<Vec<Tag>> {
             Vec::<Tag>::new()
         }
     };
-    Ok(
-        tags.into_iter()
-            .map(|t| {
-                Tag {
-                    id: str::replace(&t.id, "refs/tags/", ""),
-                    url: t.url,
-                }
-            })
-            .collect(),
-    )
+    Ok(tags.into_iter()
+        .map(|t| Tag {
+            id: str::replace(&t.id, "refs/tags/", ""),
+            url: t.url,
+        })
+        .collect())
 }
 
 pub fn latest_release<'a, T: AsRef<str>>(owner: &T, repo: &T) -> Result<Release, GitHubError> {
@@ -174,7 +168,8 @@ pub fn latest_release<'a, T: AsRef<str>>(owner: &T, repo: &T) -> Result<Release,
     match releases
         .into_iter()
         .filter(|r| !r.draft && !r.prelease && r.assets.len() > 0)
-        .next() {
+        .next()
+    {
         Some(latest) => Ok(latest),
         None => Err(GitHubError::ValidReleaseNotFoundError {}),
     }

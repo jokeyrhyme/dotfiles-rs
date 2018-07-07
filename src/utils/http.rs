@@ -1,9 +1,9 @@
 use std::collections::HashMap;
-use std::fs::{File, create_dir_all};
+use std::fs::{create_dir_all, File};
 use std::io::{self, ErrorKind, Write};
 use std::path::Path;
 
-use cabot::{Client, RequestBuilder, request::Request, response::Response};
+use cabot::{request::Request, response::Response, Client, RequestBuilder};
 
 struct HTTPCall<'a>(&'a Request, &'a Response);
 
@@ -123,10 +123,18 @@ mod tests {
 
     #[test]
     fn display_shows_no_search_or_fragment() {
-        let req = RequestBuilder::new("https://www.google.com/?q=search#foo").build().unwrap();
-        let res = cabot::response::ResponseBuilder::new().set_status_line("HTTP/1.1 200 Ok").build().unwrap();;
+        let req = RequestBuilder::new("https://www.google.com/?q=search#foo")
+            .build()
+            .unwrap();
+        let res = cabot::response::ResponseBuilder::new()
+            .set_status_line("HTTP/1.1 200 Ok")
+            .build()
+            .unwrap();
         let call = HTTPCall(&req, &res);
-        assert_eq!(call.display(), "HTTP/1.1 200 GET https://www.google.com:443/");
+        assert_eq!(
+            call.display(),
+            "HTTP/1.1 200 GET https://www.google.com:443/"
+        );
     }
 
     #[test]

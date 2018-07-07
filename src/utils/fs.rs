@@ -2,9 +2,9 @@ use std;
 #[cfg(unix)]
 use std::fs::File;
 use std::io::Error;
-use std::path::Path;
 #[cfg(unix)]
 use std::os::unix::fs::PermissionsExt;
+use std::path::Path;
 
 pub fn delete_if_exists(path: &Path) {
     let attr = match std::fs::symlink_metadata(path) {
@@ -91,10 +91,8 @@ pub fn symbolic_link_if_exists(src: &Path, dest: &Path) {
 
     match dest.parent() {
         Some(parent) => {
-            std::fs::create_dir_all(&parent).expect(&format!(
-                "unable to create directories {}",
-                &parent.display()
-            ).as_str());
+            std::fs::create_dir_all(&parent)
+                .expect(&format!("unable to create directories {}", &parent.display()).as_str());
         }
         None => { /* probably at root directory, nothing to do */ }
     };
@@ -108,12 +106,8 @@ pub fn symbolic_link_if_exists(src: &Path, dest: &Path) {
 
     match symbolic_link(&src, &dest) {
         Ok(()) => {
-          println!(
-              "symlinked: {} -> {}",
-              dest.display(),
-              src.display(),
-          );
-      }
+            println!("symlinked: {} -> {}", dest.display(), src.display(),);
+        }
         Err(error) => {
             println!(
                 "unable to symlink {} to {}: {:?}",

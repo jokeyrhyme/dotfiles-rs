@@ -4,7 +4,9 @@ use mktemp;
 use toml;
 use which;
 
-use utils::{self, golang::{arch, os}};
+use utils::{
+    self, golang::{arch, os},
+};
 
 #[derive(Debug, Deserialize)]
 struct Config {
@@ -19,7 +21,7 @@ impl Config {
     }
 }
 
-pub fn sync () {
+pub fn sync() {
     println!("golang: syncing ...");
 
     let home_dir = utils::env::home_dir();
@@ -28,8 +30,20 @@ pub fn sync () {
     // we install `dep` via GitHub Release instead as recommended
     utils::fs::delete_if_exists(&home_dir.join("go").join("bin").join("dep"));
     utils::fs::delete_if_exists(&home_dir.join("go").join("bin").join("dep.exe"));
-    utils::fs::delete_if_exists(&home_dir.join("go").join("pkg").join("src").join("github.com").join("golang").join("dep"));
-    utils::fs::delete_if_exists(&home_dir.join("go").join("src").join("src").join("github.com").join("golang").join("dep"));
+    utils::fs::delete_if_exists(&home_dir
+        .join("go")
+        .join("pkg")
+        .join("src")
+        .join("github.com")
+        .join("golang")
+        .join("dep"));
+    utils::fs::delete_if_exists(&home_dir
+        .join("go")
+        .join("src")
+        .join("src")
+        .join("github.com")
+        .join("golang")
+        .join("dep"));
 
     if !utils::golang::is_installed() {
         let latest_version = match utils::golang::latest_version() {
@@ -57,9 +71,7 @@ pub fn sync () {
 
         match utils::process::command_spawn_wait("go", &install_args) {
             Ok(_status) => {}
-            Err(error) => {
-                println!("warning: golang: unable to install packages: {}", error)
-            }
+            Err(error) => println!("warning: golang: unable to install packages: {}", error),
         };
     }
 
@@ -67,16 +79,14 @@ pub fn sync () {
         Ok(_) => {
             match utils::process::command_spawn_wait("gometalinter", &["--install"]) {
                 Ok(_status) => {}
-                Err(error) => {
-                    println!("warning: golang: unable to install linters: {}", error)
-                }
+                Err(error) => println!("warning: golang: unable to install linters: {}", error),
             };
         }
         Err(_) => {}
     };
 }
 
-pub fn update () {
+pub fn update() {
     if !utils::golang::is_installed() {
         return;
     }
@@ -110,18 +120,14 @@ pub fn update () {
 
     match utils::process::command_spawn_wait("go", &install_args) {
         Ok(_status) => {}
-        Err(error) => {
-            println!("warning: golang: unable to update packages: {}", error)
-        }
+        Err(error) => println!("warning: golang: unable to update packages: {}", error),
     };
 
     match which::which("gometalinter") {
         Ok(_) => {
             match utils::process::command_spawn_wait("gometalinter", &["--install", "--force"]) {
                 Ok(_status) => {}
-                Err(error) => {
-                    println!("warning: golang: unable to update linters: {}", error)
-                }
+                Err(error) => println!("warning: golang: unable to update linters: {}", error),
             };
         }
         Err(_) => {}
@@ -139,9 +145,19 @@ fn install_golang(version: &str) -> Result<(), utils::golang::GolangError> {
     }
 
     #[cfg(windows)]
-    let remote_url = format!("https://dl.google.com/go/{}.{}-{}.zip", version, os(), arch());
+    let remote_url = format!(
+        "https://dl.google.com/go/{}.{}-{}.zip",
+        version,
+        os(),
+        arch()
+    );
     #[cfg(not(windows))]
-    let remote_url = format!("https://dl.google.com/go/{}.{}-{}.tar.gz", version, os(), arch());
+    let remote_url = format!(
+        "https://dl.google.com/go/{}.{}-{}.tar.gz",
+        version,
+        os(),
+        arch()
+    );
 
     utils::http::download(&remote_url, &temp_path)?;
 
@@ -173,7 +189,11 @@ fn read_config() -> Config {
     match toml::from_str(&contents) {
         Ok(c) => c,
         Err(error) => {
-            println!("warning: golang: unable to parse {}, {}", &cfg_path.display(), error);
+            println!(
+                "warning: golang: unable to parse {}, {}",
+                &cfg_path.display(),
+                error
+            );
             Config::new()
         }
     }

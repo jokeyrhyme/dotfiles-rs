@@ -88,9 +88,8 @@ fn fetch_vim_plug(skip_if_exists: bool) {
         Err(_error) => {}
     }
 
-    let vim_plug_url = String::from(
-        "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim",
-    );
+    let vim_plug_url =
+        String::from("https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim");
     match utils::http::download(&vim_plug_url, &vim_plug) {
         // ignore the outcome of this command
         Ok(_) => {}

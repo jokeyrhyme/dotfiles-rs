@@ -395,7 +395,7 @@ impl<'a> From<&'a str> for Config {
             let trimmed = line.trim();
             if trimmed.len() == 0 && trimmed.chars().next().unwrap_or('#') == '#' {
                 continue; // skip empty lines and comments
-                // TODO: one day support keeping comments
+                          // TODO: one day support keeping comments
             }
 
             let mut split = trimmed.splitn(2, " ");
@@ -809,16 +809,12 @@ impl<'a> From<&'a Config> for String {
         for h in sorted_host_keys {
             let h_config = source.Hosts.get(h).unwrap();
             result.push_str(&format!("\nHost {}\n", h));
-            result.push_str(
-                textwrap::indent(String::from(h_config).as_str(), &"  ").as_str(),
-            );
+            result.push_str(textwrap::indent(String::from(h_config).as_str(), &"  ").as_str());
         }
 
         for (m, m_config) in &source.Matches {
             result.push_str(&format!("\nMatch {}\n", m));
-            result.push_str(
-                textwrap::indent(String::from(m_config).as_str(), &"  ").as_str(),
-            );
+            result.push_str(textwrap::indent(String::from(m_config).as_str(), &"  ").as_str());
         }
 
         result
@@ -903,7 +899,6 @@ fn format_config_strings(key: &str, value: &Option<Vec<String>>) -> String {
         None => String::from(""),
     }
 }
-
 
 fn format_config_yesnoask(key: &str, value: &Option<YesNoAsk>) -> String {
     match value {

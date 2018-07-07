@@ -1,7 +1,7 @@
-use std::{self, fmt, io, str};
 use std::env::consts::{ARCH, OS};
 use std::error::Error;
 use std::path::PathBuf;
+use std::{self, fmt, io, str};
 
 use utils;
 
@@ -43,7 +43,11 @@ impl From<io::Error> for GolangError {
 }
 
 pub fn arch() -> &'static str {
-    if ARCH == "x86_64" { "amd64" } else { ARCH }
+    if ARCH == "x86_64" {
+        "amd64"
+    } else {
+        ARCH
+    }
 }
 
 pub fn current_version() -> String {
@@ -102,7 +106,11 @@ pub fn latest_version() -> Result<String, GolangError> {
 }
 
 pub fn os() -> &'static str {
-    if OS == "macos" { "darwin" } else { OS }
+    if OS == "macos" {
+        "darwin"
+    } else {
+        OS
+    }
 }
 
 #[cfg(test)]
