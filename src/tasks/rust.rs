@@ -53,6 +53,11 @@ pub fn sync() {
     install_args.extend(missing);
 
     utils::process::command_spawn_wait("cargo", &install_args).expect(ERROR_MSG);
+
+    if has_rustup() {
+        // we need to ensure that rustup is managing rustfmt
+        utils::process::command_spawn_wait("rustup", &["component", "add", "rustfmt-preview"]).expect(ERROR_MSG);
+    }
 }
 
 pub fn update() {
