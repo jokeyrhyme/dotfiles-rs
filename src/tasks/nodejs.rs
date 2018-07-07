@@ -1,12 +1,14 @@
-use std::{self, fs, io, str};
 use std::collections::HashMap;
 use std::path::Path;
+use std::{self, fs, io, str};
 
 use mktemp;
 use serde_json;
 use toml;
 
-use utils::{self, nodejs::{arch,os}};
+use utils::{
+    self, nodejs::{arch, os},
+};
 
 const ERROR_MSG: &str = "error: nodejs";
 
@@ -38,9 +40,7 @@ pub fn sync() {
         let latest = utils::nodejs::latest_version();
         match install_nodejs(&latest) {
             Ok(()) => {}
-            Err(error) => {
-                println!("error: nodejs: unable to install Node.js: {:?}", error)
-            }
+            Err(error) => println!("error: nodejs: unable to install Node.js: {:?}", error),
         };
     }
 
@@ -62,9 +62,7 @@ pub fn update() {
     if current != latest {
         match install_nodejs(&latest) {
             Ok(()) => {}
-            Err(error) => {
-                println!("error: nodejs: unable to install Node.js: {:?}", error)
-            }
+            Err(error) => println!("error: nodejs: unable to install Node.js: {:?}", error),
         };
         sync_npm_packages();
     }
@@ -168,7 +166,11 @@ fn read_config() -> Config {
     match toml::from_str(&contents) {
         Ok(c) => c,
         Err(error) => {
-            println!("warning: nodejs: unable to parse {}, {}", &cfg_path.display(), error);
+            println!(
+                "warning: nodejs: unable to parse {}, {}",
+                &cfg_path.display(),
+                error
+            );
             Config::new()
         }
     }
@@ -186,7 +188,10 @@ fn sync_npm_packages() {
         let npm_cli_path_string = npm_cli_path.as_os_str().to_string_lossy().into_owned();
         let npm_cli_path_str = npm_cli_path_string.as_str();
 
-        match utils::process::command_spawn_wait("node", &[npm_cli_path_str, "install", "--global", "npm"]) {
+        match utils::process::command_spawn_wait(
+            "node",
+            &[npm_cli_path_str, "install", "--global", "npm"],
+        ) {
             Ok(_status) => {}
             Err(error) => {
                 println!("warning: nodejs: unable to bootstrap npm: {}", error);
@@ -217,9 +222,10 @@ fn sync_npm_packages() {
 
     match utils::process::command_spawn_wait("npm", &install_args) {
         Ok(_status) => {}
-        Err(error) => {
-            println!("warning: nodejs: unable to install missing npm packages: {}", error)
-        }
+        Err(error) => println!(
+            "warning: nodejs: unable to install missing npm packages: {}",
+            error
+        ),
     };
 
     let found: Vec<String> = config
@@ -242,8 +248,9 @@ fn sync_npm_packages() {
 
     match utils::process::command_spawn_wait("npm", &uninstall_args) {
         Ok(_status) => {}
-        Err(error) => {
-            println!("warning: nodejs: unable to uninstall unused npm packages: {}", error)
-        }
+        Err(error) => println!(
+            "warning: nodejs: unable to uninstall unused npm packages: {}",
+            error
+        ),
     };
 }

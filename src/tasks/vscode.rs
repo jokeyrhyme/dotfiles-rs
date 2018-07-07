@@ -1,5 +1,5 @@
-use std::{fs, str};
 use std::path::Path;
+use std::{fs, str};
 
 use toml;
 
@@ -28,7 +28,7 @@ pub fn sync() {
     let settings_path = "Library/Application Support/Code/User/settings.json";
     #[cfg(windows)]
     let settings_path = "AppData/Roaming/Code/User/settings.json";
-    #[cfg(not(any(target_os = "macos",windows)))]
+    #[cfg(not(any(target_os = "macos", windows)))]
     let settings_path = ".config/Code/User/settings.json";
     let dest = utils::env::home_dir().join(Path::new(settings_path));
 
@@ -62,7 +62,8 @@ pub fn sync() {
         }
     }
 
-    #[cfg(target_os = "macos")] fix_macos();
+    #[cfg(target_os = "macos")]
+    fix_macos();
 }
 
 pub fn update() {}

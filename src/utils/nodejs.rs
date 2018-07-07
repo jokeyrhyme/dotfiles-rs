@@ -24,19 +24,19 @@ pub fn arch() -> &'static str {
 }
 
 pub fn bin_dir() -> PathBuf {
-    #[cfg(windows)] return install_path();
-    #[cfg(not(windows))] return install_path().join("bin");
+    #[cfg(windows)]
+    return install_path();
+    #[cfg(not(windows))]
+    return install_path().join("bin");
 }
 
 pub fn current_version() -> String {
     match utils::process::command_output("node", &["--version"]) {
-        Ok(output) => {
-            String::from(
-                std::str::from_utf8(&output.stdout)
-                    .unwrap_or_default()
-                    .trim(),
-            )
-        }
+        Ok(output) => String::from(
+            std::str::from_utf8(&output.stdout)
+                .unwrap_or_default()
+                .trim(),
+        ),
         Err(_error) => String::from(""),
     }
 }
@@ -96,14 +96,13 @@ pub fn latest_version() -> String {
     let latest_release: &Release = releases
         .iter()
         .filter(|r| {
-            r.files.len() > 0 &&
-                r.files.iter().any(|f| {
-                    f.starts_with(&format!(
-                        "{}-{}",
-                        utils::nodejs::release_os(),
-                        utils::nodejs::arch()
-                    ))
-                })
+            r.files.len() > 0 && r.files.iter().any(|f| {
+                f.starts_with(&format!(
+                    "{}-{}",
+                    utils::nodejs::release_os(),
+                    utils::nodejs::arch()
+                ))
+            })
         })
         .next()
         .unwrap();
@@ -112,8 +111,10 @@ pub fn latest_version() -> String {
 }
 
 pub fn lib_dir() -> PathBuf {
-    #[cfg(windows)] return install_path();
-    #[cfg(not(windows))] return install_path().join("lib");
+    #[cfg(windows)]
+    return install_path();
+    #[cfg(not(windows))]
+    return install_path().join("lib");
 }
 
 pub fn os() -> &'static str {

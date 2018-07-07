@@ -65,7 +65,6 @@ fn is_installed() -> bool {
     }
 }
 
-
 fn latest_asset(release: &Release) -> Option<Asset> {
     return release
         .assets

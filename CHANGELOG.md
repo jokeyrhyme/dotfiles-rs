@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
+- rust: ensure `rustup` is managing `rustfmt`
+
+### Added
+
 - macOS: wipe Quick Look cache during `sync`
 
 ## [0.15.1] - 2018-06-10

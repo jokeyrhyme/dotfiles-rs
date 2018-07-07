@@ -39,18 +39,23 @@ pub fn sync() {
     match utils::process::command_output("ssh", &["-Q", "cipher"]) {
         Ok(output) => {
             let stdout = str::from_utf8(&output.stdout).unwrap_or_default();
-            config.Ciphers = Some(stdout.lines().filter_map(|l| {
-                let cipher = l.trim();
-                if cbc_re.is_match(cipher) {
-                    // CBC ciphers are weak: https://access.redhat.com/solutions/420283
-                    return Some(format!("-{}", cipher));
-                }
-                if rc4_re.is_match(cipher) {
-                    // RC4 ciphers are weak: https://en.wikipedia.org/wiki/RC4#Security
-                    return Some(format!("-{}", cipher));
-                }
-                None
-            }).collect());
+            config.Ciphers = Some(
+                stdout
+                    .lines()
+                    .filter_map(|l| {
+                        let cipher = l.trim();
+                        if cbc_re.is_match(cipher) {
+                            // CBC ciphers are weak: https://access.redhat.com/solutions/420283
+                            return Some(format!("-{}", cipher));
+                        }
+                        if rc4_re.is_match(cipher) {
+                            // RC4 ciphers are weak: https://en.wikipedia.org/wiki/RC4#Security
+                            return Some(format!("-{}", cipher));
+                        }
+                        None
+                    })
+                    .collect(),
+            );
         }
         Err(_error) => {}
     };
@@ -58,14 +63,19 @@ pub fn sync() {
     match utils::process::command_output("ssh", &["-Q", "kex"]) {
         Ok(output) => {
             let stdout = str::from_utf8(&output.stdout).unwrap_or_default();
-            config.KexAlgorithms = Some(stdout.lines().filter_map(|l| {
-                let kex = l.trim();
-                if sha1_re.is_match(kex) {
-                    // SHA1 is weak: https://en.wikipedia.org/wiki/SHA-1
-                    return Some(format!("-{}", kex));
-                }
-                None
-            }).collect());
+            config.KexAlgorithms = Some(
+                stdout
+                    .lines()
+                    .filter_map(|l| {
+                        let kex = l.trim();
+                        if sha1_re.is_match(kex) {
+                            // SHA1 is weak: https://en.wikipedia.org/wiki/SHA-1
+                            return Some(format!("-{}", kex));
+                        }
+                        None
+                    })
+                    .collect(),
+            );
         }
         Err(_error) => {}
     };
@@ -73,35 +83,38 @@ pub fn sync() {
     match utils::process::command_output("ssh", &["-Q", "mac"]) {
         Ok(output) => {
             let stdout = str::from_utf8(&output.stdout).unwrap_or_default();
-            config.MACs = Some(stdout.lines().filter_map(|l| {
-                let mac = l.trim();
-                if bits96_re.is_match(mac) {
-                    // 96-bit algorithms are weak: https://access.redhat.com/solutions/420283
-                    return Some(format!("-{}", mac));
-                }
-                if md5_re.is_match(mac) {
-                    // MD5 is weak: https://access.redhat.com/solutions/420283
-                    return Some(format!("-{}", mac));
-                }
-                if sha1_re.is_match(mac) {
-                    // SHA1 is weak: https://en.wikipedia.org/wiki/SHA-1
-                    return Some(format!("-{}", mac));
-                }
-                None
-            }).collect());
+            config.MACs = Some(
+                stdout
+                    .lines()
+                    .filter_map(|l| {
+                        let mac = l.trim();
+                        if bits96_re.is_match(mac) {
+                            // 96-bit algorithms are weak: https://access.redhat.com/solutions/420283
+                            return Some(format!("-{}", mac));
+                        }
+                        if md5_re.is_match(mac) {
+                            // MD5 is weak: https://access.redhat.com/solutions/420283
+                            return Some(format!("-{}", mac));
+                        }
+                        if sha1_re.is_match(mac) {
+                            // SHA1 is weak: https://en.wikipedia.org/wiki/SHA-1
+                            return Some(format!("-{}", mac));
+                        }
+                        None
+                    })
+                    .collect(),
+            );
         }
         Err(_error) => {}
     };
 
     match fs::create_dir_all(&target_path.parent().unwrap()) {
-        Ok(()) => {
-            match fs::write(&target_path, String::from(&config)) {
-                Ok(()) => {}
-                Err(error) => {
-                    println!("error: ssh: unable to write config: {}", error);
-                }
+        Ok(()) => match fs::write(&target_path, String::from(&config)) {
+            Ok(()) => {}
+            Err(error) => {
+                println!("error: ssh: unable to write config: {}", error);
             }
-        }
+        },
         Err(error) => {
             println!("error: ssh: unable to create ~/.ssh: {}", error);
         }
