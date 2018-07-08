@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - rust: ensure `rustup` is managing `rustfmt`
 
+### Fixed
+
+- ssh: support cipher/etc-whitelist required by old OpenSSH
+
 ### Added
 
 - macOS: wipe Quick Look cache during `sync`
