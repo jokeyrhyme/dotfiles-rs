@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - rust: ensure `rustup` is managing `rustfmt`
 
+- rust: ensure `cargo fmt` works
+
+- rust: `update` will update `rustup` itself
+
 ### Fixed
 
 - ssh: support cipher/etc-whitelist required by old OpenSSH

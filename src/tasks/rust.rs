@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-use std::{fs, str};
+use std::{fs, io, str};
 
 use regex::Regex;
 use toml;
@@ -54,11 +54,11 @@ pub fn sync() {
 
     utils::process::command_spawn_wait("cargo", &install_args).expect(ERROR_MSG);
 
-    if has_rustup() {
-        // we need to ensure that rustup is managing rustfmt
-        utils::process::command_spawn_wait("rustup", &["component", "add", "rustfmt-preview"])
-            .expect(ERROR_MSG);
-    }
+    println!("rust: ensuring `cargo fmt` works ...");
+    match fix_cargo_fmt() {
+        Ok(()) => {}
+        Err(error) => println!("error: rust: unable to fix `cargo fmt`: {:?}", error),
+    };
 }
 
 pub fn update() {
@@ -67,6 +67,8 @@ pub fn update() {
     }
 
     println!("rust: updating ...");
+
+    utils::process::command_spawn_wait("rustup", &["self", "update"]).expect(ERROR_MSG);
 
     utils::process::command_spawn_wait("rustup", &["override", "set", "stable"]).expect(ERROR_MSG);
 
@@ -134,6 +136,23 @@ fn cargo_latest_version(krate: &str) -> Result<String, String> {
     return Err(String::from("not found"));
 }
 
+fn fix_cargo_fmt() -> io::Result<()> {
+    if !has_cargo() || !has_rustup() {
+        return Ok(());
+    }
+    if has_cargo_installed_rustfmt() {
+        utils::process::command_spawn_wait(
+            "cargo",
+            &["uninstall", "rustfmt", "rustfmt-nightly", "rustfmt-preview"],
+        )?;
+    }
+    if !has_cargo_fmt() {
+        utils::process::command_spawn_wait("rustup", &["component", "remove", "rustfmt-preview"])?;
+        utils::process::command_spawn_wait("rustup", &["component", "add", "rustfmt-preview"])?;
+    }
+    Ok(())
+}
+
 fn has_cargo() -> bool {
     match utils::process::command_output("cargo", &["--version"]) {
         Ok(output) => {
@@ -143,6 +162,22 @@ fn has_cargo() -> bool {
             return false; // cargo probably not installed
         }
     }
+}
+
+fn has_cargo_fmt() -> bool {
+    match utils::process::command_output("cargo", &["fmt", "--help"]) {
+        Ok(output) => {
+            return output.status.success();
+        }
+        Err(_error) => {
+            return false; // cargo probably not installed
+        }
+    }
+}
+
+fn has_cargo_installed_rustfmt() -> bool {
+    let krates = cargo_installed();
+    return krates.contains_key("rustfmt");
 }
 
 fn has_rustup() -> bool {
