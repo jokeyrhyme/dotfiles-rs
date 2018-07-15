@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- vim: keep [neovim](https://github.com/neovim/neovim) `sync`ed and `update`d if detected
+
 ## [0.16.0] - 2018-07-13
 
 ### Added

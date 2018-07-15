@@ -1,98 +1,138 @@
-use std;
+use std::{self, io, path::PathBuf};
 
 use utils;
 
 const ERROR_MSG: &str = "vim";
 
-pub fn sync() {
-    if !has_vim() {
-        return;
-    }
+const PLUG_VIM: &str = "plug.vim";
 
-    println!("vim: syncing...");
+const VIMS: [Vim; 2] = [
+    Vim {
+        #[cfg(not(windows))]
+        autoload_parent_dir: ".vim",
+        #[cfg(windows)]
+        autoload_parent_dir: "vimfiles",
+        command: "vim",
+        #[cfg(not(windows))]
+        rc_file: ".vimrc",
+        #[cfg(windows)]
+        rc_file: "_vimrc",
+    },
+    Vim {
+        // TODO: determine Windows and macOS details
+        autoload_parent_dir: ".local/share/nvim/site",
+        command: "nvim",
+        rc_file: ".config/nvim/init.vim",
+    },
+];
+
+pub fn sync() {
+    let src = utils::env::home_dir().join(".dotfiles/config/vimrc");
+
+    for ref vim in VIMS.iter() {
+        if !vim.exists() {
+            continue;
+        }
+        println!("{}: syncing...", &vim.command);
+
+        utils::fs::symbolic_link_if_exists(&src, &vim.rc_path());
+
+        if !vim.has_vim_plug() {
+            match vim.install_vim_plug() {
+                Ok(_) => {}
+                Err(error) => {
+                    // warn, but continue
+                    println!(
+                        "error: {}: unable to install vim-plug: {:?}",
+                        &vim.command, error
+                    );
+                }
+            }
+        }
+
+        utils::process::command_spawn_wait(
+            &vim.command,
+            &["-E", "-c", "PlugInstall", "-c", "q", "-c", "q"],
+        ).expect(ERROR_MSG);
+        utils::process::command_spawn_wait(
+            &vim.command,
+            &["-E", "-c", "PlugClean[!]", "-c", "q", "-c", "q"],
+        ).expect(ERROR_MSG);
+    }
 
     // BEGIN: remove old vim configurations
     let vim_runtime = utils::env::home_dir().join(".vim_runtime");
     utils::fs::delete_if_exists(&vim_runtime);
     // END: remove old vim configurations
-
-    let src = utils::env::home_dir().join(".dotfiles/config/vimrc");
-    #[cfg(not(windows))]
-    let vimrc = utils::env::home_dir().join(".vimrc");
-    #[cfg(windows)]
-    let vimrc = utils::env::home_dir().join("_vimrc");
-    utils::fs::symbolic_link_if_exists(&src, &vimrc);
-
-    fetch_vim_plug(true);
-
-    utils::process::command_spawn_wait(
-        "vim",
-        &["-X", "-E", "-c", "PlugInstall", "-c", "q", "-c", "q"],
-    ).expect(ERROR_MSG);
-    utils::process::command_spawn_wait(
-        "vim",
-        &["-X", "-E", "-c", "PlugClean[!]", "-c", "q", "-c", "q"],
-    ).expect(ERROR_MSG);
 }
 
 pub fn update() {
-    if !has_vim() {
-        return;
-    }
-
-    println!("vim: updating...");
-
-    fetch_vim_plug(false);
-
-    utils::process::command_spawn_wait(
-        "vim",
-        &["-X", "-E", "-c", "PlugUpdate", "-c", "q", "-c", "q"],
-    ).expect(ERROR_MSG);
-}
-
-fn has_vim() -> bool {
-    match utils::process::command_output("vim", &["--version"]) {
-        Ok(output) => {
-            return output.status.success();
+    for ref vim in VIMS.iter() {
+        if !vim.exists() {
+            continue;
         }
-        Err(_error) => {
-            return false; // vim probably not installed
-        }
-    }
-}
+        println!("{}: updating...", &vim.command);
 
-fn fetch_vim_plug(skip_if_exists: bool) {
-    #[cfg(not(windows))]
-    let autoload = utils::env::home_dir().join(".vim/autoload");
-    #[cfg(windows)]
-    let autoload = utils::env::home_dir().join("vimfiles/autoload");
-
-    match std::fs::create_dir_all(&autoload) {
-        Ok(_created) => _created,
-        Err(error) => {
-            panic!(
-                "unable to create directories {}: {:?}",
-                autoload.to_str().unwrap_or("nil"),
-                error
-            );
-        }
-    }
-
-    let vim_plug = autoload.join("plug.vim");
-    match std::fs::symlink_metadata(&vim_plug) {
-        Ok(_metadata) => {
-            if skip_if_exists {
-                return; // already exists, and we want to skip
+        match vim.install_vim_plug() {
+            Ok(_) => {}
+            Err(error) => {
+                // warn, but continue
+                println!(
+                    "error: {}: unable to install vim-plug: {:?}",
+                    &vim.command, error
+                );
             }
         }
-        Err(_error) => {}
+
+        utils::process::command_spawn_wait(
+            &vim.command,
+            &["-E", "-c", "PlugUpdate", "-c", "q", "-c", "q"],
+        ).expect(ERROR_MSG);
+    }
+}
+
+fn fetch_vim_plug(skip_if_exists: bool) {}
+
+#[derive(Debug)]
+struct Vim<'a> {
+    autoload_parent_dir: &'a str, // used in: $HOME/autoload_dir/autoload
+    command: &'a str,
+    rc_file: &'a str, // used in: $HOME/rc_path
+}
+
+impl<'a> Vim<'a> {
+    fn autoload_dir(&self) -> PathBuf {
+        utils::env::home_dir()
+            .join(&self.autoload_parent_dir)
+            .join("autoload")
     }
 
-    let vim_plug_url =
-        String::from("https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim");
-    match utils::http::download(&vim_plug_url, &vim_plug) {
-        // ignore the outcome of this command
-        Ok(_) => {}
-        Err(_) => {}
-    };
+    fn exists(&self) -> bool {
+        match utils::process::command_output(&self.command, &["--version"]) {
+            Ok(output) => output.status.success(),
+            Err(_error) => false,
+        }
+    }
+
+    fn has_vim_plug(&self) -> bool {
+        let vim_plug = self.autoload_dir().join(PLUG_VIM);
+        match std::fs::symlink_metadata(&vim_plug) {
+            Ok(_metadata) => true,
+            Err(_error) => false,
+        }
+    }
+
+    fn install_vim_plug(&self) -> io::Result<()> {
+        std::fs::create_dir_all(self.autoload_dir())?;
+
+        let vim_plug = self.autoload_dir().join(PLUG_VIM);
+        let vim_plug_url =
+            String::from("https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim");
+        utils::http::download(&vim_plug_url, &vim_plug)?;
+        Ok(())
+    }
+
+    fn rc_path(&self) -> PathBuf {
+        utils::env::home_dir().join(&self.rc_file)
+    }
 }
