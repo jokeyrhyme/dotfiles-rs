@@ -1,82 +1,44 @@
 use std;
+use std::env::consts::{ARCH, OS};
 
-use utils;
-use utils::github::{Asset, Release};
+use lib::ghrtask::GHRTask;
+use utils::github::Asset;
 use utils::golang::{arch, os};
 
 pub fn sync() {
-    println!("yq: syncing ...");
-
-    if !is_installed() {
-        let release = match utils::github::latest_release(&"mikefarah", &"yq") {
-            Ok(r) => r,
-            Err(error) => {
-                println!("error: yq: {}", error);
-                return;
-            }
-        };
-        install_release_asset(release);
+    match GHR_TASK.sync() {
+        Ok(_) => {}
+        Err(_) => {}
     }
 }
 
 pub fn update() {
-    if !is_installed() {
-        return;
+    match GHR_TASK.update() {
+        Ok(_) => {}
+        Err(_) => {}
     }
-
-    println!("yq: updating ...");
-
-    match utils::process::command_output("yq", &["--version"]) {
-        Ok(output) => {
-            let stdout = std::str::from_utf8(&output.stdout).unwrap_or_default();
-
-            match utils::github::release_versus_current(&stdout, &"mikefarah", &"yq") {
-                Some(r) => install_release_asset(r),
-                None => {}
-            }
-        }
-        Err(_error) => {}
-    };
 }
 
-fn install_release_asset(release: Release) {
-    let asset = match latest_asset(&release) {
-        Some(a) => a,
-        None => {
-            println!("yq: no asset matches OS and ARCH");
-            return;
-        }
-    };
-
-    println!("yq: installing ...");
-
+const GHR_TASK: GHRTask = GHRTask {
+    asset_filter: asset_filter,
     #[cfg(windows)]
-    let bin_path = utils::env::home_dir().join(".local/bin/yq.exe");
+    command: "yq.exe",
     #[cfg(not(windows))]
-    let bin_path = utils::env::home_dir().join(".local/bin/yq");
+    command: "yq",
+    repo: ("mikefarah", "yq"),
+    trim_version: trim_version,
+    version_arg: "--version",
+};
 
-    utils::github::download_release_asset(asset, &bin_path);
+fn asset_filter(asset: &Asset) -> bool {
+    #[cfg(windows)]
+    let name = format!("yq_{}_{}.exe", os(), arch());
+    #[cfg(not(windows))]
+    let name = format!("yq_{}_{}", os(), arch());
+
+    asset.name == name
 }
 
-fn is_installed() -> bool {
-    match utils::process::command_output("yq", &["--version"]) {
-        Ok(output) => output.status.success(),
-        Err(_error) => false,
-    }
-}
-
-fn latest_asset(release: &Release) -> Option<Asset> {
-    return release
-        .assets
-        .to_vec()
-        .into_iter()
-        .filter(|asset| {
-            #[cfg(windows)]
-            let name = format!("yq_{}_{}.exe", os(), arch());
-            #[cfg(not(windows))]
-            let name = format!("yq_{}_{}", os(), arch());
-
-            asset.name == name
-        })
-        .next();
+fn trim_version(stdout: String) -> String {
+    String::from(stdout.trim())
 }
