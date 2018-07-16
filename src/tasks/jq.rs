@@ -1,84 +1,41 @@
 use std;
 use std::env::consts::{ARCH, OS};
 
-use utils;
-use utils::github::{Asset, Release};
+use lib::ghrtask::GHRTask;
+use utils::github::Asset;
 
 pub fn sync() {
-    println!("jq: syncing ...");
-
-    if !is_installed() {
-        let release = match utils::github::latest_release(&"stedolan", &"jq") {
-            Ok(r) => r,
-            Err(error) => {
-                println!("error: jq: {}", error);
-                return;
-            }
-        };
-        install_release_asset(release);
+    match GHR_TASK.sync() {
+        Ok(_) => {}
+        Err(_) => {}
     }
 }
 
 pub fn update() {
-    if !is_installed() {
-        return;
+    match GHR_TASK.update() {
+        Ok(_) => {}
+        Err(_) => {}
     }
-
-    println!("jq: updating ...");
-
-    match utils::process::command_output("jq", &["--version"]) {
-        Ok(output) => {
-            let stdout = std::str::from_utf8(&output.stdout).unwrap_or_default();
-
-            match utils::github::release_versus_current(&stdout, &"stedolan", &"jq") {
-                Some(r) => install_release_asset(r),
-                None => {}
-            }
-        }
-        Err(_error) => {}
-    };
 }
 
-fn install_release_asset(release: Release) {
-    let asset = match latest_asset(&release) {
-        Some(a) => a,
-        None => {
-            println!("jq: no asset matches OS and ARCH");
-            return;
-        }
-    };
-
-    println!("jq: installing ...");
-
+const GHR_TASK: GHRTask = GHRTask {
+    asset_filter: asset_filter,
     #[cfg(windows)]
-    let bin_path = utils::env::home_dir().join(".local/bin/jq.exe");
+    command: "jq.exe",
     #[cfg(not(windows))]
-    let bin_path = utils::env::home_dir().join(".local/bin/jq");
+    command: "jq",
+    repo: ("stedolan", "jq"),
+    trim_version: trim_version,
+    version_arg: "--version",
+};
 
-    utils::github::download_release_asset(asset, &bin_path);
-}
+fn asset_filter(asset: &Asset) -> bool {
+    #[cfg(windows)]
+    let name = format!("jq-{}.exe", os_arch());
+    #[cfg(not(windows))]
+    let name = format!("jq-{}", os_arch());
 
-fn is_installed() -> bool {
-    match utils::process::command_output("jq", &["--version"]) {
-        Ok(output) => output.status.success(),
-        Err(_error) => false,
-    }
-}
-
-fn latest_asset(release: &Release) -> Option<Asset> {
-    return release
-        .assets
-        .to_vec()
-        .into_iter()
-        .filter(|asset| {
-            #[cfg(windows)]
-            let name = format!("jq-{}.exe", os_arch());
-            #[cfg(not(windows))]
-            let name = format!("jq-{}", os_arch());
-
-            asset.name == name
-        })
-        .next();
+    asset.name == name
 }
 
 // this is unfortunately only true for jq 1.5,
@@ -100,4 +57,8 @@ fn os_arch() -> String {
             _ => ARCH,
         }
     )
+}
+
+fn trim_version(stdout: String) -> String {
+    String::from(stdout.trim())
 }

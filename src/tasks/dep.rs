@@ -4,19 +4,6 @@ use lib::ghrtask::GHRTask;
 use utils::github::Asset;
 use utils::golang::{arch, os};
 
-const ERROR_MSG: &str = "error: dep";
-
-const GHR_TASK: GHRTask = GHRTask {
-    asset_filter: asset_filter,
-    #[cfg(windows)]
-    command: "dep.exe",
-    #[cfg(not(windows))]
-    command: "dep",
-    repo: ("golang", "dep"),
-    trim_version: trim_version,
-    version_arg: "version",
-};
-
 pub fn sync() {
     match GHR_TASK.sync() {
         Ok(_) => {}
@@ -30,6 +17,17 @@ pub fn update() {
         Err(_) => {}
     }
 }
+
+const GHR_TASK: GHRTask = GHRTask {
+    asset_filter: asset_filter,
+    #[cfg(windows)]
+    command: "dep.exe",
+    #[cfg(not(windows))]
+    command: "dep",
+    repo: ("golang", "dep"),
+    trim_version: trim_version,
+    version_arg: "version",
+};
 
 fn asset_filter(asset: &Asset) -> bool {
     #[cfg(windows)]
