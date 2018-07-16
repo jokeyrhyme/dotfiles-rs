@@ -4,6 +4,7 @@ mod dep;
 mod dotfiles;
 mod git;
 mod golang;
+mod hadolint;
 mod hyper;
 mod jq;
 #[cfg(target_os = "macos")]
@@ -30,6 +31,7 @@ pub fn sync() {
     dep::sync();
     git::sync();
     golang::sync();
+    hadolint::sync();
     hyper::sync();
     jq::sync();
     #[cfg(target_os = "macos")]
@@ -57,6 +59,7 @@ pub fn update() {
     dep::update();
     git::update();
     golang::update();
+    hadolint::update();
     hyper::update();
     jq::update();
     #[cfg(target_os = "macos")]

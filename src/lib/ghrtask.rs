@@ -1,4 +1,4 @@
-use std::{self, io};
+use std::io;
 
 use utils;
 use utils::github::{self, Asset, Release};

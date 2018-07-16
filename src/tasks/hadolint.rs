@@ -1,6 +1,11 @@
+use std::env::consts::ARCH;
+
+use inflector::Inflector;
+use regex::Regex;
+
 use lib::ghrtask::GHRTask;
 use utils::github::Asset;
-use utils::golang::{arch, os};
+use utils::golang::os;
 
 pub fn sync() {
     match GHR_TASK.sync() {
@@ -19,29 +24,29 @@ pub fn update() {
 const GHR_TASK: GHRTask = GHRTask {
     asset_filter: asset_filter,
     #[cfg(windows)]
-    command: "dep.exe",
+    command: "hadolint.exe",
     #[cfg(not(windows))]
-    command: "dep",
-    repo: ("golang", "dep"),
+    command: "hadolint",
+    repo: ("hadolint", "hadolint"),
     trim_version: trim_version,
-    version_arg: "version",
+    version_arg: "--version",
 };
 
 fn asset_filter(asset: &Asset) -> bool {
+    let os_title = os().to_title_case();
+
     #[cfg(windows)]
-    let name = format!("dep-{}-{}.exe", os(), arch());
+    let name = format!("hadolint-{}-{}.exe", os_title, ARCH);
     #[cfg(not(windows))]
-    let name = format!("dep-{}-{}", os(), arch());
+    let name = format!("hadolint-{}-{}", os_title, ARCH);
 
     asset.name == name
 }
 
 fn trim_version(stdout: String) -> String {
-    for line in stdout.lines() {
-        let parts: Vec<&str> = line.splitn(2, ":").collect();
-        if parts[0].trim() == "version" {
-            return String::from(parts[1].trim());
-        }
+    let re = Regex::new(r"(\d+\.\d+\.\d+)").unwrap();
+    for caps in re.captures_iter(stdout.trim()) {
+        return caps.get(1).unwrap().as_str().to_string();
     }
     String::from("unexpected")
 }
