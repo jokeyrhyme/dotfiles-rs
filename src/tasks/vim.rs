@@ -91,8 +91,6 @@ pub fn update() {
     }
 }
 
-fn fetch_vim_plug(skip_if_exists: bool) {}
-
 #[derive(Debug)]
 struct Vim<'a> {
     autoload_parent_dir: &'a str, // used in: $HOME/autoload_dir/autoload

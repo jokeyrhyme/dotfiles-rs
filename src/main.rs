@@ -15,6 +15,9 @@ extern crate zip;
 
 use clap::{App, SubCommand};
 
+mod lib {
+    pub mod ghrtask;
+}
 mod tasks;
 mod utils {
     pub mod archive;
