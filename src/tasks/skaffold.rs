@@ -1,6 +1,3 @@
-use std;
-use std::env::consts::{ARCH, OS};
-
 use lib::ghrtask::GHRTask;
 use utils::github::Asset;
 use utils::golang::{arch, os};

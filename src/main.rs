@@ -1,5 +1,6 @@
 extern crate cabot;
 extern crate clap;
+extern crate inflector;
 extern crate libflate;
 extern crate mktemp;
 extern crate regex;

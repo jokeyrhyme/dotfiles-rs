@@ -1,4 +1,3 @@
-use std;
 use std::env::consts::{ARCH, OS};
 
 use lib::ghrtask::GHRTask;
