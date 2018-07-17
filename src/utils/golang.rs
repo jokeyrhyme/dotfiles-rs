@@ -82,7 +82,7 @@ pub fn is_installed() -> bool {
 }
 
 pub fn latest_version() -> Result<String, GolangError> {
-    let tags: Vec<utils::github::Tag> = match utils::github::fetch_tags(&"golang", &"go") {
+    let tags: Vec<utils::github::Tag> = match utils::github::fetch_tags("golang", "go") {
         Ok(t) => {
             t.into_iter()
                 .filter(|t| {

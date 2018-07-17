@@ -1,13 +1,15 @@
 use std;
 #[cfg(unix)]
-use std::fs::File;
-use std::io::Error;
-#[cfg(unix)]
 use std::os::unix::fs::PermissionsExt;
-use std::path::Path;
+use std::path::{Path, PathBuf};
+#[cfg(unix)]
+use std::{fmt::Debug, fs::File, io};
 
-pub fn delete_if_exists(path: &Path) {
-    let attr = match std::fs::symlink_metadata(path) {
+pub fn delete_if_exists<P>(path: P)
+where
+    P: Into<PathBuf> + AsRef<Path> + Debug,
+{
+    let attr = match std::fs::symlink_metadata(path.as_ref()) {
         Ok(attr) => attr,
         Err(_error) => {
             // might not exist, noop
@@ -16,15 +18,15 @@ pub fn delete_if_exists(path: &Path) {
     };
 
     if attr.is_dir() {
-        match std::fs::remove_dir_all(path) {
+        match std::fs::remove_dir_all(path.as_ref()) {
             Ok(_removed) => {
-                println!("deleted {}", path.display());
+                println!("deleted {}", path.as_ref().display());
                 return;
             }
             Err(error) => {
                 println!(
                     "unable to recursively delete directory {}: {:?}",
-                    path.display(),
+                    path.as_ref().display(),
                     error
                 );
                 return;
@@ -32,19 +34,26 @@ pub fn delete_if_exists(path: &Path) {
         }
     }
 
-    match std::fs::remove_file(path) {
+    match std::fs::remove_file(path.as_ref()) {
         Ok(_removed) => {
-            println!("deleted {:?}", path);
+            println!("deleted {:?}", path.as_ref());
             return;
         }
         Err(error) => {
-            println!("unable to delete file {}: {:?}", path.display(), error);
+            println!(
+                "unable to delete file {}: {:?}",
+                path.as_ref().display(),
+                error
+            );
             return;
         }
     }
 }
 
-pub fn is_dir(target: &Path) -> bool {
+pub fn is_dir<P>(target: P) -> bool
+where
+    P: Into<PathBuf> + AsRef<Path>,
+{
     match std::fs::metadata(target) {
         Ok(m) => m.is_dir(),
         Err(_error) => false,
@@ -52,7 +61,10 @@ pub fn is_dir(target: &Path) -> bool {
 }
 
 #[cfg(unix)]
-pub fn set_executable(target: &Path) -> std::io::Result<()> {
+pub fn set_executable<P>(target: P) -> std::io::Result<()>
+where
+    P: Into<PathBuf> + AsRef<Path>,
+{
     let file = File::open(target).unwrap();
     let mut perms = file.metadata().unwrap().permissions();
     perms.set_mode(0o755); // a+rx, u+w
@@ -60,17 +72,23 @@ pub fn set_executable(target: &Path) -> std::io::Result<()> {
 }
 
 #[cfg(not(unix))]
-pub fn set_executable(_target: &Path) -> std::io::Result<()> {
+pub fn set_executable<P>(_target: P) -> std::io::Result<()>
+where
+    P: Into<PathBuf> + AsRef<Path> + PartialEq,
+{
     Ok(())
 }
 
-pub fn symbolic_link_if_exists(src: &Path, dest: &Path) {
-    match std::fs::read_link(dest.to_path_buf()) {
+pub fn symbolic_link_if_exists<P>(src: P, dest: P)
+where
+    P: Into<PathBuf> + AsRef<Path> + Debug,
+{
+    match std::fs::read_link(dest.as_ref()) {
         Ok(target) => {
-            if src == target {
+            if src.as_ref() == target {
                 println!(
-                    "already symlinked: {:?} -> {:?}",
-                    dest.display(),
+                    "already symlinked: {} -> {}",
+                    dest.as_ref().display(),
                     target.display(),
                 );
                 return;
@@ -81,15 +99,15 @@ pub fn symbolic_link_if_exists(src: &Path, dest: &Path) {
         }
     };
 
-    match std::fs::symlink_metadata(src) {
+    match std::fs::symlink_metadata(src.as_ref()) {
         Ok(attr) => attr,
         Err(error) => {
-            println!("unable to access {}: {:?}", src.display(), error);
+            println!("unable to access {}: {:?}", src.as_ref().display(), error);
             return;
         }
     };
 
-    match dest.parent() {
+    match dest.as_ref().parent() {
         Some(parent) => {
             std::fs::create_dir_all(&parent)
                 .expect(&format!("unable to create directories {}", &parent.display()).as_str());
@@ -97,22 +115,26 @@ pub fn symbolic_link_if_exists(src: &Path, dest: &Path) {
         None => { /* probably at root directory, nothing to do */ }
     };
 
-    match std::fs::symlink_metadata(dest) {
+    match std::fs::symlink_metadata(dest.as_ref()) {
         Ok(_attr) => {
-            delete_if_exists(dest);
+            delete_if_exists(dest.as_ref());
         }
         Err(_error) => { /* might not exist, continue */ }
     }
 
-    match symbolic_link(&src, &dest) {
+    match symbolic_link(src.as_ref(), dest.as_ref()) {
         Ok(()) => {
-            println!("symlinked: {} -> {}", dest.display(), src.display(),);
+            println!(
+                "symlinked: {} -> {}",
+                dest.as_ref().display(),
+                src.as_ref().display(),
+            );
         }
         Err(error) => {
             println!(
                 "unable to symlink {} to {}: {:?}",
-                dest.display(),
-                src.display(),
+                dest.as_ref().display(),
+                src.as_ref().display(),
                 error
             );
             return;
@@ -121,24 +143,24 @@ pub fn symbolic_link_if_exists(src: &Path, dest: &Path) {
 }
 
 #[cfg(not(windows))]
-fn symbolic_link(src: &Path, dest: &Path) -> Result<(), Error> {
-    return std::os::unix::fs::symlink(src, dest);
+fn symbolic_link<P>(src: P, dest: P) -> io::Result<()>
+where
+    P: Into<PathBuf> + AsRef<Path>,
+{
+    std::os::unix::fs::symlink(src, dest)
 }
 
 #[cfg(windows)]
-fn symbolic_link(src: &Path, dest: &Path) -> Result<(), Error> {
-    let src_attr = match std::fs::symlink_metadata(src) {
-        Ok(attr) => attr,
-        Err(error) => {
-            return Err(error);
-        }
-    };
-
+fn symbolic_link<P>(src: P, dest: P) -> io::Result<()>
+where
+    P: Into<PathBuf> + AsRef<Path>,
+{
+    let src_attr = std::fs::symlink_metadata(src)?;
     if src_attr.is_dir() {
         return std::os::windows::fs::symlink_dir(src, dest);
     }
 
-    return std::os::windows::fs::symlink_file(src, dest);
+    std::os::windows::fs::symlink_file(src, dest)
 }
 
 #[cfg(test)]

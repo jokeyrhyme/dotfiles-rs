@@ -8,7 +8,7 @@ pub fn sync() {
     println!("shfmt: syncing ...");
 
     if !is_installed() {
-        let release = match utils::github::latest_release(&"mvdan", &"sh") {
+        let release = match utils::github::latest_release("mvdan", "sh") {
             Ok(r) => r,
             Err(error) => {
                 println!("error: shfmt: {}", error);
@@ -30,7 +30,7 @@ pub fn update() {
         Ok(output) => {
             let stdout = std::str::from_utf8(&output.stdout).unwrap_or_default();
 
-            match utils::github::release_versus_current(&stdout, &"mvdan", &"sh") {
+            match utils::github::release_versus_current(stdout, "mvdan", "sh") {
                 Some(r) => install_release_asset(r),
                 None => {}
             }

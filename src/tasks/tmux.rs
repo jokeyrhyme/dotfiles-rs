@@ -22,7 +22,7 @@ pub fn sync() {
 
     if !utils::git::path_is_git_repository(&tpm_path) {
         let tpm_url = "https://github.com/tmux-plugins/tpm.git";
-        match utils::git::shallow_clone(&tpm_url, &tpm_path.to_str().unwrap()) {
+        match utils::git::shallow_clone(tpm_url, &tpm_path.to_string_lossy()) {
             Ok(()) => {}
             Err(error) => println!("tmux: unable to install tpm: {}", error),
         }
@@ -54,7 +54,7 @@ pub fn update() {
 
     let tpm_path = utils::env::home_dir().join(".tmux/plugins/tpm");
     if utils::git::path_is_git_repository(&tpm_path) {
-        match utils::git::shallow_fetch(&tpm_path.to_str().unwrap()) {
+        match utils::git::shallow_fetch(tpm_path.to_string_lossy()) {
             Ok(()) => {}
             Err(error) => println!("tmux: unable to update tpm: {}", error),
         }

@@ -126,7 +126,7 @@ impl<'a> Vim<'a> {
         let vim_plug = self.autoload_dir().join(PLUG_VIM);
         let vim_plug_url =
             String::from("https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim");
-        utils::http::download(&vim_plug_url, &vim_plug)?;
+        utils::http::download(vim_plug_url, vim_plug)?;
         Ok(())
     }
 
