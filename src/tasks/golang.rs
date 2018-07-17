@@ -54,7 +54,7 @@ pub fn sync() {
             }
         };
 
-        match install_golang(&latest_version) {
+        match install_golang(latest_version) {
             Ok(_) => {}
             Err(error) => {
                 println!("error: golang: unable to install: {:?}", error);
@@ -104,7 +104,7 @@ pub fn update() {
 
     println!("current={} latest={}", &current_version, &latest_version);
     if current_version != latest_version {
-        match install_golang(&latest_version) {
+        match install_golang(latest_version) {
             Ok(_) => {}
             Err(error) => {
                 println!("error: golang: unable to install: {:?}", error);
@@ -134,8 +134,11 @@ pub fn update() {
     };
 }
 
-fn install_golang(version: &str) -> Result<(), utils::golang::GolangError> {
-    println!("golang: installing {} ...", &version);
+fn install_golang<S>(version: S) -> Result<(), utils::golang::GolangError>
+where
+    S: Into<String> + AsRef<str>,
+{
+    println!("golang: installing {} ...", version.as_ref());
 
     let temp_path;
     {
@@ -147,14 +150,14 @@ fn install_golang(version: &str) -> Result<(), utils::golang::GolangError> {
     #[cfg(windows)]
     let remote_url = format!(
         "https://dl.google.com/go/{}.{}-{}.zip",
-        version,
+        version.as_ref(),
         os(),
         arch()
     );
     #[cfg(not(windows))]
     let remote_url = format!(
         "https://dl.google.com/go/{}.{}-{}.tar.gz",
-        version,
+        version.as_ref(),
         os(),
         arch()
     );

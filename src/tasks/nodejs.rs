@@ -38,7 +38,7 @@ pub fn sync() {
 
     if !utils::nodejs::has_node() {
         let latest = utils::nodejs::latest_version();
-        match install_nodejs(&latest) {
+        match install_nodejs(latest) {
             Ok(()) => {}
             Err(error) => println!("error: nodejs: unable to install Node.js: {:?}", error),
         };
@@ -60,7 +60,7 @@ pub fn update() {
     println!("current={} latest={}", &current, &latest);
 
     if current != latest {
-        match install_nodejs(&latest) {
+        match install_nodejs(latest) {
             Ok(()) => {}
             Err(error) => println!("error: nodejs: unable to install Node.js: {:?}", error),
         };
@@ -86,7 +86,10 @@ fn configure_npm() {
     }
 }
 
-fn install_nodejs(version: &str) -> io::Result<()> {
+fn install_nodejs<S>(version: S) -> io::Result<()>
+where
+    S: Into<String> + AsRef<str>,
+{
     let temp_path;
     {
         let mut temp = mktemp::Temp::new_file()?;
@@ -94,12 +97,20 @@ fn install_nodejs(version: &str) -> io::Result<()> {
         temp.release();
     }
 
-    let prefix = format!("node-{}-{}-{}", version, os(), arch());
+    let prefix = format!("node-{}-{}-{}", version.as_ref(), os(), arch());
 
     #[cfg(windows)]
-    let remote_url = format!("https://nodejs.org/dist/{}/{}.zip", version, &prefix);
+    let remote_url = format!(
+        "https://nodejs.org/dist/{}/{}.zip",
+        version.as_ref(),
+        &prefix
+    );
     #[cfg(not(windows))]
-    let remote_url = format!("https://nodejs.org/dist/{}/{}.tar.gz", version, &prefix);
+    let remote_url = format!(
+        "https://nodejs.org/dist/{}/{}.tar.gz",
+        version.as_ref(),
+        &prefix
+    );
 
     match utils::http::download(remote_url, &temp_path) {
         Ok(()) => {}

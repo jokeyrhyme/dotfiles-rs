@@ -82,15 +82,17 @@ pub fn update() {
 
     let outdated: Vec<String> = krates
         .into_iter()
-        .filter_map(|(krate, version)| match cargo_latest_version(&krate) {
-            Ok(latest) => {
-                if version == latest {
-                    return None;
+        .filter_map(
+            |(krate, version)| match cargo_latest_version(krate.as_str()) {
+                Ok(latest) => {
+                    if version == latest {
+                        return None;
+                    }
+                    return Some(krate);
                 }
-                return Some(krate);
-            }
-            Err(_) => None,
-        })
+                Err(_) => None,
+            },
+        )
         .collect();
 
     if outdated.len() <= 0 {
@@ -111,17 +113,21 @@ fn cargo_installed() -> HashMap<String, String> {
     let output = utils::process::command_output("cargo", &["install", "--list"]).expect(ERROR_MSG);
     let stdout = str::from_utf8(&output.stdout).unwrap();
 
-    let krates: HashMap<String, String> = parse_installed(&stdout);
+    let krates: HashMap<String, String> = parse_installed(stdout);
     return krates;
 }
 
-fn cargo_latest_version(krate: &str) -> Result<String, String> {
+fn cargo_latest_version<S>(krate: S) -> Result<String, String>
+where
+    S: Into<String> + AsRef<str>,
+{
     let mut pattern = String::from("^");
-    pattern.push_str(krate);
+    pattern.push_str(krate.as_ref());
     pattern.push_str(r#"\s=\s"(\S+)""#);
     let re = Regex::new(&pattern).unwrap();
-    let output = utils::process::command_output("cargo", &["search", "--limit", "1", krate])
-        .expect(ERROR_MSG);
+    let output =
+        utils::process::command_output("cargo", &["search", "--limit", "1", krate.as_ref()])
+            .expect(ERROR_MSG);
     let stdout = str::from_utf8(&output.stdout).unwrap();
     let lines = stdout.lines();
     for line in lines {
@@ -191,9 +197,12 @@ fn has_rustup() -> bool {
     }
 }
 
-fn parse_installed(stdout: &str) -> HashMap<String, String> {
+fn parse_installed<S>(stdout: S) -> HashMap<String, String>
+where
+    S: Into<String> + AsRef<str>,
+{
     let re = Regex::new(r"^(?P<name>\S+)\sv(?P<version>\S+):").unwrap();
-    let lines = stdout.lines();
+    let lines = stdout.as_ref().lines();
     let mut krates: HashMap<String, String> = HashMap::new();
 
     for line in lines {
