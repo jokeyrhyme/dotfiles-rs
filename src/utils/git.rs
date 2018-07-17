@@ -1,5 +1,6 @@
-use std::io;
-use std::path::Path;
+use std::{
+    io, path::{Path, PathBuf},
+};
 
 use utils;
 
@@ -10,23 +11,35 @@ pub fn has_git() -> bool {
     };
 }
 
-pub fn path_is_git_repository(path: &Path) -> bool {
-    return match utils::process::command_output("git", &["-C", path.to_str().unwrap(), "status"]) {
+pub fn path_is_git_repository<P>(path: P) -> bool
+where
+    P: Into<PathBuf> + AsRef<Path>,
+{
+    return match utils::process::command_output(
+        "git",
+        &["-C", path.as_ref().to_string_lossy().as_ref(), "status"],
+    ) {
         Ok(output) => output.status.success(),
         Err(_error) => false,
     };
 }
 
-pub fn pull(path: &Path) {
-    println!("`git pull`ing in {} ...", path.display());
+pub fn pull<P>(path: P)
+where
+    P: Into<PathBuf> + AsRef<Path>,
+{
+    println!("`git pull`ing in {} ...", path.as_ref().display());
     if let Ok(_status) =
-        utils::process::command_spawn_wait("git", &["-C", path.to_str().unwrap(), "pull"])
+        utils::process::command_spawn_wait("git", &["-C", path.as_ref().to_str().unwrap(), "pull"])
     {
         println!("`git pull` done!");
     }
 }
 
-pub fn shallow_clone<S: AsRef<str>, T: AsRef<str>>(source: &S, target: &T) -> io::Result<()> {
+pub fn shallow_clone<S>(source: S, target: S) -> io::Result<()>
+where
+    S: Into<String> + AsRef<str>,
+{
     match utils::process::command_spawn_wait(
         "git",
         &["clone", "--depth", "1", source.as_ref(), target.as_ref()],
@@ -36,7 +49,10 @@ pub fn shallow_clone<S: AsRef<str>, T: AsRef<str>>(source: &S, target: &T) -> io
     }
 }
 
-pub fn shallow_fetch<T: AsRef<str>>(target: &T) -> io::Result<()> {
+pub fn shallow_fetch<S>(target: S) -> io::Result<()>
+where
+    S: Into<String> + AsRef<str>,
+{
     match utils::process::command_spawn_wait(
         "git",
         &["-C", target.as_ref(), "fetch", "--depth", "1"],
@@ -94,11 +110,11 @@ mod tests {
         }
         let source_path = Path::new(env!("CARGO_MANIFEST_DIR"));
 
-        shallow_clone(&source_path.to_str().unwrap(), &temp_path.to_str().unwrap()).unwrap();
+        shallow_clone(source_path.to_string_lossy(), temp_path.to_string_lossy());
 
         assert!(path_is_git_repository(&temp_path), true);
 
-        shallow_fetch(&temp_path.to_str().unwrap()).unwrap();
+        shallow_fetch(temp_path.to_string_lossy()).unwrap();
 
         utils::fs::delete_if_exists(&temp_path);
     }

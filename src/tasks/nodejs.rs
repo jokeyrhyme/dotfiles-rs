@@ -101,7 +101,7 @@ fn install_nodejs(version: &str) -> io::Result<()> {
     #[cfg(not(windows))]
     let remote_url = format!("https://nodejs.org/dist/{}/{}.tar.gz", version, &prefix);
 
-    match utils::http::download(&remote_url, &temp_path) {
+    match utils::http::download(remote_url, &temp_path) {
         Ok(()) => {}
         Err(error) => {
             println!("error: cannot download: {}", error);

@@ -159,7 +159,7 @@ fn install_golang(version: &str) -> Result<(), utils::golang::GolangError> {
         arch()
     );
 
-    utils::http::download(&remote_url, &temp_path)?;
+    utils::http::download(remote_url, &temp_path)?;
 
     let local_path = utils::env::home_dir().join(".local");
     let target_path = local_path.join("go");

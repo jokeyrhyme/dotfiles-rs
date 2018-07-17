@@ -21,9 +21,9 @@ impl<'a> GHRTask<'a> {
 
         let current = self.current_version();
         match github::release_versus_current(
-            &current,
-            &String::from(self.repo.0),
-            &String::from(self.repo.1),
+            current,
+            String::from(self.repo.0),
+            String::from(self.repo.1),
         ) {
             Some(r) => self.install_release(&r)?,
             None => {}
@@ -52,7 +52,7 @@ impl<'a> GHRTask<'a> {
     }
 
     fn current_version(&self) -> String {
-        let stdout = match utils::process::command_output(&self.command, &[&self.version_arg]) {
+        let stdout = match utils::process::command_output(&self.command, &[self.version_arg]) {
             Ok(o) => String::from_utf8(o.stdout).unwrap_or_default(),
             Err(error) => {
                 println!(
@@ -71,7 +71,7 @@ impl<'a> GHRTask<'a> {
     }
 
     fn exists(&self) -> bool {
-        match utils::process::command_output(&self.command, &[&self.version_arg]) {
+        match utils::process::command_output(&self.command, &[self.version_arg]) {
             Ok(output) => output.status.success(),
             Err(_error) => false,
         }
@@ -103,6 +103,6 @@ impl<'a> GHRTask<'a> {
     }
 
     fn latest_release(&self) -> Result<Release, github::GitHubError> {
-        github::latest_release(&self.repo.0, &self.repo.1)
+        github::latest_release(String::from(self.repo.0), String::from(self.repo.1))
     }
 }

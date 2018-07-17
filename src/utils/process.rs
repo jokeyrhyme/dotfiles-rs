@@ -1,17 +1,26 @@
-use std::io::Error;
 use std::process::Command;
 use std::process::ExitStatus;
 use std::process::Output;
-use std::str;
+use std::{
+    ffi::{OsStr, OsString}, io, str,
+};
 
 #[cfg(not(windows))]
-pub fn command_output<'a, T: AsRef<str>>(cmd: &str, args: &[T]) -> Result<Output, Error> {
+pub fn command_output<O, S>(cmd: O, args: &[S]) -> io::Result<Output>
+where
+    O: Into<OsString> + AsRef<OsStr>,
+    S: Into<String> + AsRef<str>,
+{
     let cmd_args: Vec<&str> = args.into_iter().map(|s| s.as_ref()).collect();
     return Command::new(cmd).args(cmd_args).output();
 }
 
 #[cfg(windows)]
-pub fn command_output<'a, T: AsRef<str>>(cmd: &str, args: &[T]) -> Result<Output, Error> {
+pub fn command_output<O, S>(cmd: O, args: &[S]) -> io::Result<Output>
+where
+    O: Into<OsString> + AsRef<OsStr>,
+    S: Into<String> + AsRef<str>,
+{
     let mut cmd_args = Vec::<&str>::new();
     cmd_args.push("/c");
     cmd_args.push(cmd);
@@ -20,13 +29,21 @@ pub fn command_output<'a, T: AsRef<str>>(cmd: &str, args: &[T]) -> Result<Output
 }
 
 #[cfg(not(windows))]
-pub fn command_spawn_wait<'a, T: AsRef<str>>(cmd: &str, args: &[T]) -> Result<ExitStatus, Error> {
+pub fn command_spawn_wait<O, S>(cmd: O, args: &[S]) -> io::Result<ExitStatus>
+where
+    O: Into<OsString> + AsRef<OsStr>,
+    S: Into<String> + AsRef<str>,
+{
     let cmd_args: Vec<&str> = args.into_iter().map(|s| s.as_ref()).collect();
     return Command::new(cmd).args(cmd_args).spawn()?.wait();
 }
 
 #[cfg(windows)]
-pub fn command_spawn_wait<'a, T: AsRef<str>>(cmd: &str, args: &[T]) -> Result<ExitStatus, Error> {
+pub fn command_spawn_wait<O, S>(cmd: O, args: &[S]) -> io::Result<ExitStatus>
+where
+    O: Into<OsString> + AsRef<OsStr>,
+    S: Into<String> + AsRef<str>,
+{
     let mut cmd_args = Vec::<&str>::new();
     cmd_args.push("/c");
     cmd_args.push(cmd);

@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use std::fs::{create_dir_all, File};
 use std::io::{self, ErrorKind, Write};
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 use cabot::{request::Request, response::Response, Client, RequestBuilder};
 
@@ -24,7 +24,10 @@ impl<'a> HTTPCall<'a> {
 
 pub const EMPTY_HEADERS: &[&str] = &[];
 
-pub fn create_request<'a, T: AsRef<str>>(url: &T, headers: &[&str]) -> Request {
+pub fn create_request<S>(url: S, headers: &[&str]) -> Request
+where
+    S: Into<String> + AsRef<str>,
+{
     RequestBuilder::new(url.as_ref())
         .set_http_method("GET")
         .add_header(&format!("User-Agent: {}", user_agent()))
@@ -33,16 +36,23 @@ pub fn create_request<'a, T: AsRef<str>>(url: &T, headers: &[&str]) -> Request {
         .unwrap()
 }
 
-pub fn download<'a, T: AsRef<str>>(url: &T, dest: &'a Path) -> io::Result<()> {
+pub fn download<P, S>(url: S, dest: P) -> io::Result<()>
+where
+    P: Into<PathBuf> + AsRef<Path>,
+    S: Into<String> + AsRef<str>,
+{
     let req = create_request(url, &EMPTY_HEADERS);
 
-    download_request(&req, dest)
+    download_request(&req, dest.as_ref())
 }
 
-pub fn download_request<'a>(req: &Request, dest: &'a Path) -> io::Result<()> {
+pub fn download_request<P>(req: &Request, dest: P) -> io::Result<()>
+where
+    P: Into<PathBuf> + AsRef<Path>,
+{
     let res = fetch_request(&req)?;
 
-    match dest.parent() {
+    match dest.as_ref().parent() {
         Some(parent) => {
             create_dir_all(&parent)?;
         }
@@ -61,7 +71,7 @@ pub fn download_request<'a>(req: &Request, dest: &'a Path) -> io::Result<()> {
     Ok(())
 }
 
-pub fn fetch_request<'a>(req: &Request) -> io::Result<Response> {
+pub fn fetch_request(req: &Request) -> io::Result<Response> {
     let client = Client::new();
     let res = match client.execute(&req) {
         Ok(r) => r,
@@ -78,7 +88,7 @@ pub fn fetch_request<'a>(req: &Request) -> io::Result<Response> {
             let headers = parse_headers(res.headers());
             let location = headers.get("location").unwrap().as_str();
             // TODO: send the original request's headers
-            let next_request = create_request(&location, &EMPTY_HEADERS);
+            let next_request = create_request(location, &EMPTY_HEADERS);
             fetch_request(&next_request)
         }
         _ => {
@@ -139,7 +149,7 @@ mod tests {
 
     #[test]
     fn fetch_page() {
-        let req = create_request(&"https://github.com/jokeyrhyme/dotfiles-rs", &EMPTY_HEADERS);
+        let req = create_request("https://github.com/jokeyrhyme/dotfiles-rs", &EMPTY_HEADERS);
         let res = fetch_request(&req).unwrap();
         let body = res.body_as_string().unwrap();
         assert!(body.contains("dotfiles-rs"));

@@ -1,9 +1,6 @@
-use std;
-use std::error::Error;
-use std::fmt;
-use std::io;
-use std::path::Path;
-use std::str;
+use std::{
+    self, error::Error, fmt, io, path::{Path, PathBuf}, str,
+};
 
 use cabot::request::Request;
 use serde_json;
@@ -77,16 +74,19 @@ impl Error for GitHubError {
     }
 }
 
-pub fn download_release_asset(asset: Asset, bin_path: &Path) {
-    let req = create_request(&asset.browser_download_url);
-    match utils::http::download_request(&req, &bin_path) {
+pub fn download_release_asset<P>(asset: Asset, bin_path: P)
+where
+    P: Into<PathBuf> + AsRef<Path>,
+{
+    let req = create_request(asset.browser_download_url);
+    match utils::http::download_request(&req, bin_path.as_ref()) {
         Ok(()) => {}
         Err(error) => {
             println!("error: cannot download: {}", error);
             return;
         }
     };
-    match utils::fs::set_executable(&bin_path) {
+    match utils::fs::set_executable(bin_path.as_ref()) {
         Ok(()) => {}
         Err(error) => {
             println!("error: cannot chmod a+rx: {}", error);
@@ -95,7 +95,10 @@ pub fn download_release_asset(asset: Asset, bin_path: &Path) {
     }
 }
 
-fn create_request<'a, T: AsRef<str>>(url: &T) -> Request {
+fn create_request<S>(url: S) -> Request
+where
+    S: Into<String> + AsRef<str>,
+{
     let mut headers: Vec<String> = Vec::new();
 
     match std::env::var("GITHUB_TOKEN") {
@@ -107,16 +110,19 @@ fn create_request<'a, T: AsRef<str>>(url: &T) -> Request {
     };
 
     let headers_slice: Vec<&str> = headers.iter().map(|h| &**h).collect();
-    utils::http::create_request(url, &headers_slice)
+    utils::http::create_request(url.as_ref(), &headers_slice)
 }
 
-fn fetch_releases<'a, T: AsRef<str>>(owner: &T, repo: &T) -> io::Result<Vec<Release>> {
+fn fetch_releases<S>(owner: S, repo: S) -> io::Result<Vec<Release>>
+where
+    S: Into<String> + AsRef<str>,
+{
     let uri = format!(
         "https://api.github.com/repos/{}/{}/releases",
         owner.as_ref(),
         repo.as_ref(),
     );
-    let req = create_request(&String::from(uri));
+    let req = create_request(uri);
     let res = utils::http::fetch_request(&req)?;
     let body = res.body_as_string().unwrap_or_default();
 
@@ -130,13 +136,16 @@ fn fetch_releases<'a, T: AsRef<str>>(owner: &T, repo: &T) -> io::Result<Vec<Rele
     Ok(releases)
 }
 
-pub fn fetch_tags<T: AsRef<str>>(owner: &T, repo: &T) -> io::Result<Vec<Tag>> {
+pub fn fetch_tags<S>(owner: S, repo: S) -> io::Result<Vec<Tag>>
+where
+    S: Into<String> + AsRef<str>,
+{
     let uri = format!(
         "https://api.github.com/repos/{}/{}/git/refs/tags",
         owner.as_ref(),
         repo.as_ref(),
     );
-    let req = create_request(&String::from(uri));
+    let req = create_request(uri);
     let res = utils::http::fetch_request(&req)?;
     let body = res.body_as_string().unwrap_or_default();
 
@@ -155,7 +164,10 @@ pub fn fetch_tags<T: AsRef<str>>(owner: &T, repo: &T) -> io::Result<Vec<Tag>> {
         .collect())
 }
 
-pub fn latest_release<'a, T: AsRef<str>>(owner: &T, repo: &T) -> Result<Release, GitHubError> {
+pub fn latest_release<S>(owner: S, repo: S) -> Result<Release, GitHubError>
+where
+    S: Into<String> + AsRef<str>,
+{
     let releases = match fetch_releases(owner, repo) {
         Ok(r) => r,
         Err(error) => {
@@ -175,7 +187,10 @@ pub fn latest_release<'a, T: AsRef<str>>(owner: &T, repo: &T) -> Result<Release,
     }
 }
 
-pub fn release_versus_current<T: AsRef<str>>(current: &T, owner: &T, repo: &T) -> Option<Release> {
+pub fn release_versus_current<S>(current: S, owner: S, repo: S) -> Option<Release>
+where
+    S: Into<String> + AsRef<str>,
+{
     let release = match latest_release(owner, repo) {
         Ok(r) => r,
         Err(error) => {
@@ -206,7 +221,7 @@ mod tests {
 
     #[test]
     fn fetch_tags_github_hub() {
-        match fetch_tags(&"github", &"hub") {
+        match fetch_tags("github", "hub") {
             Ok(tags) => {
                 assert!(tags.len() > 0);
                 let first = tags.into_iter().next().unwrap();
@@ -219,7 +234,7 @@ mod tests {
 
     #[test]
     fn latest_release_github_hub() {
-        match latest_release(&"github", &"hub") {
+        match latest_release("github", "hub") {
             Ok(release) => {
                 assert!(release.assets.len() > 0);
                 assert_eq!(release.draft, false);
