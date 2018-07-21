@@ -3,6 +3,7 @@ mod atom;
 mod dep;
 mod dotfiles;
 mod git;
+mod gitleaks;
 mod golang;
 mod hadolint;
 mod hyper;
@@ -31,6 +32,7 @@ pub fn sync() {
     atom::sync();
     dep::sync();
     git::sync();
+    gitleaks::sync();
     golang::sync();
     hadolint::sync();
     hyper::sync();
@@ -60,6 +62,7 @@ pub fn update() {
     atom::update();
     dep::update();
     git::update();
+    gitleaks::update();
     golang::update();
     hadolint::update();
     hyper::update();
