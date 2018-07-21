@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.17.0] - 2018-07-20
+
 ### Added
 
 - gitleaks: keep [gitleaks](https://github.com/zricethezav/gitleaks) `sync`ed and `update`d
