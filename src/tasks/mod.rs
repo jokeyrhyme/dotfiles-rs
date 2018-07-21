@@ -9,6 +9,7 @@ mod hyper;
 mod jq;
 #[cfg(target_os = "macos")]
 mod macos;
+mod minikube;
 mod nodejs;
 mod psql;
 mod rust;
@@ -36,6 +37,7 @@ pub fn sync() {
     jq::sync();
     #[cfg(target_os = "macos")]
     macos::sync();
+    minikube::sync();
     nodejs::sync();
     psql::sync();
     rust::sync();
@@ -64,6 +66,7 @@ pub fn update() {
     jq::update();
     #[cfg(target_os = "macos")]
     macos::update();
+    minikube::update();
     nodejs::update();
     psql::update();
     rust::update();
