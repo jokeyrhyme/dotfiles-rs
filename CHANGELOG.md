@@ -9,11 +9,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
+- gitleaks: keep [gitleaks](https://github.com/zricethezav/gitleaks) `sync`ed and `update`d
+
 - hadolint: keep [hadolint](https://github.com/hadolint/hadolint) `sync`ed and `update`d
 
 - minikube: keep [minikube](https://github.com/kubernetes/minikube) `sync`ed and `update`d
 
-- vim: keep [neovim](https://github.com/neovim/neovim) `sync`ed and `update`d if detected
+- vim: keep [neovim](https://github.com/neovim/neovim) plugins and settings `sync`ed and `update`d if detected
 
 ## [0.16.0] - 2018-07-13
 
