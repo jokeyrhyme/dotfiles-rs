@@ -110,7 +110,8 @@ mod tests {
         }
         let source_path = Path::new(env!("CARGO_MANIFEST_DIR"));
 
-        shallow_clone(source_path.to_string_lossy(), temp_path.to_string_lossy());
+        shallow_clone(source_path.to_string_lossy(), temp_path.to_string_lossy())
+            .expect("unable to shallow_clone()");
 
         assert!(path_is_git_repository(&temp_path), true);
 

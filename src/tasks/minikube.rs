@@ -1,5 +1,3 @@
-use regex::Regex;
-
 use lib::ghrtask::GHRTask;
 use utils::github::Asset;
 use utils::golang::{arch, os};
@@ -21,20 +19,24 @@ pub fn update() {
 const GHR_TASK: GHRTask = GHRTask {
     asset_filter: asset_filter,
     #[cfg(windows)]
-    command: "shfmt.exe",
+    command: "minikube.exe",
     #[cfg(not(windows))]
-    command: "shfmt",
-    repo: ("mvdan", "sh"),
+    command: "minikube",
+    repo: ("kubernetes", "minikube"),
     trim_version: trim_version,
-    version_arg: "--version",
+    version_arg: "version",
 };
 
 fn asset_filter(asset: &Asset) -> bool {
-    let re = Regex::new(&format!("^shfmt_.*_{}_{}(\\.exe)?$", os(), arch())).unwrap();
+    let name = format!("minikube-{}-{}", os(), arch());
 
-    re.is_match(&asset.name)
+    asset.name == name
 }
 
 fn trim_version(stdout: String) -> String {
-    String::from(stdout.trim())
+    for line in stdout.lines() {
+        let parts: Vec<&str> = line.splitn(2, ":").collect();
+        return String::from(parts[1].trim());
+    }
+    String::from("unexpected")
 }
