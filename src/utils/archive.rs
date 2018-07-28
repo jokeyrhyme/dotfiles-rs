@@ -4,11 +4,10 @@ use std::io::{self, BufReader, BufWriter};
 use std::path::Path;
 
 use libflate;
-use mktemp;
 use tar;
 use zip;
 
-use utils;
+use utils::{self, fs::mktemp};
 
 pub fn extract_gz(source: &Path, target: &Path) -> io::Result<()> {
     println!("extract_gz: {} -> {}", source.display(), target.display());
@@ -74,12 +73,7 @@ pub fn extract_tar_gz(source: &Path, target: &Path) -> io::Result<()> {
         target.display()
     );
 
-    let temp_path;
-    {
-        let mut temp = mktemp::Temp::new_file()?;
-        temp_path = temp.to_path_buf();
-        temp.release();
-    }
+    let temp_path = mktemp()?;
     extract_gz(&source, &temp_path)?;
     extract_tar(&temp_path, &target)?;
 
@@ -125,16 +119,13 @@ pub fn extract_zip(source: &Path, target: &Path) -> io::Result<()> {
 mod tests {
     use std::io::Read;
 
+    use utils::fs::mkdtemp;
+
     use super::*;
 
     #[test]
     fn extract_fixture_foo_txt_gz() {
-        let temp_path;
-        {
-            let mut temp = mktemp::Temp::new_file().unwrap();
-            temp_path = temp.to_path_buf();
-            temp.release();
-        }
+        let temp_path = mktemp().unwrap();
 
         let foo_path = Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/foo.txt.gz");
 
@@ -152,12 +143,7 @@ mod tests {
 
     #[test]
     fn extract_fixture_foo_txt_tar() {
-        let temp_path;
-        {
-            let mut temp = mktemp::Temp::new_dir().unwrap();
-            temp_path = temp.to_path_buf();
-            temp.release();
-        }
+        let temp_path = mkdtemp().unwrap();
 
         let foo_path = Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/foo.txt.tar");
 
@@ -175,12 +161,7 @@ mod tests {
 
     #[test]
     fn extract_fixture_foo_txt_zip() {
-        let temp_path;
-        {
-            let mut temp = mktemp::Temp::new_dir().unwrap();
-            temp_path = temp.to_path_buf();
-            temp.release();
-        }
+        let temp_path = mkdtemp().unwrap();
 
         let foo_path = Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/foo.txt.zip");
 

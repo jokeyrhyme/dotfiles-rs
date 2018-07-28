@@ -73,7 +73,7 @@ where
 
 #[cfg(test)]
 mod tests {
-    use mktemp;
+    use utils::fs::mkdtemp;
 
     use super::*;
 
@@ -102,12 +102,7 @@ mod tests {
             return;
         }
 
-        let temp_path;
-        {
-            let mut temp = mktemp::Temp::new_dir().unwrap();
-            temp_path = temp.to_path_buf();
-            temp.release();
-        }
+        let temp_path = mkdtemp().unwrap();
         let source_path = Path::new(env!("CARGO_MANIFEST_DIR"));
 
         shallow_clone(source_path.to_string_lossy(), temp_path.to_string_lossy())

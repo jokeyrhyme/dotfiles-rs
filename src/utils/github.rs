@@ -74,11 +74,11 @@ impl Error for GitHubError {
     }
 }
 
-pub fn download_release_asset<P>(asset: Asset, bin_path: P)
+pub fn download_release_asset<P>(asset: &Asset, bin_path: P)
 where
     P: Into<PathBuf> + AsRef<Path>,
 {
-    let req = create_request(asset.browser_download_url);
+    let req = create_request(asset.browser_download_url.clone());
     match utils::http::download_request(&req, bin_path.as_ref()) {
         Ok(()) => {}
         Err(error) => {

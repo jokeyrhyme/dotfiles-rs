@@ -5,6 +5,8 @@ use std::path::{Path, PathBuf};
 #[cfg(unix)]
 use std::{fmt::Debug, fs::File, io};
 
+use mktemp;
+
 pub fn delete_if_exists<P>(path: P)
 where
     P: Into<PathBuf> + AsRef<Path> + Debug,
@@ -161,6 +163,26 @@ where
     }
 
     std::os::windows::fs::symlink_file(src, dest)
+}
+
+pub fn mkdtemp() -> io::Result<PathBuf> {
+    let temp_path;
+    {
+        let mut temp = mktemp::Temp::new_dir()?;
+        temp_path = temp.to_path_buf();
+        temp.release();
+    }
+    Ok(temp_path)
+}
+
+pub fn mktemp() -> io::Result<PathBuf> {
+    let temp_path;
+    {
+        let mut temp = mktemp::Temp::new_file()?;
+        temp_path = temp.to_path_buf();
+        temp.release();
+    }
+    Ok(temp_path)
 }
 
 #[cfg(test)]

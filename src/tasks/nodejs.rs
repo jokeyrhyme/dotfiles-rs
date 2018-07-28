@@ -2,12 +2,11 @@ use std::collections::HashMap;
 use std::path::Path;
 use std::{self, fs, io, str};
 
-use mktemp;
 use serde_json;
 use toml;
 
 use utils::{
-    self, nodejs::{arch, os},
+    self, fs::mktemp, nodejs::{arch, os},
 };
 
 const ERROR_MSG: &str = "error: nodejs";
@@ -90,12 +89,7 @@ fn install_nodejs<S>(version: S) -> io::Result<()>
 where
     S: Into<String> + AsRef<str>,
 {
-    let temp_path;
-    {
-        let mut temp = mktemp::Temp::new_file()?;
-        temp_path = temp.to_path_buf();
-        temp.release();
-    }
+    let temp_path = mktemp()?;
 
     let prefix = format!("node-{}-{}-{}", version.as_ref(), os(), arch());
 
