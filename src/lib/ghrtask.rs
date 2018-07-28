@@ -13,22 +13,34 @@ pub struct GHRTask<'a> {
 }
 
 impl<'a> GHRTask<'a> {
-    pub fn update(&self) -> io::Result<()> {
-        if !self.exists() {
-            return Ok(());
-        }
-        println!("{}: updating...", &self.command);
-
-        let current = self.current_version();
-        match github::release_versus_current(
-            current,
-            String::from(self.repo.0),
-            String::from(self.repo.1),
-        ) {
-            Some(r) => self.install_release(&r)?,
-            None => {}
+    pub fn current_version(&self) -> String {
+        let stdout = match utils::process::command_output(&self.command, &[self.version_arg]) {
+            Ok(o) => String::from_utf8(o.stdout).unwrap_or_default(),
+            Err(error) => {
+                println!(
+                    "error: `{} {}`: {}",
+                    &self.command, &self.version_arg, error
+                );
+                String::new()
+            }
         };
-        Ok(())
+        let trimmed = (self.trim_version)(String::from(stdout));
+        if trimmed.len() == 0 {
+            String::from("unexpected")
+        } else {
+            String::from(trimmed)
+        }
+    }
+
+    pub fn exists(&self) -> bool {
+        match utils::process::command_output(&self.command, &[self.version_arg]) {
+            Ok(output) => output.status.success(),
+            Err(_error) => false,
+        }
+    }
+
+    pub fn latest_release(&self) -> Result<Release, github::GitHubError> {
+        github::latest_release(String::from(self.repo.0), String::from(self.repo.1))
     }
 
     pub fn sync(&self) -> io::Result<()> {
@@ -51,30 +63,22 @@ impl<'a> GHRTask<'a> {
         Ok(())
     }
 
-    fn current_version(&self) -> String {
-        let stdout = match utils::process::command_output(&self.command, &[self.version_arg]) {
-            Ok(o) => String::from_utf8(o.stdout).unwrap_or_default(),
-            Err(error) => {
-                println!(
-                    "error: `{} {}`: {}",
-                    &self.command, &self.version_arg, error
-                );
-                String::new()
-            }
-        };
-        let trimmed = (self.trim_version)(String::from(stdout));
-        if trimmed.len() == 0 {
-            String::from("unexpected")
-        } else {
-            String::from(trimmed)
+    pub fn update(&self) -> io::Result<()> {
+        if !self.exists() {
+            return Ok(());
         }
-    }
+        println!("{}: updating...", &self.command);
 
-    fn exists(&self) -> bool {
-        match utils::process::command_output(&self.command, &[self.version_arg]) {
-            Ok(output) => output.status.success(),
-            Err(_error) => false,
-        }
+        let current = self.current_version();
+        match github::release_versus_current(
+            current,
+            String::from(self.repo.0),
+            String::from(self.repo.1),
+        ) {
+            Some(r) => self.install_release(&r)?,
+            None => {}
+        };
+        Ok(())
     }
 
     fn install_release(&self, release: &Release) -> io::Result<()> {
@@ -97,12 +101,8 @@ impl<'a> GHRTask<'a> {
             .join(".local")
             .join("bin")
             .join(&self.command);
-        github::download_release_asset(asset, &bin_path);
+        github::download_release_asset(&asset, &bin_path);
 
         Ok(())
-    }
-
-    fn latest_release(&self) -> Result<Release, github::GitHubError> {
-        github::latest_release(String::from(self.repo.0), String::from(self.repo.1))
     }
 }

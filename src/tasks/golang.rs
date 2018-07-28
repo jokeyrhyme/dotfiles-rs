@@ -1,11 +1,10 @@
 use std::fs;
 
-use mktemp;
 use toml;
 use which;
 
 use utils::{
-    self, golang::{arch, os},
+    self, fs::mktemp, golang::{arch, os},
 };
 
 #[derive(Debug, Deserialize)]
@@ -140,12 +139,7 @@ where
 {
     println!("golang: installing {} ...", version.as_ref());
 
-    let temp_path;
-    {
-        let mut temp = mktemp::Temp::new_file()?;
-        temp_path = temp.to_path_buf();
-        temp.release();
-    }
+    let temp_path = mktemp()?;
 
     #[cfg(windows)]
     let remote_url = format!(

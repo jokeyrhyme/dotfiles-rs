@@ -18,6 +18,7 @@ mod shfmt;
 mod skaffold;
 mod ssh;
 mod tmux;
+mod vale;
 mod vim;
 mod vscode;
 #[cfg(windows)]
@@ -47,6 +48,7 @@ pub fn sync() {
     skaffold::sync();
     ssh::sync();
     tmux::sync();
+    vale::sync();
     vim::sync();
     vscode::sync();
     #[cfg(windows)]
@@ -77,6 +79,7 @@ pub fn update() {
     skaffold::update();
     ssh::update();
     tmux::update();
+    vale::update();
     vim::update();
     vscode::update();
     #[cfg(windows)]
