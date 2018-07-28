@@ -2,7 +2,7 @@ use std::{fs, io};
 
 use lib::ghrtask::GHRTask;
 use utils::{
-    self, archive::{extract_tar_gz, extract_zip}, fs::{mkdtemp, mktemp},
+    self, archive::{extract_tar_gz, extract_zip}, fs::{mkdtemp, mktemp, set_executable},
     github::{self, Asset, Release},
 };
 
@@ -116,6 +116,7 @@ impl<'a> GHRATask<'a> {
             &bin_path.display(),
         );
         fs::copy(&extract_path.join(&self.command), &bin_path)?;
+        set_executable(&bin_path)?;
 
         fs::remove_dir_all(&extract_path)?;
 

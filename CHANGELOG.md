@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
+- git-sizer: keep [vale](https://github.com/github/git-sizer) `sync`ed and `update`d
+
 - vale: keep [vale](https://github.com/errata-ai/vale) `sync`ed and `update`d
 
 ## [0.17.0] - 2018-07-20

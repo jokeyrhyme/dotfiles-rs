@@ -4,6 +4,7 @@ mod dep;
 mod dotfiles;
 mod git;
 mod gitleaks;
+mod gitsizer;
 mod golang;
 mod hadolint;
 mod hyper;
@@ -34,6 +35,7 @@ pub fn sync() {
     dep::sync();
     git::sync();
     gitleaks::sync();
+    gitsizer::sync();
     golang::sync();
     hadolint::sync();
     hyper::sync();
@@ -65,6 +67,7 @@ pub fn update() {
     dep::update();
     git::update();
     gitleaks::update();
+    gitsizer::update();
     golang::update();
     hadolint::update();
     hyper::update();
