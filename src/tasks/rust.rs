@@ -117,6 +117,7 @@ fn cargo_installed() -> HashMap<String, String> {
     krates
 }
 
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 fn cargo_latest_version<S>(krate: S) -> Result<String, String>
 where
     S: Into<String> + AsRef<str>,
@@ -188,6 +189,7 @@ fn has_rustup() -> bool {
     }
 }
 
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 fn parse_installed<S>(stdout: S) -> HashMap<String, String>
 where
     S: Into<String> + AsRef<str>,

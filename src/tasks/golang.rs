@@ -125,6 +125,7 @@ pub fn update() {
     };
 }
 
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 fn install_golang<S>(version: S) -> Result<(), utils::golang::GolangError>
 where
     S: Into<String> + AsRef<str>,

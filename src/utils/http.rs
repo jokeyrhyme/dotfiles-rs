@@ -24,6 +24,7 @@ impl<'a> HTTPCall<'a> {
 
 pub const EMPTY_HEADERS: &[&str] = &[];
 
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 pub fn create_request<S>(url: S, headers: &[&str]) -> Request
 where
     S: Into<String> + AsRef<str>,
@@ -36,6 +37,7 @@ where
         .unwrap()
 }
 
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 pub fn download<P, S>(url: S, dest: P) -> io::Result<()>
 where
     P: Into<PathBuf> + AsRef<Path>,
@@ -46,6 +48,7 @@ where
     download_request(&req, dest.as_ref())
 }
 
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 pub fn download_request<P>(req: &Request, dest: P) -> io::Result<()>
 where
     P: Into<PathBuf> + AsRef<Path>,
@@ -102,7 +105,7 @@ fn parse_headers(headers: Vec<&str>) -> HashMap<String, String> {
     // but we deduplicate them here, which is fine for me for now
     let mut map = HashMap::<String, String>::new();
 
-    for header in &headers {
+    for header in headers {
         let parts: Vec<&str> = header.splitn(2, ':').map(str::trim).collect();
         if parts.len() == 2 {
             let name = parts[0];

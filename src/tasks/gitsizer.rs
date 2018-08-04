@@ -35,6 +35,7 @@ fn asset_filter(asset: &Asset) -> bool {
     re.is_match(&asset.name)
 }
 
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 fn trim_version(stdout: String) -> String {
     String::from(stdout.trim())
 }

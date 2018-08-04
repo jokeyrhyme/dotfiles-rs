@@ -554,28 +554,28 @@ impl<'a> From<&'a Config> for String {
             &"AddressFamily",
             &source.AddressFamily,
         ));
-        result.push_str(&format_config_bool(&"BatchMode", &source.BatchMode));
-        result.push_str(&format_config_bool(&"BindAddress", &source.BindAddress));
-        result.push_str(&format_config_bool(&"BindInterface", &source.BindInterface));
+        result.push_str(&format_config_bool(&"BatchMode", source.BatchMode));
+        result.push_str(&format_config_bool(&"BindAddress", source.BindAddress));
+        result.push_str(&format_config_bool(&"BindInterface", source.BindInterface));
         result.push_str(&format_config_bool(
             &"CanonicalDomains",
-            &source.CanonicalDomains,
+            source.CanonicalDomains,
         ));
         result.push_str(&format_config_bool(
             &"CanonicalizeFallbackLocal",
-            &source.CanonicalizeFallbackLocal,
+            source.CanonicalizeFallbackLocal,
         ));
         result.push_str(&format_config_bool(
             &"CanonicalizeHostname",
-            &source.CanonicalizeHostname,
+            source.CanonicalizeHostname,
         ));
         result.push_str(&format_config_bool(
             &"CanonicalizeMaxDots",
-            &source.CanonicalizeMaxDots,
+            source.CanonicalizeMaxDots,
         ));
         result.push_str(&format_config_bool(
             &"CanonicalisePermittedCNAMEs",
-            &source.CanonicalisePermittedCNAMEs,
+            source.CanonicalisePermittedCNAMEs,
         ));
         result.push_str(&format_config_pathbuf(
             &"CertificateFile",
@@ -583,22 +583,22 @@ impl<'a> From<&'a Config> for String {
         ));
         result.push_str(&format_config_bool(
             &"ChallengeResponseAuthentication",
-            &source.ChallengeResponseAuthentication,
+            source.ChallengeResponseAuthentication,
         ));
-        result.push_str(&format_config_bool(&"CheckHostIP", &source.CheckHostIP));
+        result.push_str(&format_config_bool(&"CheckHostIP", source.CheckHostIP));
         result.push_str(&format_config_strings(&"Ciphers", &source.Ciphers));
         result.push_str(&format_config_bool(
             &"ClearAllForwardings",
-            &source.ClearAllForwardings,
+            source.ClearAllForwardings,
         ));
-        result.push_str(&format_config_bool(&"Compression", &source.Compression));
+        result.push_str(&format_config_bool(&"Compression", source.Compression));
         result.push_str(&format_config_number(
             &"ConnectionAttempts",
-            &source.ConnectionAttempts,
+            source.ConnectionAttempts,
         ));
         result.push_str(&format_config_number(
             &"ConnectTimeout",
-            &source.ConnectTimeout,
+            source.ConnectTimeout,
         ));
         result.push_str(&format_config_string(
             &"ControlMaster",
@@ -607,7 +607,7 @@ impl<'a> From<&'a Config> for String {
         result.push_str(&format_config_pathbuf(&"ControlPath", &source.ControlPath));
         result.push_str(&format_config_number(
             &"ControlPersist",
-            &source.ControlPersist,
+            source.ControlPersist,
         ));
         result.push_str(&format_config_string(
             &"DynamicForward",
@@ -615,47 +615,47 @@ impl<'a> From<&'a Config> for String {
         ));
         result.push_str(&format_config_bool(
             &"EnableSSHKeysing",
-            &source.EnableSSHKeysing,
+            source.EnableSSHKeysing,
         ));
-        result.push_str(&format_config_char(&"EscapeChar", &source.EscapeChar));
+        result.push_str(&format_config_char(&"EscapeChar", source.EscapeChar));
         result.push_str(&format_config_bool(
             &"ExitOnForwardFailure",
-            &source.ExitOnForwardFailure,
+            source.ExitOnForwardFailure,
         ));
         result.push_str(&format_config_string(
             &"FingerprintHash",
             &source.FingerprintHash,
         ));
-        result.push_str(&format_config_bool(&"ForwardAgent", &source.ForwardAgent));
-        result.push_str(&format_config_bool(&"ForwardX11", &source.ForwardX11));
+        result.push_str(&format_config_bool(&"ForwardAgent", source.ForwardAgent));
+        result.push_str(&format_config_bool(&"ForwardX11", source.ForwardX11));
         result.push_str(&format_config_number(
             &"ForwardX11Timeout",
-            &source.ForwardX11Timeout,
+            source.ForwardX11Timeout,
         ));
         result.push_str(&format_config_bool(
             &"ForwardX11Trusted",
-            &source.ForwardX11Trusted,
+            source.ForwardX11Trusted,
         ));
-        result.push_str(&format_config_bool(&"GatewayPorts", &source.GatewayPorts));
+        result.push_str(&format_config_bool(&"GatewayPorts", source.GatewayPorts));
         result.push_str(&format_config_pathbuf(
             &"GlobalKnownHostsFile",
             &source.GlobalKnownHostsFile,
         ));
         result.push_str(&format_config_bool(
             &"GSSAPIAuthentication",
-            &source.GSSAPIAuthentication,
+            source.GSSAPIAuthentication,
         ));
         result.push_str(&format_config_bool(
             &"GSSAPIDelegateCredentials",
-            &source.GSSAPIDelegateCredentials,
+            source.GSSAPIDelegateCredentials,
         ));
         result.push_str(&format_config_bool(
             &"HashKnownHosts",
-            &source.HashKnownHosts,
+            source.HashKnownHosts,
         ));
         result.push_str(&format_config_bool(
             &"HostbasedAuthentication",
-            &source.HostbasedAuthentication,
+            source.HostbasedAuthentication,
         ));
         result.push_str(&format_config_string(
             &"HostbasedKeyTypes",
@@ -669,7 +669,7 @@ impl<'a> From<&'a Config> for String {
         result.push_str(&format_config_string(&"HostName", &source.HostName));
         result.push_str(&format_config_bool(
             &"IdentitiesOnly",
-            &source.IdentitiesOnly,
+            source.IdentitiesOnly,
         ));
         result.push_str(&format_config_string(
             &"IdentityAgent",
@@ -687,7 +687,7 @@ impl<'a> From<&'a Config> for String {
         result.push_str(&format_config_string(&"IPQoS", &source.IPQoS));
         result.push_str(&format_config_bool(
             &"KbdInteractiveAuthentication",
-            &source.KbdInteractiveAuthentication,
+            source.KbdInteractiveAuthentication,
         ));
         result.push_str(&format_config_string(
             &"KbdInteractiveDevices",
@@ -703,25 +703,25 @@ impl<'a> From<&'a Config> for String {
         result.push_str(&format_config_strings(&"MACs", &source.MACs));
         result.push_str(&format_config_bool(
             &"NoHostAuthenticationForLocalhost",
-            &source.NoHostAuthenticationForLocalhost,
+            source.NoHostAuthenticationForLocalhost,
         ));
         result.push_str(&format_config_number(
             &"NumberOfPasswordPrompts",
-            &source.NumberOfPasswordPrompts,
+            source.NumberOfPasswordPrompts,
         ));
         result.push_str(&format_config_bool(
             &"PasswordAuthentication",
-            &source.PasswordAuthentication,
+            source.PasswordAuthentication,
         ));
         result.push_str(&format_config_bool(
             &"PermitLocalCommand",
-            &source.PermitLocalCommand,
+            source.PermitLocalCommand,
         ));
         result.push_str(&format_config_string(
             &"PKCS11Provider",
             &source.PKCS11Provider,
         ));
-        result.push_str(&format_config_number(&"Port", &source.Port));
+        result.push_str(&format_config_number(&"Port", source.Port));
         result.push_str(&format_config_string(
             &"PreferredAuthentications",
             &source.PreferredAuthentications,
@@ -730,7 +730,7 @@ impl<'a> From<&'a Config> for String {
         result.push_str(&format_config_string(&"ProxyJump", &source.ProxyJump));
         result.push_str(&format_config_bool(
             &"ProxyUseFdpass",
-            &source.ProxyUseFdpass,
+            source.ProxyUseFdpass,
         ));
         result.push_str(&format_config_string(
             &"PubkeyAcceptedKeyTypes",
@@ -738,7 +738,7 @@ impl<'a> From<&'a Config> for String {
         ));
         result.push_str(&format_config_bool(
             &"PubkeyAuthentication",
-            &source.PubkeyAuthentication,
+            source.PubkeyAuthentication,
         ));
         result.push_str(&format_config_string(&"RekeyLimit", &source.RekeyLimit));
         result.push_str(&format_config_string(
@@ -757,11 +757,11 @@ impl<'a> From<&'a Config> for String {
         result.push_str(&format_config_string(&"SendEnv", &source.SendEnv));
         result.push_str(&format_config_number(
             &"ServerAliveCountMax",
-            &source.ServerAliveCountMax,
+            source.ServerAliveCountMax,
         ));
         result.push_str(&format_config_number(
             &"ServerAliveInterval",
-            &source.ServerAliveInterval,
+            source.ServerAliveInterval,
         ));
         result.push_str(&format_config_string(
             &"StreamLocalBindMask",
@@ -769,7 +769,7 @@ impl<'a> From<&'a Config> for String {
         ));
         result.push_str(&format_config_bool(
             &"StreamLocalBindUnlink",
-            &source.StreamLocalBindUnlink,
+            source.StreamLocalBindUnlink,
         ));
         result.push_str(&format_config_yesnoask(
             &"StrictHostKeyChecking",
@@ -779,7 +779,7 @@ impl<'a> From<&'a Config> for String {
             &"SyslogFacility",
             &source.SyslogFacility,
         ));
-        result.push_str(&format_config_bool(&"TCPKeepAlive", &source.TCPKeepAlive));
+        result.push_str(&format_config_bool(&"TCPKeepAlive", source.TCPKeepAlive));
         result.push_str(&format_config_string(&"Tunnel", &source.Tunnel));
         result.push_str(&format_config_string(&"TunnelDevice", &source.TunnelDevice));
         result.push_str(&format_config_yesnoask(
@@ -788,7 +788,7 @@ impl<'a> From<&'a Config> for String {
         ));
         result.push_str(&format_config_bool(
             &"UsePrivilegedPort",
-            &source.UsePrivilegedPort,
+            source.UsePrivilegedPort,
         ));
         result.push_str(&format_config_string(&"User", &source.User));
         result.push_str(&format_config_pathbuf(
@@ -799,7 +799,7 @@ impl<'a> From<&'a Config> for String {
             &"VerifyHostKeyDNS",
             &source.VerifyHostKeyDNS,
         ));
-        result.push_str(&format_config_bool(&"VisualHostKey", &source.VisualHostKey));
+        result.push_str(&format_config_bool(&"VisualHostKey", source.VisualHostKey));
         result.push_str(&format_config_pathbuf(
             &"XAuthLocation",
             &source.XAuthLocation,
@@ -857,24 +857,24 @@ impl<'a> From<&'a YesNoAsk> for String {
     }
 }
 
-fn format_config_bool(key: &str, value: &Option<bool>) -> String {
+fn format_config_bool(key: &str, value: Option<bool>) -> String {
     match value {
         Some(v) => {
-            let display = if *v { "yes" } else { "no" };
+            let display = if v { "yes" } else { "no" };
             format!("{} {}\n", key, display)
         }
         None => String::from(""),
     }
 }
 
-fn format_config_char(key: &str, value: &Option<char>) -> String {
+fn format_config_char(key: &str, value: Option<char>) -> String {
     match value {
         Some(v) => format!("{} {}\n", key, v),
         None => String::from(""),
     }
 }
 
-fn format_config_number(key: &str, value: &Option<i32>) -> String {
+fn format_config_number(key: &str, value: Option<i32>) -> String {
     match value {
         Some(v) => format!("{} {}\n", key, v),
         None => String::from(""),
@@ -916,6 +916,7 @@ pub fn has_ssh() -> bool {
     }
 }
 
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 fn parse_config_bool<S>(text: S) -> Option<bool>
 where
     S: Into<String> + AsRef<str>,
@@ -923,6 +924,7 @@ where
     Some(text.as_ref() == "yes")
 }
 
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 fn parse_config_char<S>(text: S) -> Option<char>
 where
     S: Into<String> + AsRef<str>,
@@ -930,6 +932,7 @@ where
     Some(text.as_ref().chars().next().unwrap_or('~'))
 }
 
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 fn parse_config_number<S>(text: S) -> Option<i32>
 where
     S: Into<String> + AsRef<str>,
@@ -940,6 +943,7 @@ where
     }
 }
 
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 fn parse_config_pathbuf<S>(text: S) -> Option<PathBuf>
 where
     S: Into<String> + AsRef<str>,
@@ -947,6 +951,7 @@ where
     Some(PathBuf::new().join(text.as_ref()))
 }
 
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 fn parse_config_strings<S>(text: S) -> Option<Vec<String>>
 where
     S: Into<String> + AsRef<str>,
@@ -967,6 +972,7 @@ where
     )
 }
 
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 fn parse_config_yesnoask<S>(text: S) -> Option<YesNoAsk>
 where
     S: Into<String> + AsRef<str>,

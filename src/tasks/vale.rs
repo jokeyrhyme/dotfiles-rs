@@ -54,6 +54,7 @@ pub fn os() -> &'static str {
     }
 }
 
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 fn trim_version(stdout: String) -> String {
     String::from(stdout.trim())
 }

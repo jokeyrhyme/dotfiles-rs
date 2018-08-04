@@ -12,6 +12,7 @@ pub fn has_git() -> bool {
     }
 }
 
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 pub fn path_is_git_repository<P>(path: P) -> bool
 where
     P: Into<PathBuf> + AsRef<Path>,
@@ -25,6 +26,7 @@ where
     }
 }
 
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 pub fn pull<P>(path: P)
 where
     P: Into<PathBuf> + AsRef<Path>,
@@ -37,6 +39,7 @@ where
     }
 }
 
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 pub fn shallow_clone<S>(source: S, target: S) -> io::Result<()>
 where
     S: Into<String> + AsRef<str>,
@@ -50,6 +53,7 @@ where
     }
 }
 
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 pub fn shallow_fetch<S>(target: S) -> io::Result<()>
 where
     S: Into<String> + AsRef<str>,

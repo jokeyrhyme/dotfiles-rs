@@ -41,6 +41,7 @@ fn asset_filter(asset: &Asset) -> bool {
     asset.name == name
 }
 
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 fn trim_version(stdout: String) -> String {
     let re = Regex::new(r"(\d+\.\d+\.\d+)").unwrap();
     let caps = re.captures_iter(stdout.trim()).next().unwrap();
