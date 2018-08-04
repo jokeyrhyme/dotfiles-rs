@@ -9,26 +9,24 @@ use utils::golang::os;
 
 pub fn sync() {
     match GHR_TASK.sync() {
-        Ok(_) => {}
-        Err(_) => {}
+        _ => {}
     }
 }
 
 pub fn update() {
     match GHR_TASK.update() {
-        Ok(_) => {}
-        Err(_) => {}
+        _ => {}
     }
 }
 
 const GHR_TASK: GHRTask = GHRTask {
-    asset_filter: asset_filter,
+    asset_filter,
     #[cfg(windows)]
     command: "hadolint.exe",
     #[cfg(not(windows))]
     command: "hadolint",
     repo: ("hadolint", "hadolint"),
-    trim_version: trim_version,
+    trim_version,
     version_arg: "--version",
 };
 
@@ -45,8 +43,9 @@ fn asset_filter(asset: &Asset) -> bool {
 
 fn trim_version(stdout: String) -> String {
     let re = Regex::new(r"(\d+\.\d+\.\d+)").unwrap();
-    for caps in re.captures_iter(stdout.trim()) {
-        return caps.get(1).unwrap().as_str().to_string();
+    let caps = re.captures_iter(stdout.trim()).next().unwrap();
+    match caps.get(1) {
+        Some(c) => c.as_str().to_string(),
+        None => String::from("unexpected"),
     }
-    String::from("unexpected")
 }

@@ -112,6 +112,8 @@ impl Config {
 
 impl BitOr for Config {
     type Output = Self;
+
+    #[cfg_attr(feature = "cargo-clippy", allow(cyclomatic_complexity))]
     fn bitor(self, rhs: Self) -> Self {
         let mut result = self.clone();
 
@@ -119,265 +121,265 @@ impl BitOr for Config {
         result.Matches.extend(rhs.Matches);
 
         if rhs.AddKeysToAgent.is_some() {
-            result.AddKeysToAgent = rhs.AddKeysToAgent.clone();
+            result.AddKeysToAgent = rhs.AddKeysToAgent;
         }
         if rhs.AddressFamily.is_some() {
-            result.AddressFamily = rhs.AddressFamily.clone();
+            result.AddressFamily = rhs.AddressFamily;
         }
         if rhs.BatchMode.is_some() {
-            result.BatchMode = rhs.BatchMode.clone();
+            result.BatchMode = rhs.BatchMode;
         }
         if rhs.BindAddress.is_some() {
-            result.BindAddress = rhs.BindAddress.clone();
+            result.BindAddress = rhs.BindAddress;
         }
         if rhs.BindInterface.is_some() {
-            result.BindInterface = rhs.BindInterface.clone();
+            result.BindInterface = rhs.BindInterface;
         }
         if rhs.CanonicalDomains.is_some() {
-            result.CanonicalDomains = rhs.CanonicalDomains.clone();
+            result.CanonicalDomains = rhs.CanonicalDomains;
         }
         if rhs.CanonicalizeFallbackLocal.is_some() {
-            result.CanonicalizeFallbackLocal = rhs.CanonicalizeFallbackLocal.clone();
+            result.CanonicalizeFallbackLocal = rhs.CanonicalizeFallbackLocal;
         }
         if rhs.CanonicalizeHostname.is_some() {
-            result.CanonicalizeHostname = rhs.CanonicalizeHostname.clone();
+            result.CanonicalizeHostname = rhs.CanonicalizeHostname;
         }
         if rhs.CanonicalizeMaxDots.is_some() {
-            result.CanonicalizeMaxDots = rhs.CanonicalizeMaxDots.clone();
+            result.CanonicalizeMaxDots = rhs.CanonicalizeMaxDots;
         }
         if rhs.CanonicalisePermittedCNAMEs.is_some() {
-            result.CanonicalisePermittedCNAMEs = rhs.CanonicalisePermittedCNAMEs.clone();
+            result.CanonicalisePermittedCNAMEs = rhs.CanonicalisePermittedCNAMEs;
         }
         if rhs.CertificateFile.is_some() {
-            result.CertificateFile = rhs.CertificateFile.clone();
+            result.CertificateFile = rhs.CertificateFile;
         }
         if rhs.ChallengeResponseAuthentication.is_some() {
-            result.ChallengeResponseAuthentication = rhs.ChallengeResponseAuthentication.clone();
+            result.ChallengeResponseAuthentication = rhs.ChallengeResponseAuthentication;
         }
         if rhs.CheckHostIP.is_some() {
-            result.CheckHostIP = rhs.CheckHostIP.clone();
+            result.CheckHostIP = rhs.CheckHostIP;
         }
         if rhs.Ciphers.is_some() {
-            result.Ciphers = rhs.Ciphers.clone();
+            result.Ciphers = rhs.Ciphers;
         }
         if rhs.ClearAllForwardings.is_some() {
-            result.ClearAllForwardings = rhs.ClearAllForwardings.clone();
+            result.ClearAllForwardings = rhs.ClearAllForwardings;
         }
         if rhs.Compression.is_some() {
-            result.Compression = rhs.Compression.clone();
+            result.Compression = rhs.Compression;
         }
         if rhs.ConnectionAttempts.is_some() {
-            result.ConnectionAttempts = rhs.ConnectionAttempts.clone();
+            result.ConnectionAttempts = rhs.ConnectionAttempts;
         }
         if rhs.ConnectTimeout.is_some() {
-            result.ConnectTimeout = rhs.ConnectTimeout.clone();
+            result.ConnectTimeout = rhs.ConnectTimeout;
         }
         if rhs.ControlMaster.is_some() {
-            result.ControlMaster = rhs.ControlMaster.clone();
+            result.ControlMaster = rhs.ControlMaster;
         }
         if rhs.ControlPath.is_some() {
-            result.ControlPath = rhs.ControlPath.clone();
+            result.ControlPath = rhs.ControlPath;
         }
         if rhs.ControlPersist.is_some() {
-            result.ControlPersist = rhs.ControlPersist.clone();
+            result.ControlPersist = rhs.ControlPersist;
         }
         if rhs.DynamicForward.is_some() {
-            result.DynamicForward = rhs.DynamicForward.clone();
+            result.DynamicForward = rhs.DynamicForward;
         }
         if rhs.EnableSSHKeysing.is_some() {
-            result.EnableSSHKeysing = rhs.EnableSSHKeysing.clone();
+            result.EnableSSHKeysing = rhs.EnableSSHKeysing;
         }
         if rhs.EscapeChar.is_some() {
-            result.EscapeChar = rhs.EscapeChar.clone();
+            result.EscapeChar = rhs.EscapeChar;
         }
         if rhs.ExitOnForwardFailure.is_some() {
-            result.ExitOnForwardFailure = rhs.ExitOnForwardFailure.clone();
+            result.ExitOnForwardFailure = rhs.ExitOnForwardFailure;
         }
         if rhs.FingerprintHash.is_some() {
-            result.FingerprintHash = rhs.FingerprintHash.clone();
+            result.FingerprintHash = rhs.FingerprintHash;
         }
         if rhs.ForwardAgent.is_some() {
-            result.ForwardAgent = rhs.ForwardAgent.clone();
+            result.ForwardAgent = rhs.ForwardAgent;
         }
         if rhs.ForwardX11.is_some() {
-            result.ForwardX11 = rhs.ForwardX11.clone();
+            result.ForwardX11 = rhs.ForwardX11;
         }
         if rhs.ForwardX11Timeout.is_some() {
-            result.ForwardX11Timeout = rhs.ForwardX11Timeout.clone();
+            result.ForwardX11Timeout = rhs.ForwardX11Timeout;
         }
         if rhs.ForwardX11Trusted.is_some() {
-            result.ForwardX11Trusted = rhs.ForwardX11Trusted.clone();
+            result.ForwardX11Trusted = rhs.ForwardX11Trusted;
         }
         if rhs.GatewayPorts.is_some() {
-            result.GatewayPorts = rhs.GatewayPorts.clone();
+            result.GatewayPorts = rhs.GatewayPorts;
         }
         if rhs.GlobalKnownHostsFile.is_some() {
-            result.GlobalKnownHostsFile = rhs.GlobalKnownHostsFile.clone();
+            result.GlobalKnownHostsFile = rhs.GlobalKnownHostsFile;
         }
         if rhs.GSSAPIAuthentication.is_some() {
-            result.GSSAPIAuthentication = rhs.GSSAPIAuthentication.clone();
+            result.GSSAPIAuthentication = rhs.GSSAPIAuthentication;
         }
         if rhs.GSSAPIDelegateCredentials.is_some() {
-            result.GSSAPIDelegateCredentials = rhs.GSSAPIDelegateCredentials.clone();
+            result.GSSAPIDelegateCredentials = rhs.GSSAPIDelegateCredentials;
         }
         if rhs.HashKnownHosts.is_some() {
-            result.HashKnownHosts = rhs.HashKnownHosts.clone();
+            result.HashKnownHosts = rhs.HashKnownHosts;
         }
         if rhs.HostbasedAuthentication.is_some() {
-            result.HostbasedAuthentication = rhs.HostbasedAuthentication.clone();
+            result.HostbasedAuthentication = rhs.HostbasedAuthentication;
         }
         if rhs.HostbasedKeyTypes.is_some() {
-            result.HostbasedKeyTypes = rhs.HostbasedKeyTypes.clone();
+            result.HostbasedKeyTypes = rhs.HostbasedKeyTypes;
         }
         if rhs.HostKeyAlgorithms.is_some() {
-            result.HostKeyAlgorithms = rhs.HostKeyAlgorithms.clone();
+            result.HostKeyAlgorithms = rhs.HostKeyAlgorithms;
         }
         if rhs.HostKeyAlias.is_some() {
-            result.HostKeyAlias = rhs.HostKeyAlias.clone();
+            result.HostKeyAlias = rhs.HostKeyAlias;
         }
         if rhs.HostName.is_some() {
-            result.HostName = rhs.HostName.clone();
+            result.HostName = rhs.HostName;
         }
         if rhs.IdentitiesOnly.is_some() {
-            result.IdentitiesOnly = rhs.IdentitiesOnly.clone();
+            result.IdentitiesOnly = rhs.IdentitiesOnly;
         }
         if rhs.IdentityAgent.is_some() {
-            result.IdentityAgent = rhs.IdentityAgent.clone();
+            result.IdentityAgent = rhs.IdentityAgent;
         }
         if rhs.IdentityFile.is_some() {
-            result.IdentityFile = rhs.IdentityFile.clone();
+            result.IdentityFile = rhs.IdentityFile;
         }
         if rhs.IgnoreUnknown.is_some() {
-            result.IgnoreUnknown = rhs.IgnoreUnknown.clone();
+            result.IgnoreUnknown = rhs.IgnoreUnknown;
         }
         if rhs.Include.is_some() {
-            result.Include = rhs.Include.clone();
+            result.Include = rhs.Include;
         }
         if rhs.IPQoS.is_some() {
-            result.IPQoS = rhs.IPQoS.clone();
+            result.IPQoS = rhs.IPQoS;
         }
         if rhs.KbdInteractiveAuthentication.is_some() {
-            result.KbdInteractiveAuthentication = rhs.KbdInteractiveAuthentication.clone();
+            result.KbdInteractiveAuthentication = rhs.KbdInteractiveAuthentication;
         }
         if rhs.KbdInteractiveDevices.is_some() {
-            result.KbdInteractiveDevices = rhs.KbdInteractiveDevices.clone();
+            result.KbdInteractiveDevices = rhs.KbdInteractiveDevices;
         }
         if rhs.KexAlgorithms.is_some() {
-            result.KexAlgorithms = rhs.KexAlgorithms.clone();
+            result.KexAlgorithms = rhs.KexAlgorithms;
         }
         if rhs.LocalCommand.is_some() {
-            result.LocalCommand = rhs.LocalCommand.clone();
+            result.LocalCommand = rhs.LocalCommand;
         }
         if rhs.LocalForward.is_some() {
-            result.LocalForward = rhs.LocalForward.clone();
+            result.LocalForward = rhs.LocalForward;
         }
         if rhs.LogLevel.is_some() {
-            result.LogLevel = rhs.LogLevel.clone();
+            result.LogLevel = rhs.LogLevel;
         }
         if rhs.MACs.is_some() {
-            result.MACs = rhs.MACs.clone();
+            result.MACs = rhs.MACs;
         }
         if rhs.NoHostAuthenticationForLocalhost.is_some() {
-            result.NoHostAuthenticationForLocalhost = rhs.NoHostAuthenticationForLocalhost.clone();
+            result.NoHostAuthenticationForLocalhost = rhs.NoHostAuthenticationForLocalhost;
         }
         if rhs.NumberOfPasswordPrompts.is_some() {
-            result.NumberOfPasswordPrompts = rhs.NumberOfPasswordPrompts.clone();
+            result.NumberOfPasswordPrompts = rhs.NumberOfPasswordPrompts;
         }
         if rhs.PasswordAuthentication.is_some() {
-            result.PasswordAuthentication = rhs.PasswordAuthentication.clone();
+            result.PasswordAuthentication = rhs.PasswordAuthentication;
         }
         if rhs.PermitLocalCommand.is_some() {
-            result.PermitLocalCommand = rhs.PermitLocalCommand.clone();
+            result.PermitLocalCommand = rhs.PermitLocalCommand;
         }
         if rhs.PKCS11Provider.is_some() {
-            result.PKCS11Provider = rhs.PKCS11Provider.clone();
+            result.PKCS11Provider = rhs.PKCS11Provider;
         }
         if rhs.Port.is_some() {
-            result.Port = rhs.Port.clone();
+            result.Port = rhs.Port;
         }
         if rhs.PreferredAuthentications.is_some() {
-            result.PreferredAuthentications = rhs.PreferredAuthentications.clone();
+            result.PreferredAuthentications = rhs.PreferredAuthentications;
         }
         if rhs.ProxyCommand.is_some() {
-            result.ProxyCommand = rhs.ProxyCommand.clone();
+            result.ProxyCommand = rhs.ProxyCommand;
         }
         if rhs.ProxyJump.is_some() {
-            result.ProxyJump = rhs.ProxyJump.clone();
+            result.ProxyJump = rhs.ProxyJump;
         }
         if rhs.ProxyUseFdpass.is_some() {
-            result.ProxyUseFdpass = rhs.ProxyUseFdpass.clone();
+            result.ProxyUseFdpass = rhs.ProxyUseFdpass;
         }
         if rhs.PubkeyAcceptedKeyTypes.is_some() {
-            result.PubkeyAcceptedKeyTypes = rhs.PubkeyAcceptedKeyTypes.clone();
+            result.PubkeyAcceptedKeyTypes = rhs.PubkeyAcceptedKeyTypes;
         }
         if rhs.PubkeyAuthentication.is_some() {
-            result.PubkeyAuthentication = rhs.PubkeyAuthentication.clone();
+            result.PubkeyAuthentication = rhs.PubkeyAuthentication;
         }
         if rhs.RekeyLimit.is_some() {
-            result.RekeyLimit = rhs.RekeyLimit.clone();
+            result.RekeyLimit = rhs.RekeyLimit;
         }
         if rhs.RemoteCommand.is_some() {
-            result.RemoteCommand = rhs.RemoteCommand.clone();
+            result.RemoteCommand = rhs.RemoteCommand;
         }
         if rhs.RemoteForward.is_some() {
-            result.RemoteForward = rhs.RemoteForward.clone();
+            result.RemoteForward = rhs.RemoteForward;
         }
         if rhs.RequestTTY.is_some() {
-            result.RequestTTY = rhs.RequestTTY.clone();
+            result.RequestTTY = rhs.RequestTTY;
         }
         if rhs.RevokedHostKeys.is_some() {
-            result.RevokedHostKeys = rhs.RevokedHostKeys.clone();
+            result.RevokedHostKeys = rhs.RevokedHostKeys;
         }
         if rhs.SendEnv.is_some() {
-            result.SendEnv = rhs.SendEnv.clone();
+            result.SendEnv = rhs.SendEnv;
         }
         if rhs.ServerAliveCountMax.is_some() {
-            result.ServerAliveCountMax = rhs.ServerAliveCountMax.clone();
+            result.ServerAliveCountMax = rhs.ServerAliveCountMax;
         }
         if rhs.ServerAliveInterval.is_some() {
-            result.ServerAliveInterval = rhs.ServerAliveInterval.clone();
+            result.ServerAliveInterval = rhs.ServerAliveInterval;
         }
         if rhs.StreamLocalBindMask.is_some() {
-            result.StreamLocalBindMask = rhs.StreamLocalBindMask.clone();
+            result.StreamLocalBindMask = rhs.StreamLocalBindMask;
         }
         if rhs.StreamLocalBindUnlink.is_some() {
-            result.StreamLocalBindUnlink = rhs.StreamLocalBindUnlink.clone();
+            result.StreamLocalBindUnlink = rhs.StreamLocalBindUnlink;
         }
         if rhs.StrictHostKeyChecking.is_some() {
-            result.StrictHostKeyChecking = rhs.StrictHostKeyChecking.clone();
+            result.StrictHostKeyChecking = rhs.StrictHostKeyChecking;
         }
         if rhs.SyslogFacility.is_some() {
-            result.SyslogFacility = rhs.SyslogFacility.clone();
+            result.SyslogFacility = rhs.SyslogFacility;
         }
         if rhs.TCPKeepAlive.is_some() {
-            result.TCPKeepAlive = rhs.TCPKeepAlive.clone();
+            result.TCPKeepAlive = rhs.TCPKeepAlive;
         }
         if rhs.Tunnel.is_some() {
-            result.Tunnel = rhs.Tunnel.clone();
+            result.Tunnel = rhs.Tunnel;
         }
         if rhs.TunnelDevice.is_some() {
-            result.TunnelDevice = rhs.TunnelDevice.clone();
+            result.TunnelDevice = rhs.TunnelDevice;
         }
         if rhs.UpdateHostKeys.is_some() {
-            result.UpdateHostKeys = rhs.UpdateHostKeys.clone();
+            result.UpdateHostKeys = rhs.UpdateHostKeys;
         }
         if rhs.UsePrivilegedPort.is_some() {
-            result.UsePrivilegedPort = rhs.UsePrivilegedPort.clone();
+            result.UsePrivilegedPort = rhs.UsePrivilegedPort;
         }
         if rhs.User.is_some() {
-            result.User = rhs.User.clone();
+            result.User = rhs.User;
         }
         if rhs.UserKnownHostsFile.is_some() {
-            result.UserKnownHostsFile = rhs.UserKnownHostsFile.clone();
+            result.UserKnownHostsFile = rhs.UserKnownHostsFile;
         }
         if rhs.VerifyHostKeyDNS.is_some() {
-            result.VerifyHostKeyDNS = rhs.VerifyHostKeyDNS.clone();
+            result.VerifyHostKeyDNS = rhs.VerifyHostKeyDNS;
         }
         if rhs.VisualHostKey.is_some() {
-            result.VisualHostKey = rhs.VisualHostKey.clone();
+            result.VisualHostKey = rhs.VisualHostKey;
         }
         if rhs.XAuthLocation.is_some() {
-            result.XAuthLocation = rhs.XAuthLocation.clone();
+            result.XAuthLocation = rhs.XAuthLocation;
         }
 
         result
@@ -393,12 +395,12 @@ impl<'a> From<&'a str> for Config {
 
         for line in source.lines() {
             let trimmed = line.trim();
-            if trimmed.len() == 0 && trimmed.chars().next().unwrap_or('#') == '#' {
+            if trimmed.is_empty() || trimmed.chars().next().unwrap_or('#') == '#' {
                 continue; // skip empty lines and comments
                           // TODO: one day support keeping comments
             }
 
-            let mut split = trimmed.splitn(2, " ");
+            let mut split = trimmed.splitn(2, ' ');
             let key = split.next().unwrap();
             let value = String::from(split.next().unwrap_or(""));
 
@@ -807,7 +809,7 @@ impl<'a> From<&'a Config> for String {
         let mut sorted_host_keys: Vec<&String> = host_keys.collect();
         sorted_host_keys.sort();
         for h in sorted_host_keys {
-            let h_config = source.Hosts.get(h).unwrap();
+            let h_config = &source.Hosts[h];
             result.push_str(&format!("\nHost {}\n", h));
             result.push_str(textwrap::indent(String::from(h_config).as_str(), &"  ").as_str());
         }
@@ -914,32 +916,48 @@ pub fn has_ssh() -> bool {
     }
 }
 
-fn parse_config_bool(text: String) -> Option<bool> {
-    Some(text == "yes")
+fn parse_config_bool<S>(text: S) -> Option<bool>
+where
+    S: Into<String> + AsRef<str>,
+{
+    Some(text.as_ref() == "yes")
 }
 
-fn parse_config_char(text: String) -> Option<char> {
-    Some(text.chars().next().unwrap_or('~'))
+fn parse_config_char<S>(text: S) -> Option<char>
+where
+    S: Into<String> + AsRef<str>,
+{
+    Some(text.as_ref().chars().next().unwrap_or('~'))
 }
 
-fn parse_config_number(text: String) -> Option<i32> {
-    match i32::from_str_radix(&text, 10) {
+fn parse_config_number<S>(text: S) -> Option<i32>
+where
+    S: Into<String> + AsRef<str>,
+{
+    match i32::from_str_radix(text.as_ref(), 10) {
         Ok(n) => Some(n),
         Err(_) => None,
     }
 }
 
-fn parse_config_pathbuf(text: String) -> Option<PathBuf> {
-    Some(PathBuf::new().join(text))
+fn parse_config_pathbuf<S>(text: S) -> Option<PathBuf>
+where
+    S: Into<String> + AsRef<str>,
+{
+    Some(PathBuf::new().join(text.as_ref()))
 }
 
-fn parse_config_strings(text: String) -> Option<Vec<String>> {
+fn parse_config_strings<S>(text: S) -> Option<Vec<String>>
+where
+    S: Into<String> + AsRef<str>,
+{
     Some(
-        text.split(",")
+        text.as_ref()
+            .split(',')
             .into_iter()
             .filter_map(|s| {
                 let trimmed = s.trim();
-                if trimmed.len() > 0 {
+                if !trimmed.is_empty() {
                     Some(String::from(s))
                 } else {
                     None
@@ -949,8 +967,11 @@ fn parse_config_strings(text: String) -> Option<Vec<String>> {
     )
 }
 
-fn parse_config_yesnoask(text: String) -> Option<YesNoAsk> {
-    Some(YesNoAsk::from(text.as_str()))
+fn parse_config_yesnoask<S>(text: S) -> Option<YesNoAsk>
+where
+    S: Into<String> + AsRef<str>,
+{
+    Some(YesNoAsk::from(text.as_ref()))
 }
 
 #[cfg(test)]

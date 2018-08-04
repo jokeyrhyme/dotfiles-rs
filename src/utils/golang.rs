@@ -13,25 +13,25 @@ pub enum GolangError {
 
 impl fmt::Display for GolangError {
     fn fmt(&self, f: &mut fmt::Formatter) -> std::fmt::Result {
-        match self {
-            &GolangError::NoTagsError => fmt::Display::fmt(&"NoTagsError", f),
-            &GolangError::IoError(ref err) => fmt::Display::fmt(err, f),
+        match *self {
+            GolangError::NoTagsError => fmt::Display::fmt(&"NoTagsError", f),
+            GolangError::IoError(ref err) => fmt::Display::fmt(err, f),
         }
     }
 }
 
 impl Error for GolangError {
     fn cause(&self) -> Option<&Error> {
-        match self {
-            &GolangError::NoTagsError => None,
-            &GolangError::IoError(ref err) => Some(err as &Error),
+        match *self {
+            GolangError::NoTagsError => None,
+            GolangError::IoError(ref err) => Some(err as &Error),
         }
     }
 
     fn description(&self) -> &str {
-        match self {
-            &GolangError::NoTagsError => &"NoTagsError",
-            &GolangError::IoError(ref err) => err.description(),
+        match *self {
+            GolangError::NoTagsError => &"NoTagsError",
+            GolangError::IoError(ref err) => err.description(),
         }
     }
 }
@@ -61,8 +61,7 @@ pub fn current_version() -> String {
             let stdout = str::from_utf8(&output.stdout).unwrap_or_default().trim();
             let trailer = format!(" {}/{}", os(), arch());
             let headless = str::replace(stdout, "go version ", "");
-            let version = str::replace(&headless, &trailer, "");
-            String::from(version)
+            str::replace(&headless, &trailer, "")
         }
         Err(_error) => String::from(""),
     }
@@ -96,7 +95,7 @@ pub fn latest_version() -> Result<String, GolangError> {
             return Err(GolangError::IoError(error));
         }
     };
-    if tags.len() < 1 {
+    if tags.is_empty() {
         return Err(GolangError::NoTagsError {});
     }
     match tags.last() {

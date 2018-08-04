@@ -2,7 +2,8 @@ use std::process::Command;
 use std::process::ExitStatus;
 use std::process::Output;
 use std::{
-    ffi::{OsStr, OsString}, io, str,
+    ffi::{OsStr, OsString},
+    io, str,
 };
 
 #[cfg(not(windows))]
@@ -12,7 +13,7 @@ where
     S: Into<String> + AsRef<str>,
 {
     let cmd_args: Vec<&str> = args.into_iter().map(|s| s.as_ref()).collect();
-    return Command::new(cmd).args(cmd_args).output();
+    Command::new(cmd).args(cmd_args).output()
 }
 
 #[cfg(windows)]
@@ -25,7 +26,7 @@ where
     cmd_args.push("/c");
     cmd_args.push(cmd);
     cmd_args.extend::<Vec<&str>>(args.into_iter().map(|s| s.as_ref()).collect());
-    return Command::new("cmd").args(cmd_args).output();
+    Command::new("cmd").args(cmd_args).output()
 }
 
 #[cfg(not(windows))]
@@ -35,7 +36,7 @@ where
     S: Into<String> + AsRef<str>,
 {
     let cmd_args: Vec<&str> = args.into_iter().map(|s| s.as_ref()).collect();
-    return Command::new(cmd).args(cmd_args).spawn()?.wait();
+    Command::new(cmd).args(cmd_args).spawn()?.wait()
 }
 
 #[cfg(windows)]
@@ -48,7 +49,7 @@ where
     cmd_args.push("/c");
     cmd_args.push(cmd);
     cmd_args.extend::<Vec<&str>>(args.into_iter().map(|s| s.as_ref()).collect());
-    return Command::new("cmd").args(cmd_args).spawn()?.wait();
+    Command::new("cmd").args(cmd_args).spawn()?.wait()
 }
 
 #[cfg(test)]

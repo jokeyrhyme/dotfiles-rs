@@ -73,11 +73,9 @@ pub fn update() {
 
 fn has_apm() -> bool {
     match utils::process::command_output("apm", &["--version"]) {
-        Ok(output) => {
-            return output.status.success();
-        }
+        Ok(output) => output.status.success(),
         Err(_error) => {
-            return false; // Atom probably not installed
+            false // Atom probably not installed
         }
     }
 }
@@ -93,10 +91,10 @@ fn pkgs_installed() -> Vec<String> {
 
     for line in stdout.lines() {
         let pkg = line;
-        if pkg.len() >= 1 {
-            let name = pkg.split("@").next().unwrap();
+        if !pkg.is_empty() {
+            let name = pkg.split('@').next().unwrap();
             pkgs.push(String::from(name));
         }
     }
-    return pkgs;
+    pkgs
 }

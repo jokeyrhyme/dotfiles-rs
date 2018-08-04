@@ -24,11 +24,11 @@ impl<'a> GHRTask<'a> {
                 String::new()
             }
         };
-        let trimmed = (self.trim_version)(String::from(stdout));
-        if trimmed.len() == 0 {
+        let trimmed = (self.trim_version)(stdout);
+        if trimmed.is_empty() {
             String::from("unexpected")
         } else {
-            String::from(trimmed)
+            trimmed
         }
     }
 
@@ -70,25 +70,18 @@ impl<'a> GHRTask<'a> {
         println!("{}: updating...", &self.command);
 
         let current = self.current_version();
-        match github::release_versus_current(
+        if let Some(r) = github::release_versus_current(
             current,
             String::from(self.repo.0),
             String::from(self.repo.1),
         ) {
-            Some(r) => self.install_release(&r)?,
-            None => {}
+            self.install_release(&r)?;
         };
         Ok(())
     }
 
     fn install_release(&self, release: &Release) -> io::Result<()> {
-        let asset = match release
-            .assets
-            .to_vec()
-            .into_iter()
-            .filter(self.asset_filter)
-            .next()
-        {
+        let asset = match release.assets.to_vec().into_iter().find(self.asset_filter) {
             Some(a) => a,
             None => {
                 println!("warning: {}: no asset matches OS and ARCH", &self.command);

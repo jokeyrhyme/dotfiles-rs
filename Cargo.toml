@@ -17,6 +17,7 @@ license = "MIT"
 [dependencies]
 cabot = "0.2.0"
 clap = "2.30"
+dirs = "1.0"
 Inflector = "0.11.3"
 libflate = "0.1.14"
 mktemp = "0.3.1"

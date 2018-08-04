@@ -1,10 +1,12 @@
 use std;
 use std::path::PathBuf;
 
+use dirs;
+
 pub fn home_dir() -> PathBuf {
-    match std::env::home_dir() {
+    match dirs::home_dir() {
         Some(path) => path,
-        None => panic!("no $HOME set"),
+        None => panic!("cannot determine home directory"),
     }
 }
 

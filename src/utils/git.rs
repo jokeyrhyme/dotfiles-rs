@@ -1,27 +1,28 @@
 use std::{
-    io, path::{Path, PathBuf},
+    io,
+    path::{Path, PathBuf},
 };
 
 use utils;
 
 pub fn has_git() -> bool {
-    return match utils::process::command_output("git", &["--version"]) {
+    match utils::process::command_output("git", &["--version"]) {
         Ok(output) => output.status.success(),
         Err(_error) => false,
-    };
+    }
 }
 
 pub fn path_is_git_repository<P>(path: P) -> bool
 where
     P: Into<PathBuf> + AsRef<Path>,
 {
-    return match utils::process::command_output(
+    match utils::process::command_output(
         "git",
         &["-C", path.as_ref().to_string_lossy().as_ref(), "status"],
     ) {
         Ok(output) => output.status.success(),
         Err(_error) => false,
-    };
+    }
 }
 
 pub fn pull<P>(path: P)

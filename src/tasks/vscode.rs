@@ -76,11 +76,11 @@ fn exts_installed() -> Vec<String> {
 
     for line in stdout.lines() {
         let ext = String::from(line);
-        if ext.len() >= 1 {
+        if !ext.is_empty() {
             exts.push(ext);
         }
     }
-    return exts;
+    exts
 }
 
 // fix self-update on macOS
@@ -105,11 +105,9 @@ fn fix_macos() {
 
 fn has_code() -> bool {
     match utils::process::command_output("code", &["--version"]) {
-        Ok(output) => {
-            return output.status.success();
-        }
+        Ok(output) => output.status.success(),
         Err(_error) => {
-            return false; // Visual Studio Code probably not installed
+            false // Visual Studio Code probably not installed
         }
     }
 }

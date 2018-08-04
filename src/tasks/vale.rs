@@ -7,26 +7,24 @@ use utils::github::Asset;
 
 pub fn sync() {
     match GHRA_TASK.sync() {
-        Ok(_) => {}
-        Err(_) => {}
+        _ => {}
     }
 }
 
 pub fn update() {
     match GHRA_TASK.update() {
-        Ok(_) => {}
-        Err(_) => {}
+        _ => {}
     }
 }
 
 const GHRA_TASK: GHRATask = GHRATask {
-    asset_filter: asset_filter,
+    asset_filter,
     #[cfg(windows)]
     command: "vale.exe",
     #[cfg(not(windows))]
     command: "vale",
     repo: ("errata-ai", "vale"),
-    trim_version: trim_version,
+    trim_version,
     version_arg: "--version",
 };
 

@@ -69,11 +69,9 @@ pub fn update() {
 
 fn has_tmux() -> bool {
     match utils::process::command_output("tmux", &["-V"]) {
-        Ok(output) => {
-            return output.status.success();
-        }
+        Ok(output) => output.status.success(),
         Err(_error) => {
-            return false; // cargo probably not installed
+            false // tmux probably not installed
         }
     }
 }

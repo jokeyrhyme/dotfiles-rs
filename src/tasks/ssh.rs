@@ -43,7 +43,7 @@ pub fn sync() {
             None
         })
         .collect();
-    if ciphers.len() > 0 {
+    if !ciphers.is_empty() {
         config.Ciphers = Some(ciphers);
     }
 
@@ -59,7 +59,7 @@ pub fn sync() {
             None
         })
         .collect();
-    if kexs.len() > 0 {
+    if !kexs.is_empty() {
         config.KexAlgorithms = Some(kexs);
     }
 
@@ -75,7 +75,7 @@ pub fn sync() {
             None
         })
         .collect();
-    if macs.len() > 0 {
+    if !macs.is_empty() {
         config.MACs = Some(macs);
     }
 
@@ -101,12 +101,9 @@ where
     let re = regex::Regex::new(r"OpenSSH_(\d+\.\d+)").unwrap();
     for caps in re.captures_iter(ssh_version.as_ref()) {
         let version = caps.get(1).unwrap().as_str();
-        match version.parse::<f32>() {
-            Ok(v) => {
-                // OpenSSH 7.5 supports blacklists, 7.4 and older doesn't
-                return v >= 7.5;
-            }
-            Err(_) => {}
+        if let Ok(v) = version.parse::<f32>() {
+            // OpenSSH 7.5 supports blacklists, 7.4 and older doesn't
+            return v >= 7.5;
         }
     }
     true
@@ -206,7 +203,7 @@ mod tests {
         match which::which("ssh") {
             Ok(_) => {
                 let version = ssh_version();
-                assert!(version.len() > 0);
+                assert!(!version.is_empty());
             }
             Err(_) => {}
         }

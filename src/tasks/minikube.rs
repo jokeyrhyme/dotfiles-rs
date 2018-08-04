@@ -4,26 +4,24 @@ use utils::golang::{arch, os};
 
 pub fn sync() {
     match GHR_TASK.sync() {
-        Ok(_) => {}
-        Err(_) => {}
+        _ => {}
     }
 }
 
 pub fn update() {
     match GHR_TASK.update() {
-        Ok(_) => {}
-        Err(_) => {}
+        _ => {}
     }
 }
 
 const GHR_TASK: GHRTask = GHRTask {
-    asset_filter: asset_filter,
+    asset_filter,
     #[cfg(windows)]
     command: "minikube.exe",
     #[cfg(not(windows))]
     command: "minikube",
     repo: ("kubernetes", "minikube"),
-    trim_version: trim_version,
+    trim_version,
     version_arg: "version",
 };
 
@@ -34,8 +32,9 @@ fn asset_filter(asset: &Asset) -> bool {
 }
 
 fn trim_version(stdout: String) -> String {
-    for line in stdout.lines() {
-        let parts: Vec<&str> = line.splitn(2, ":").collect();
+    let line = stdout.lines().next().unwrap_or_default();
+    let parts: Vec<&str> = line.splitn(2, ':').collect();
+    if parts.len() < 2 {
         return String::from(parts[1].trim());
     }
     String::from("unexpected")

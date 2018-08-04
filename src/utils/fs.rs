@@ -109,12 +109,10 @@ where
         }
     };
 
-    match dest.as_ref().parent() {
-        Some(parent) => {
-            std::fs::create_dir_all(&parent)
-                .expect(&format!("unable to create directories {}", &parent.display()).as_str());
-        }
-        None => { /* probably at root directory, nothing to do */ }
+    if let Some(parent) = dest.as_ref().parent() {
+        std::fs::create_dir_all(&parent).unwrap_or_else(|_| {
+            println!("unable to create directories {}", parent.display());
+        });
     };
 
     match std::fs::symlink_metadata(dest.as_ref()) {

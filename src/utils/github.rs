@@ -1,5 +1,9 @@
 use std::{
-    self, error::Error, fmt, io, path::{Path, PathBuf}, str,
+    self,
+    error::Error,
+    fmt, io,
+    path::{Path, PathBuf},
+    str,
 };
 
 use cabot::request::Request;
@@ -46,10 +50,10 @@ pub enum GitHubError {
 
 impl fmt::Display for GitHubError {
     fn fmt(&self, f: &mut fmt::Formatter) -> std::fmt::Result {
-        match self {
-            &GitHubError::EmptyReleasesError => fmt::Display::fmt(&"EmptyReleasesError", f),
-            &GitHubError::IoError(ref err) => fmt::Display::fmt(err, f),
-            &GitHubError::ValidReleaseNotFoundError => {
+        match *self {
+            GitHubError::EmptyReleasesError => fmt::Display::fmt(&"EmptyReleasesError", f),
+            GitHubError::IoError(ref err) => fmt::Display::fmt(err, f),
+            GitHubError::ValidReleaseNotFoundError => {
                 fmt::Display::fmt(&"ValidReleaseNotFoundError", f)
             }
         }
@@ -58,18 +62,18 @@ impl fmt::Display for GitHubError {
 
 impl Error for GitHubError {
     fn cause(&self) -> Option<&Error> {
-        match self {
-            &GitHubError::EmptyReleasesError => None,
-            &GitHubError::IoError(ref err) => Some(err as &Error),
-            &GitHubError::ValidReleaseNotFoundError => None,
+        match *self {
+            GitHubError::EmptyReleasesError => None,
+            GitHubError::IoError(ref err) => Some(err as &Error),
+            GitHubError::ValidReleaseNotFoundError => None,
         }
     }
 
     fn description(&self) -> &str {
-        match self {
-            &GitHubError::EmptyReleasesError => &"EmptyReleasesError",
-            &GitHubError::IoError(ref err) => err.description(),
-            &GitHubError::ValidReleaseNotFoundError => &"ValidReleaseNotFoundError",
+        match *self {
+            GitHubError::EmptyReleasesError => &"EmptyReleasesError",
+            GitHubError::IoError(ref err) => err.description(),
+            GitHubError::ValidReleaseNotFoundError => &"ValidReleaseNotFoundError",
         }
     }
 }
@@ -156,7 +160,8 @@ where
             Vec::<Tag>::new()
         }
     };
-    Ok(tags.into_iter()
+    Ok(tags
+        .into_iter()
         .map(|t| Tag {
             id: str::replace(&t.id, "refs/tags/", ""),
             url: t.url,
@@ -174,13 +179,12 @@ where
             return Err(GitHubError::IoError(error));
         }
     };
-    if releases.len() <= 0 {
+    if releases.is_empty() {
         return Err(GitHubError::EmptyReleasesError {});
     }
     match releases
         .into_iter()
-        .filter(|r| !r.draft && !r.prelease && r.assets.len() > 0)
-        .next()
+        .find(|r| !r.draft && !r.prelease && !r.assets.is_empty())
     {
         Some(latest) => Ok(latest),
         None => Err(GitHubError::ValidReleaseNotFoundError {}),

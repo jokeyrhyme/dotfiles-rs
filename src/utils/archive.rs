@@ -61,7 +61,7 @@ pub fn extract_tar(source: &Path, target: &Path) -> io::Result<()> {
         entry.unpack_in(&target)?;
     }
 
-    println!(""); // done
+    println!(); // done
 
     Ok(())
 }
@@ -97,7 +97,7 @@ pub fn extract_zip(source: &Path, target: &Path) -> io::Result<()> {
         let mut entry = zip.by_index(i)?;
         let entry_path = entry.sanitized_name();
 
-        if entry.name().ends_with("/") {
+        if entry.name().ends_with('/') {
             continue; // skip directories
         }
 
@@ -110,7 +110,7 @@ pub fn extract_zip(source: &Path, target: &Path) -> io::Result<()> {
         std::io::copy(&mut entry, &mut output_file)?;
     }
 
-    println!(""); // done
+    println!(); // done
 
     Ok(())
 }

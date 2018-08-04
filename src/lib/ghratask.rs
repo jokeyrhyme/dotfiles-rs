@@ -2,7 +2,9 @@ use std::{fs, io};
 
 use lib::ghrtask::GHRTask;
 use utils::{
-    self, archive::{extract_tar_gz, extract_zip}, fs::{mkdtemp, mktemp, set_executable},
+    self,
+    archive::{extract_tar_gz, extract_zip},
+    fs::{mkdtemp, mktemp, set_executable},
     github::{self, Asset, Release},
 };
 
@@ -37,35 +39,17 @@ impl<'a> GHRATask<'a> {
     }
 
     pub fn update(&mut self) -> io::Result<()> {
-        if !self.exists() {
-            return Ok(());
-        }
-        println!("{}: updating...", &self.command);
-
-        let current = self.current_version();
-        match github::release_versus_current(
-            current,
-            String::from(self.repo.0),
-            String::from(self.repo.1),
-        ) {
-            Some(r) => self.install_release(&r)?,
-            None => {}
-        };
-        Ok(())
+        self.as_ghrtask().update()
     }
 
     fn as_ghrtask(&self) -> GHRTask<'a> {
         GHRTask {
-            asset_filter: self.asset_filter.clone(),
+            asset_filter: self.asset_filter,
             command: self.command,
             repo: self.repo,
-            trim_version: self.trim_version.clone(),
+            trim_version: self.trim_version,
             version_arg: self.version_arg,
         }
-    }
-
-    fn current_version(&self) -> String {
-        self.as_ghrtask().current_version()
     }
 
     fn exists(&self) -> bool {
@@ -73,13 +57,7 @@ impl<'a> GHRATask<'a> {
     }
 
     fn install_release(&self, release: &Release) -> io::Result<()> {
-        let asset = match release
-            .assets
-            .to_vec()
-            .into_iter()
-            .filter(self.asset_filter)
-            .next()
-        {
+        let asset = match release.assets.to_vec().into_iter().find(self.asset_filter) {
             Some(a) => a,
             None => {
                 println!("warning: {}: no asset matches OS and ARCH", &self.command);

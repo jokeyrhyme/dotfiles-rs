@@ -29,7 +29,7 @@ const VIMS: [Vim; 2] = [
 pub fn sync() {
     let src = utils::env::home_dir().join(".dotfiles/config/vimrc");
 
-    for ref vim in VIMS.iter() {
+    for vim in &VIMS {
         if !vim.exists() {
             continue;
         }
@@ -67,7 +67,7 @@ pub fn sync() {
 }
 
 pub fn update() {
-    for ref vim in VIMS.iter() {
+    for vim in &VIMS {
         if !vim.exists() {
             continue;
         }
