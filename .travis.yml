@@ -9,6 +9,10 @@ script:
 - set -e -o pipefail
 - cargo build --verbose
 - RUST_BACKTRACE=1 cargo test --verbose
+- rustup update
+- rustup install nightly
+- rustup component add clippy-preview --toolchain=nightly
+- cargo +nightly clippy -- --deny clippy
 - if [ -n "$TRAVIS_TAG" ]; then
     cargo login $CARGO_TOKEN &&
     cargo package &&

@@ -41,11 +41,11 @@ pub fn sync() {
             if krates.contains_key(&krate) {
                 return None;
             }
-            return Some(String::from(krate));
+            Some(krate)
         })
         .collect();
 
-    if missing.len() <= 0 {
+    if missing.is_empty() {
         return; // nothing to do
     }
 
@@ -88,14 +88,14 @@ pub fn update() {
                     if version == latest {
                         return None;
                     }
-                    return Some(krate);
+                    Some(krate)
                 }
                 Err(_) => None,
             },
         )
         .collect();
 
-    if outdated.len() <= 0 {
+    if outdated.is_empty() {
         return; // nothing to do
     }
 
@@ -114,9 +114,10 @@ fn cargo_installed() -> HashMap<String, String> {
     let stdout = str::from_utf8(&output.stdout).unwrap();
 
     let krates: HashMap<String, String> = parse_installed(stdout);
-    return krates;
+    krates
 }
 
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 fn cargo_latest_version<S>(krate: S) -> Result<String, String>
 where
     S: Into<String> + AsRef<str>,
@@ -131,15 +132,12 @@ where
     let stdout = str::from_utf8(&output.stdout).unwrap();
     let lines = stdout.lines();
     for line in lines {
-        match re.captures(line) {
-            Some(caps) => {
-                let version = String::from(caps.get(1).unwrap().as_str());
-                return Ok(version);
-            }
-            None => (),
+        if let Some(caps) = re.captures(line) {
+            let version = String::from(caps.get(1).unwrap().as_str());
+            return Ok(version);
         };
     }
-    return Err(String::from("not found"));
+    Err(String::from("not found"))
 }
 
 fn fix_cargo_fmt() -> io::Result<()> {
@@ -161,42 +159,37 @@ fn fix_cargo_fmt() -> io::Result<()> {
 
 fn has_cargo() -> bool {
     match utils::process::command_output("cargo", &["--version"]) {
-        Ok(output) => {
-            return output.status.success();
-        }
+        Ok(output) => output.status.success(),
         Err(_error) => {
-            return false; // cargo probably not installed
+            false // cargo probably not installed
         }
     }
 }
 
 fn has_cargo_fmt() -> bool {
     match utils::process::command_output("cargo", &["fmt", "--help"]) {
-        Ok(output) => {
-            return output.status.success();
-        }
+        Ok(output) => output.status.success(),
         Err(_error) => {
-            return false; // cargo probably not installed
+            false // cargo probably not installed
         }
     }
 }
 
 fn has_cargo_installed_rustfmt() -> bool {
     let krates = cargo_installed();
-    return krates.contains_key("rustfmt");
+    krates.contains_key("rustfmt")
 }
 
 fn has_rustup() -> bool {
     match utils::process::command_output("rustup", &["--version"]) {
-        Ok(output) => {
-            return output.status.success();
-        }
+        Ok(output) => output.status.success(),
         Err(_error) => {
-            return false; // rustup probably not installed
+            false // rustup probably not installed
         }
     }
 }
 
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 fn parse_installed<S>(stdout: S) -> HashMap<String, String>
 where
     S: Into<String> + AsRef<str>,
@@ -206,16 +199,13 @@ where
     let mut krates: HashMap<String, String> = HashMap::new();
 
     for line in lines {
-        match re.captures(line) {
-            Some(caps) => {
-                let krate = caps.get(1).unwrap().as_str();
-                let version = caps.get(2).unwrap().as_str();
-                krates.insert(String::from(krate), String::from(version));
-            }
-            None => (),
+        if let Some(caps) = re.captures(line) {
+            let krate = caps.get(1).unwrap().as_str();
+            let version = caps.get(2).unwrap().as_str();
+            krates.insert(String::from(krate), String::from(version));
         }
     }
-    return krates;
+    krates
 }
 
 #[cfg(test)]
@@ -230,7 +220,7 @@ mod tests {
     #[test]
     fn test_cargo_latest_version() {
         match cargo_latest_version("serde") {
-            Ok(version) => assert!(version.len() > 0),
+            Ok(version) => assert!(!version.is_empty()),
             Err(_) => assert!(false),
         }
         match cargo_latest_version("this-does-not-exist-maybe") {

@@ -1,29 +1,32 @@
 use std::{
-    io, path::{Path, PathBuf},
+    io,
+    path::{Path, PathBuf},
 };
 
 use utils;
 
 pub fn has_git() -> bool {
-    return match utils::process::command_output("git", &["--version"]) {
+    match utils::process::command_output("git", &["--version"]) {
         Ok(output) => output.status.success(),
         Err(_error) => false,
-    };
+    }
 }
 
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 pub fn path_is_git_repository<P>(path: P) -> bool
 where
     P: Into<PathBuf> + AsRef<Path>,
 {
-    return match utils::process::command_output(
+    match utils::process::command_output(
         "git",
         &["-C", path.as_ref().to_string_lossy().as_ref(), "status"],
     ) {
         Ok(output) => output.status.success(),
         Err(_error) => false,
-    };
+    }
 }
 
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 pub fn pull<P>(path: P)
 where
     P: Into<PathBuf> + AsRef<Path>,
@@ -36,6 +39,7 @@ where
     }
 }
 
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 pub fn shallow_clone<S>(source: S, target: S) -> io::Result<()>
 where
     S: Into<String> + AsRef<str>,
@@ -49,6 +53,7 @@ where
     }
 }
 
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 pub fn shallow_fetch<S>(target: S) -> io::Result<()>
 where
     S: Into<String> + AsRef<str>,

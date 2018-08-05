@@ -52,33 +52,27 @@ pub fn has_node() -> bool {
 
 pub fn has_npm() -> bool {
     match utils::process::command_output("npm", &["--version"]) {
-        Ok(output) => {
-            return output.status.success();
-        }
+        Ok(output) => output.status.success(),
         Err(_error) => {
-            return false; // npx probably not installed
+            false // npm probably not installed
         }
     }
 }
 
 pub fn has_npx() -> bool {
     match utils::process::command_output("npx", &["--version"]) {
-        Ok(output) => {
-            return output.status.success();
-        }
+        Ok(output) => output.status.success(),
         Err(_error) => {
-            return false; // npx probably not installed
+            false // npx probably not installed
         }
     }
 }
 
 pub fn has_yarn() -> bool {
     match utils::process::command_output("yarn", &["--version"]) {
-        Ok(output) => {
-            return output.status.success();
-        }
+        Ok(output) => output.status.success(),
         Err(_error) => {
-            return false; // yarn probably not installed
+            false // yarn probably not installed
         }
     }
 }
@@ -95,8 +89,8 @@ pub fn latest_version() -> String {
 
     let latest_release: &Release = releases
         .iter()
-        .filter(|r| {
-            r.files.len() > 0 && r.files.iter().any(|f| {
+        .find(|r| {
+            !r.files.is_empty() && r.files.iter().any(|f| {
                 f.starts_with(&format!(
                     "{}-{}",
                     utils::nodejs::release_os(),
@@ -104,7 +98,6 @@ pub fn latest_version() -> String {
                 ))
             })
         })
-        .next()
         .unwrap();
 
     String::from(latest_release.version.as_str().trim())

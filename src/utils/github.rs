@@ -1,5 +1,9 @@
 use std::{
-    self, error::Error, fmt, io, path::{Path, PathBuf}, str,
+    self,
+    error::Error,
+    fmt, io,
+    path::{Path, PathBuf},
+    str,
 };
 
 use cabot::request::Request;
@@ -46,10 +50,10 @@ pub enum GitHubError {
 
 impl fmt::Display for GitHubError {
     fn fmt(&self, f: &mut fmt::Formatter) -> std::fmt::Result {
-        match self {
-            &GitHubError::EmptyReleasesError => fmt::Display::fmt(&"EmptyReleasesError", f),
-            &GitHubError::IoError(ref err) => fmt::Display::fmt(err, f),
-            &GitHubError::ValidReleaseNotFoundError => {
+        match *self {
+            GitHubError::EmptyReleasesError => fmt::Display::fmt(&"EmptyReleasesError", f),
+            GitHubError::IoError(ref err) => fmt::Display::fmt(err, f),
+            GitHubError::ValidReleaseNotFoundError => {
                 fmt::Display::fmt(&"ValidReleaseNotFoundError", f)
             }
         }
@@ -58,22 +62,23 @@ impl fmt::Display for GitHubError {
 
 impl Error for GitHubError {
     fn cause(&self) -> Option<&Error> {
-        match self {
-            &GitHubError::EmptyReleasesError => None,
-            &GitHubError::IoError(ref err) => Some(err as &Error),
-            &GitHubError::ValidReleaseNotFoundError => None,
+        match *self {
+            GitHubError::EmptyReleasesError => None,
+            GitHubError::IoError(ref err) => Some(err as &Error),
+            GitHubError::ValidReleaseNotFoundError => None,
         }
     }
 
     fn description(&self) -> &str {
-        match self {
-            &GitHubError::EmptyReleasesError => &"EmptyReleasesError",
-            &GitHubError::IoError(ref err) => err.description(),
-            &GitHubError::ValidReleaseNotFoundError => &"ValidReleaseNotFoundError",
+        match *self {
+            GitHubError::EmptyReleasesError => &"EmptyReleasesError",
+            GitHubError::IoError(ref err) => err.description(),
+            GitHubError::ValidReleaseNotFoundError => &"ValidReleaseNotFoundError",
         }
     }
 }
 
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 pub fn download_release_asset<P>(asset: &Asset, bin_path: P)
 where
     P: Into<PathBuf> + AsRef<Path>,
@@ -95,6 +100,7 @@ where
     }
 }
 
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 fn create_request<S>(url: S) -> Request
 where
     S: Into<String> + AsRef<str>,
@@ -113,6 +119,7 @@ where
     utils::http::create_request(url.as_ref(), &headers_slice)
 }
 
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 fn fetch_releases<S>(owner: S, repo: S) -> io::Result<Vec<Release>>
 where
     S: Into<String> + AsRef<str>,
@@ -136,6 +143,7 @@ where
     Ok(releases)
 }
 
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 pub fn fetch_tags<S>(owner: S, repo: S) -> io::Result<Vec<Tag>>
 where
     S: Into<String> + AsRef<str>,
@@ -156,7 +164,8 @@ where
             Vec::<Tag>::new()
         }
     };
-    Ok(tags.into_iter()
+    Ok(tags
+        .into_iter()
         .map(|t| Tag {
             id: str::replace(&t.id, "refs/tags/", ""),
             url: t.url,
@@ -164,6 +173,7 @@ where
         .collect())
 }
 
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 pub fn latest_release<S>(owner: S, repo: S) -> Result<Release, GitHubError>
 where
     S: Into<String> + AsRef<str>,
@@ -174,19 +184,19 @@ where
             return Err(GitHubError::IoError(error));
         }
     };
-    if releases.len() <= 0 {
+    if releases.is_empty() {
         return Err(GitHubError::EmptyReleasesError {});
     }
     match releases
         .into_iter()
-        .filter(|r| !r.draft && !r.prelease && r.assets.len() > 0)
-        .next()
+        .find(|r| !r.draft && !r.prelease && !r.assets.is_empty())
     {
         Some(latest) => Ok(latest),
         None => Err(GitHubError::ValidReleaseNotFoundError {}),
     }
 }
 
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 pub fn release_versus_current<S>(current: S, owner: S, repo: S) -> Option<Release>
 where
     S: Into<String> + AsRef<str>,

@@ -4,7 +4,9 @@ use toml;
 use which;
 
 use utils::{
-    self, fs::mktemp, golang::{arch, os},
+    self,
+    fs::mktemp,
+    golang::{arch, os},
 };
 
 #[derive(Debug, Deserialize)]
@@ -29,20 +31,24 @@ pub fn sync() {
     // we install `dep` via GitHub Release instead as recommended
     utils::fs::delete_if_exists(&home_dir.join("go").join("bin").join("dep"));
     utils::fs::delete_if_exists(&home_dir.join("go").join("bin").join("dep.exe"));
-    utils::fs::delete_if_exists(&home_dir
-        .join("go")
-        .join("pkg")
-        .join("src")
-        .join("github.com")
-        .join("golang")
-        .join("dep"));
-    utils::fs::delete_if_exists(&home_dir
-        .join("go")
-        .join("src")
-        .join("src")
-        .join("github.com")
-        .join("golang")
-        .join("dep"));
+    utils::fs::delete_if_exists(
+        &home_dir
+            .join("go")
+            .join("pkg")
+            .join("src")
+            .join("github.com")
+            .join("golang")
+            .join("dep"),
+    );
+    utils::fs::delete_if_exists(
+        &home_dir
+            .join("go")
+            .join("src")
+            .join("src")
+            .join("github.com")
+            .join("golang")
+            .join("dep"),
+    );
 
     if !utils::golang::is_installed() {
         let latest_version = match utils::golang::latest_version() {
@@ -53,12 +59,9 @@ pub fn sync() {
             }
         };
 
-        match install_golang(latest_version) {
-            Ok(_) => {}
-            Err(error) => {
-                println!("error: golang: unable to install: {:?}", error);
-                return;
-            }
+        if let Err(error) = install_golang(latest_version) {
+            println!("error: golang: unable to install: {:?}", error);
+            return;
         };
     }
 
@@ -68,20 +71,15 @@ pub fn sync() {
         let mut install_args = vec![String::from("get"), String::from("-v")];
         install_args.extend(config.install);
 
-        match utils::process::command_spawn_wait("go", &install_args) {
-            Ok(_status) => {}
-            Err(error) => println!("warning: golang: unable to install packages: {}", error),
+        if let Err(error) = utils::process::command_spawn_wait("go", &install_args) {
+            println!("warning: golang: unable to install packages: {}", error);
         };
     }
 
-    match which::which("gometalinter") {
-        Ok(_) => {
-            match utils::process::command_spawn_wait("gometalinter", &["--install"]) {
-                Ok(_status) => {}
-                Err(error) => println!("warning: golang: unable to install linters: {}", error),
-            };
-        }
-        Err(_) => {}
+    if which::which("gometalinter").is_ok() {
+        if let Err(error) = utils::process::command_spawn_wait("gometalinter", &["--install"]) {
+            println!("warning: golang: unable to install linters: {}", error);
+        };
     };
 }
 
@@ -103,12 +101,9 @@ pub fn update() {
 
     println!("current={} latest={}", &current_version, &latest_version);
     if current_version != latest_version {
-        match install_golang(latest_version) {
-            Ok(_) => {}
-            Err(error) => {
-                println!("error: golang: unable to install: {:?}", error);
-                return;
-            }
+        if let Err(error) = install_golang(latest_version) {
+            println!("error: golang: unable to install: {:?}", error);
+            return;
         };
     }
 
@@ -117,22 +112,20 @@ pub fn update() {
     let mut install_args = vec![String::from("get"), String::from("-u"), String::from("-v")];
     install_args.extend(config.install);
 
-    match utils::process::command_spawn_wait("go", &install_args) {
-        Ok(_status) => {}
-        Err(error) => println!("warning: golang: unable to update packages: {}", error),
+    if let Err(error) = utils::process::command_spawn_wait("go", &install_args) {
+        println!("warning: golang: unable to update packages: {}", error);
     };
 
-    match which::which("gometalinter") {
-        Ok(_) => {
-            match utils::process::command_spawn_wait("gometalinter", &["--install", "--force"]) {
-                Ok(_status) => {}
-                Err(error) => println!("warning: golang: unable to update linters: {}", error),
-            };
-        }
-        Err(_) => {}
+    if which::which("gometalinter").is_ok() {
+        if let Err(error) =
+            utils::process::command_spawn_wait("gometalinter", &["--install", "--force"])
+        {
+            println!("warning: golang: unable to update linters: {}", error);
+        };
     };
 }
 
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 fn install_golang<S>(version: S) -> Result<(), utils::golang::GolangError>
 where
     S: Into<String> + AsRef<str>,

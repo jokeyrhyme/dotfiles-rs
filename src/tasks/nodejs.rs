@@ -6,7 +6,9 @@ use serde_json;
 use toml;
 
 use utils::{
-    self, fs::mktemp, nodejs::{arch, os},
+    self,
+    fs::mktemp,
+    nodejs::{arch, os},
 };
 
 const ERROR_MSG: &str = "error: nodejs";
@@ -85,6 +87,7 @@ fn configure_npm() {
     }
 }
 
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 fn install_nodejs<S>(version: S) -> io::Result<()>
 where
     S: Into<String> + AsRef<str>,
@@ -153,8 +156,7 @@ fn pkgs_installed() -> Vec<String> {
     for pair in globals.dependencies {
         pkgs.push(pair.0);
     }
-
-    return pkgs;
+    pkgs
 }
 
 fn read_config() -> Config {
@@ -214,11 +216,11 @@ fn sync_npm_packages() {
             if pkgs.contains(&pkg) {
                 return None;
             }
-            return Some(String::from(pkg));
+            Some(pkg)
         })
         .collect();
 
-    if missing.len() <= 0 {
+    if missing.is_empty() {
         return; // nothing to do
     }
 
@@ -238,13 +240,13 @@ fn sync_npm_packages() {
         .into_iter()
         .filter_map(|pkg| {
             if pkgs.contains(&pkg) {
-                return Some(String::from(pkg));
+                return Some(pkg);
             }
-            return None;
+            None
         })
         .collect();
 
-    if found.len() <= 0 {
+    if found.is_empty() {
         return; // nothing to do
     }
 

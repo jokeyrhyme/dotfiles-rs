@@ -2,20 +2,23 @@ use std::process::Command;
 use std::process::ExitStatus;
 use std::process::Output;
 use std::{
-    ffi::{OsStr, OsString}, io, str,
+    ffi::{OsStr, OsString},
+    io, str,
 };
 
 #[cfg(not(windows))]
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 pub fn command_output<O, S>(cmd: O, args: &[S]) -> io::Result<Output>
 where
     O: Into<OsString> + AsRef<OsStr>,
     S: Into<String> + AsRef<str>,
 {
     let cmd_args: Vec<&str> = args.into_iter().map(|s| s.as_ref()).collect();
-    return Command::new(cmd).args(cmd_args).output();
+    Command::new(cmd).args(cmd_args).output()
 }
 
 #[cfg(windows)]
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 pub fn command_output<O, S>(cmd: O, args: &[S]) -> io::Result<Output>
 where
     O: Into<OsString> + AsRef<OsStr>,
@@ -25,20 +28,22 @@ where
     cmd_args.push("/c");
     cmd_args.push(cmd);
     cmd_args.extend::<Vec<&str>>(args.into_iter().map(|s| s.as_ref()).collect());
-    return Command::new("cmd").args(cmd_args).output();
+    Command::new("cmd").args(cmd_args).output()
 }
 
 #[cfg(not(windows))]
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 pub fn command_spawn_wait<O, S>(cmd: O, args: &[S]) -> io::Result<ExitStatus>
 where
     O: Into<OsString> + AsRef<OsStr>,
     S: Into<String> + AsRef<str>,
 {
     let cmd_args: Vec<&str> = args.into_iter().map(|s| s.as_ref()).collect();
-    return Command::new(cmd).args(cmd_args).spawn()?.wait();
+    Command::new(cmd).args(cmd_args).spawn()?.wait()
 }
 
 #[cfg(windows)]
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 pub fn command_spawn_wait<O, S>(cmd: O, args: &[S]) -> io::Result<ExitStatus>
 where
     O: Into<OsString> + AsRef<OsStr>,
@@ -48,7 +53,7 @@ where
     cmd_args.push("/c");
     cmd_args.push(cmd);
     cmd_args.extend::<Vec<&str>>(args.into_iter().map(|s| s.as_ref()).collect());
-    return Command::new("cmd").args(cmd_args).spawn()?.wait();
+    Command::new("cmd").args(cmd_args).spawn()?.wait()
 }
 
 #[cfg(test)]

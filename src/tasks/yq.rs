@@ -4,26 +4,24 @@ use utils::golang::{arch, os};
 
 pub fn sync() {
     match GHR_TASK.sync() {
-        Ok(_) => {}
-        Err(_) => {}
+        _ => {}
     }
 }
 
 pub fn update() {
     match GHR_TASK.update() {
-        Ok(_) => {}
-        Err(_) => {}
+        _ => {}
     }
 }
 
 const GHR_TASK: GHRTask = GHRTask {
-    asset_filter: asset_filter,
+    asset_filter,
     #[cfg(windows)]
     command: "yq.exe",
     #[cfg(not(windows))]
     command: "yq",
     repo: ("mikefarah", "yq"),
-    trim_version: trim_version,
+    trim_version,
     version_arg: "--version",
 };
 
@@ -36,6 +34,7 @@ fn asset_filter(asset: &Asset) -> bool {
     asset.name == name
 }
 
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 fn trim_version(stdout: String) -> String {
     String::from(stdout.trim())
 }

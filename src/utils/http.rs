@@ -9,7 +9,7 @@ struct HTTPCall<'a>(&'a Request, &'a Response);
 
 impl<'a> HTTPCall<'a> {
     fn display(&self) -> String {
-        let request_path = self.0.request_uri().splitn(2, "?").next().unwrap();
+        let request_path = self.0.request_uri().splitn(2, '?').next().unwrap();
         format!(
             "{} {} {} {}://{}{}",
             self.1.http_version(),
@@ -24,6 +24,7 @@ impl<'a> HTTPCall<'a> {
 
 pub const EMPTY_HEADERS: &[&str] = &[];
 
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 pub fn create_request<S>(url: S, headers: &[&str]) -> Request
 where
     S: Into<String> + AsRef<str>,
@@ -36,6 +37,7 @@ where
         .unwrap()
 }
 
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 pub fn download<P, S>(url: S, dest: P) -> io::Result<()>
 where
     P: Into<PathBuf> + AsRef<Path>,
@@ -46,17 +48,15 @@ where
     download_request(&req, dest.as_ref())
 }
 
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 pub fn download_request<P>(req: &Request, dest: P) -> io::Result<()>
 where
     P: Into<PathBuf> + AsRef<Path>,
 {
     let res = fetch_request(&req)?;
 
-    match dest.as_ref().parent() {
-        Some(parent) => {
-            create_dir_all(&parent)?;
-        }
-        None => { /* probably at root directory, nothing to do */ }
+    if let Some(parent) = dest.as_ref().parent() {
+        create_dir_all(&parent)?;
     };
 
     let mut file = match File::create(dest) {
@@ -86,7 +86,7 @@ pub fn fetch_request(req: &Request) -> io::Result<Response> {
         200 => Ok(res),
         301 | 302 => {
             let headers = parse_headers(res.headers());
-            let location = headers.get("location").unwrap().as_str();
+            let location = headers["location"].as_str();
             // TODO: send the original request's headers
             let next_request = create_request(location, &EMPTY_HEADERS);
             fetch_request(&next_request)
@@ -105,16 +105,15 @@ fn parse_headers(headers: Vec<&str>) -> HashMap<String, String> {
     // but we deduplicate them here, which is fine for me for now
     let mut map = HashMap::<String, String>::new();
 
-    for header in &headers {
-        let parts: Vec<&str> = header.splitn(2, ":").map(str::trim).collect();
+    for header in headers {
+        let parts: Vec<&str> = header.splitn(2, ':').map(str::trim).collect();
         if parts.len() == 2 {
             let name = parts[0];
             let normalised_name = str::to_lowercase(name);
             map.insert(normalised_name, parts[1].to_string());
         }
     }
-
-    return map;
+    map
 }
 
 fn user_agent() -> String {

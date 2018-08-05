@@ -7,6 +7,7 @@ use std::{fmt::Debug, fs::File, io};
 
 use mktemp;
 
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 pub fn delete_if_exists<P>(path: P)
 where
     P: Into<PathBuf> + AsRef<Path> + Debug,
@@ -52,6 +53,7 @@ where
     }
 }
 
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 pub fn is_dir<P>(target: P) -> bool
 where
     P: Into<PathBuf> + AsRef<Path>,
@@ -63,6 +65,7 @@ where
 }
 
 #[cfg(unix)]
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 pub fn set_executable<P>(target: P) -> std::io::Result<()>
 where
     P: Into<PathBuf> + AsRef<Path>,
@@ -74,6 +77,7 @@ where
 }
 
 #[cfg(not(unix))]
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 pub fn set_executable<P>(_target: P) -> std::io::Result<()>
 where
     P: Into<PathBuf> + AsRef<Path> + PartialEq,
@@ -81,6 +85,7 @@ where
     Ok(())
 }
 
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 pub fn symbolic_link_if_exists<P>(src: P, dest: P)
 where
     P: Into<PathBuf> + AsRef<Path> + Debug,
@@ -109,12 +114,10 @@ where
         }
     };
 
-    match dest.as_ref().parent() {
-        Some(parent) => {
-            std::fs::create_dir_all(&parent)
-                .expect(&format!("unable to create directories {}", &parent.display()).as_str());
-        }
-        None => { /* probably at root directory, nothing to do */ }
+    if let Some(parent) = dest.as_ref().parent() {
+        std::fs::create_dir_all(&parent).unwrap_or_else(|_| {
+            println!("unable to create directories {}", parent.display());
+        });
     };
 
     match std::fs::symlink_metadata(dest.as_ref()) {
@@ -145,6 +148,7 @@ where
 }
 
 #[cfg(not(windows))]
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 fn symbolic_link<P>(src: P, dest: P) -> io::Result<()>
 where
     P: Into<PathBuf> + AsRef<Path>,
@@ -153,6 +157,7 @@ where
 }
 
 #[cfg(windows)]
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 fn symbolic_link<P>(src: P, dest: P) -> io::Result<()>
 where
     P: Into<PathBuf> + AsRef<Path>,

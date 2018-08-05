@@ -5,26 +5,24 @@ use utils::github::Asset;
 
 pub fn sync() {
     match GHR_TASK.sync() {
-        Ok(_) => {}
-        Err(_) => {}
+        _ => {}
     }
 }
 
 pub fn update() {
     match GHR_TASK.update() {
-        Ok(_) => {}
-        Err(_) => {}
+        _ => {}
     }
 }
 
 const GHR_TASK: GHRTask = GHRTask {
-    asset_filter: asset_filter,
+    asset_filter,
     #[cfg(windows)]
     command: "jq.exe",
     #[cfg(not(windows))]
     command: "jq",
     repo: ("stedolan", "jq"),
-    trim_version: trim_version,
+    trim_version,
     version_arg: "--version",
 };
 
@@ -58,6 +56,7 @@ fn os_arch() -> String {
     )
 }
 
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 fn trim_version(stdout: String) -> String {
     String::from(stdout.trim())
 }
