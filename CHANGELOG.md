@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - zsh: keep [pure](https://github.com/sindresorhus/pure) theme `sync`ed and `update`d
 
+### Fixed
+
+- minikube: parse `minikube version` output better
+
 ## [0.18.0] -2018-07-28
 
 ### Added
