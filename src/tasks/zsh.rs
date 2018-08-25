@@ -81,7 +81,7 @@ pub fn update() {
 }
 
 fn has_zsh() -> bool {
-    match utils::process::command_output("zsh", &["-V"]) {
+    match utils::process::command_output("zsh", &["--version"]) {
         Ok(output) => output.status.success(),
         Err(_error) => {
             false // zsh probably not installed
