@@ -1,5 +1,6 @@
 mod alacritty;
 mod atom;
+mod bash;
 mod dep;
 mod dotfiles;
 mod git;
@@ -33,6 +34,7 @@ pub fn sync() {
 
     alacritty::sync();
     atom::sync();
+    bash::sync();
     dep::sync();
     git::sync();
     gitleaks::sync();
@@ -66,6 +68,7 @@ pub fn update() {
 
     alacritty::update();
     atom::update();
+    bash::update();
     dep::update();
     git::update();
     gitleaks::update();

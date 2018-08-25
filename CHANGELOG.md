@@ -9,9 +9,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
+- bash: keep [bash-it](https://github.com/Bash-it/bash-it) `sync`ed and `update`d
+
 - zsh: keep [oh-my-zsh](https://github.com/robbyrussell/oh-my-zsh) `sync`ed and `update`d
 
 - zsh: keep [pure](https://github.com/sindresorhus/pure) theme `sync`ed and `update`d
+
+### Fixed
+
+- minikube: parse `minikube version` output better
 
 ## [0.18.0] -2018-07-28
 
