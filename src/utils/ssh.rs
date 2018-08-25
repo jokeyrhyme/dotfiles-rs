@@ -959,7 +959,6 @@ where
     Some(
         text.as_ref()
             .split(',')
-            .into_iter()
             .filter_map(|s| {
                 let trimmed = s.trim();
                 if !trimmed.is_empty() {

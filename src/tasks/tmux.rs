@@ -15,12 +15,8 @@ pub fn sync() {
     utils::fs::symbolic_link_if_exists(&src, &dest);
 
     let tpm_path = utils::env::home_dir().join(".tmux/plugins/tpm");
-
-    if !tpm_path.is_dir() {
-        utils::fs::delete_if_exists(&tpm_path);
-    }
-
     if !utils::git::path_is_git_repository(&tpm_path) {
+        utils::fs::delete_if_exists(&tpm_path);
         let tpm_url = "https://github.com/tmux-plugins/tpm.git";
         match utils::git::shallow_clone(tpm_url, &tpm_path.to_string_lossy()) {
             Ok(()) => {}
