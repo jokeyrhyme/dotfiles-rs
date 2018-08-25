@@ -17,6 +17,9 @@ pub fn path_is_git_repository<P>(path: P) -> bool
 where
     P: Into<PathBuf> + AsRef<Path>,
 {
+    if !path.as_ref().is_dir() {
+        return false;
+    }
     match utils::process::command_output(
         "git",
         &["-C", path.as_ref().to_string_lossy().as_ref(), "status"],

@@ -25,6 +25,7 @@ mod vscode;
 #[cfg(windows)]
 mod windows;
 mod yq;
+mod zsh;
 
 pub fn sync() {
     // must be first
@@ -56,6 +57,7 @@ pub fn sync() {
     #[cfg(windows)]
     windows::sync();
     yq::sync();
+    zsh::sync();
 }
 
 pub fn update() {
@@ -88,4 +90,5 @@ pub fn update() {
     #[cfg(windows)]
     windows::update();
     yq::update();
+    zsh::update();
 }
