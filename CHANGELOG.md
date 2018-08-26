@@ -19,6 +19,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - minikube: parse `minikube version` output better
 
+- filter out unstable versions (fixes #85)
+
 ## [0.18.0] -2018-07-28
 
 ### Added

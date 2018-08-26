@@ -1,6 +1,6 @@
 use std::{fs, io};
 
-use lib::ghrtask::GHRTask;
+use lib::{ghrtask::GHRTask, version};
 use utils::{
     self,
     archive::{extract_tar_gz, extract_zip},
@@ -57,7 +57,13 @@ impl<'a> GHRATask<'a> {
     }
 
     fn install_release(&self, release: &Release) -> io::Result<()> {
-        let asset = match release.assets.to_vec().into_iter().find(self.asset_filter) {
+        let asset_filter = &self.asset_filter;
+        let asset = match release
+            .assets
+            .to_vec()
+            .into_iter()
+            .find(|a| asset_filter(a) && version::is_stable(a.name.as_str()))
+        {
             Some(a) => a,
             None => {
                 println!("warning: {}: no asset matches OS and ARCH", &self.command);

@@ -3,6 +3,7 @@ use std::error::Error;
 use std::path::PathBuf;
 use std::{self, fmt, io, str};
 
+use lib::version;
 use utils;
 
 #[derive(Debug)]
@@ -87,7 +88,7 @@ pub fn latest_version() -> Result<String, GolangError> {
                 .filter(|t| {
                     // release tags look like "go1.10.2"
                     // other tags start with "weekly.", or "release.", etc
-                    t.id.starts_with("go") && !t.id.contains("beta") && !t.id.contains("rc")
+                    t.id.starts_with("go") && version::is_stable(t.id.as_str())
                 })
                 .collect()
         }

@@ -9,6 +9,7 @@ use std::{
 use cabot::request::Request;
 use serde_json;
 
+use lib::version;
 use utils;
 
 #[derive(Clone, Debug, Deserialize)]
@@ -187,10 +188,9 @@ where
     if releases.is_empty() {
         return Err(GitHubError::EmptyReleasesError {});
     }
-    match releases
-        .into_iter()
-        .find(|r| !r.draft && !r.prelease && !r.assets.is_empty())
-    {
+    match releases.into_iter().find(|r| {
+        !r.draft && !r.prelease && !r.assets.is_empty() && version::is_stable(r.name.as_str())
+    }) {
         Some(latest) => Ok(latest),
         None => Err(GitHubError::ValidReleaseNotFoundError {}),
     }

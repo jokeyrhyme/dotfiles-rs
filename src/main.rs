@@ -20,6 +20,7 @@ use clap::{App, SubCommand};
 mod lib {
     pub mod ghratask;
     pub mod ghrtask;
+    pub mod version;
 }
 mod tasks;
 mod utils {
