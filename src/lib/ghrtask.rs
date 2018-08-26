@@ -1,7 +1,10 @@
 use std::io;
 
-use utils;
-use utils::github::{self, Asset, Release};
+use lib::version;
+use utils::{
+    self,
+    github::{self, Asset, Release},
+};
 
 // GHRTask simplifies tasks that install from GitHub Releases.
 pub struct GHRTask<'a> {
@@ -81,7 +84,13 @@ impl<'a> GHRTask<'a> {
     }
 
     fn install_release(&self, release: &Release) -> io::Result<()> {
-        let asset = match release.assets.to_vec().into_iter().find(self.asset_filter) {
+        let asset_filter = &self.asset_filter;
+        let asset = match release
+            .assets
+            .to_vec()
+            .into_iter()
+            .find(|a| asset_filter(a) && version::is_stable(a.name.as_str()))
+        {
             Some(a) => a,
             None => {
                 println!("warning: {}: no asset matches OS and ARCH", &self.command);

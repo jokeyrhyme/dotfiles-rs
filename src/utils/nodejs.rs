@@ -5,6 +5,7 @@ use std::string::String;
 
 use serde_json;
 
+use lib::version;
 use utils;
 
 const DIST_JSON_URL: &str = "https://nodejs.org/dist/index.json";
@@ -90,13 +91,14 @@ pub fn latest_version() -> String {
     let latest_release: &Release = releases
         .iter()
         .find(|r| {
-            !r.files.is_empty() && r.files.iter().any(|f| {
-                f.starts_with(&format!(
-                    "{}-{}",
-                    utils::nodejs::release_os(),
-                    utils::nodejs::arch()
-                ))
-            })
+            version::is_stable(r.version.as_str()) && !r.files.is_empty()
+                && r.files.iter().any(|f| {
+                    f.starts_with(&format!(
+                        "{}-{}",
+                        utils::nodejs::release_os(),
+                        utils::nodejs::arch()
+                    ))
+                })
         })
         .unwrap();
 
