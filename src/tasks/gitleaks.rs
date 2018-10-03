@@ -22,7 +22,7 @@ const GHR_TASK: GHRTask = GHRTask {
     command: "gitleaks",
     repo: ("zricethezav", "gitleaks"),
     trim_version,
-    version_arg: "version",
+    version_arg: "--version",
 };
 
 fn asset_filter(asset: &Asset) -> bool {
