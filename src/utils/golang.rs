@@ -89,8 +89,7 @@ pub fn latest_version() -> Result<String, GolangError> {
                     // release tags look like "go1.10.2"
                     // other tags start with "weekly.", or "release.", etc
                     t.id.starts_with("go") && version::is_stable(t.id.as_str())
-                })
-                .collect()
+                }).collect()
         }
         Err(error) => {
             return Err(GolangError::IoError(error));

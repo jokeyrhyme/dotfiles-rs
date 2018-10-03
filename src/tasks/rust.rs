@@ -42,8 +42,7 @@ pub fn sync() {
                 return None;
             }
             Some(krate)
-        })
-        .collect();
+        }).collect();
 
     if missing.is_empty() {
         return; // nothing to do
@@ -92,8 +91,7 @@ pub fn update() {
                 }
                 Err(_) => None,
             },
-        )
-        .collect();
+        ).collect();
 
     if outdated.is_empty() {
         return; // nothing to do
@@ -244,7 +242,8 @@ rustsym v0.3.2:
             (String::from("racer"), String::from("2.0.12")),
             (String::from("rustfmt"), String::from("0.10.0")),
             (String::from("rustsym"), String::from("0.3.2")),
-        ].iter()
+        ]
+            .iter()
             .cloned()
             .collect();
         assert_eq!(want, parse_installed(input));

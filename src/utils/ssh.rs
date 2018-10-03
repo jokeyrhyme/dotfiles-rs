@@ -966,8 +966,7 @@ where
                 } else {
                     None
                 }
-            })
-            .collect(),
+            }).collect(),
     )
 }
 

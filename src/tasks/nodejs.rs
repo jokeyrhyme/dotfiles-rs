@@ -217,8 +217,7 @@ fn sync_npm_packages() {
                 return None;
             }
             Some(pkg)
-        })
-        .collect();
+        }).collect();
 
     if missing.is_empty() {
         return; // nothing to do
@@ -243,8 +242,7 @@ fn sync_npm_packages() {
                 return Some(pkg);
             }
             None
-        })
-        .collect();
+        }).collect();
 
     if found.is_empty() {
         return; // nothing to do
