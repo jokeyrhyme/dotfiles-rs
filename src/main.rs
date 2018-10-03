@@ -42,8 +42,7 @@ fn main() {
         .about(env!("CARGO_PKG_DESCRIPTION"))
         .subcommand(
             SubCommand::with_name("sync").about("install / update my settings on this computer"),
-        )
-        .subcommand(SubCommand::with_name("update").about("update packages on this computer"))
+        ).subcommand(SubCommand::with_name("update").about("update packages on this computer"))
         .get_matches();
 
     if let Some(_matches) = matches.subcommand_matches("sync") {
