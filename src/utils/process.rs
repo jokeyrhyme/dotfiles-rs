@@ -24,9 +24,9 @@ where
     O: Into<OsString> + AsRef<OsStr>,
     S: Into<String> + AsRef<str>,
 {
-    let mut cmd_args = Vec::<&str>::new();
-    cmd_args.push("/c");
-    cmd_args.push(cmd);
+    let cmd_os = cmd.into();
+    let cmd_lossy = cmd_os.to_string_lossy();
+    let mut cmd_args: Vec<&str> = vec!["/c", cmd_lossy.as_ref()];
     cmd_args.extend::<Vec<&str>>(args.into_iter().map(|s| s.as_ref()).collect());
     Command::new("cmd").args(cmd_args).output()
 }
@@ -49,9 +49,9 @@ where
     O: Into<OsString> + AsRef<OsStr>,
     S: Into<String> + AsRef<str>,
 {
-    let mut cmd_args = Vec::<&str>::new();
-    cmd_args.push("/c");
-    cmd_args.push(cmd);
+    let cmd_os = cmd.into();
+    let cmd_lossy = cmd_os.to_string_lossy();
+    let mut cmd_args: Vec<&str> = vec!["/c", cmd_lossy.as_ref()];
     cmd_args.extend::<Vec<&str>>(args.into_iter().map(|s| s.as_ref()).collect());
     Command::new("cmd").args(cmd_args).spawn()?.wait()
 }

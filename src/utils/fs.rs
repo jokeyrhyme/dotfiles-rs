@@ -1,9 +1,13 @@
 use std;
 #[cfg(unix)]
-use std::os::unix::fs::PermissionsExt;
-use std::path::{Path, PathBuf};
+use std::fs::File;
 #[cfg(unix)]
-use std::{fmt::Debug, fs::File, io};
+use std::os::unix::fs::PermissionsExt;
+use std::{
+    fmt::Debug,
+    io,
+    path::{Path, PathBuf},
+};
 
 use mktemp;
 
@@ -50,17 +54,6 @@ where
             );
             return;
         }
-    }
-}
-
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
-pub fn is_dir<P>(target: P) -> bool
-where
-    P: Into<PathBuf> + AsRef<Path>,
-{
-    match std::fs::metadata(target) {
-        Ok(m) => m.is_dir(),
-        Err(_error) => false,
     }
 }
 
@@ -162,12 +155,12 @@ fn symbolic_link<P>(src: P, dest: P) -> io::Result<()>
 where
     P: Into<PathBuf> + AsRef<Path>,
 {
-    let src_attr = std::fs::symlink_metadata(src)?;
+    let src_attr = std::fs::symlink_metadata(&src)?;
     if src_attr.is_dir() {
-        return std::os::windows::fs::symlink_dir(src, dest);
+        return std::os::windows::fs::symlink_dir(&src, dest);
     }
 
-    std::os::windows::fs::symlink_file(src, dest)
+    std::os::windows::fs::symlink_file(&src, dest)
 }
 
 pub fn mkdtemp() -> io::Result<PathBuf> {
@@ -197,12 +190,12 @@ mod tests {
     #[test]
     fn check_cargo() {
         let file_path = Path::new(env!("CARGO"));
-        assert!(!is_dir(&file_path));
+        assert!(!file_path.is_dir());
     }
 
     #[test]
     fn check_cargo_manifest_dir() {
         let project_dir = Path::new(env!("CARGO_MANIFEST_DIR"));
-        assert!(is_dir(&project_dir));
+        assert!(project_dir.is_dir());
     }
 }
