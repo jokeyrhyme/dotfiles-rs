@@ -88,7 +88,7 @@ fn exts_installed() -> Vec<String> {
 #[cfg(target_os = "macos")]
 fn fix_macos() {
     let app_dir = Path::new("/Applications/Visual Studio Code.app");
-    if utils::fs::is_dir(&app_dir) {
+    if app_dir.is_dir() {
         match utils::process::command_spawn_wait(
             "xattr",
             &[

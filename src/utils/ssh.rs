@@ -1040,6 +1040,11 @@ mod tests {
         let config_path =
             Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/ssh_config.output.txt");
 
+        #[cfg(windows)]
+        let want = fs::read_to_string(&config_path)
+            .unwrap()
+            .replace("IdentityFile ~/.ssh/id_rsa", "IdentityFile ~\\.ssh\\id_rsa");
+        #[cfg(not(windows))]
         let want = fs::read_to_string(&config_path).unwrap();
 
         let mut config = Config::new();
