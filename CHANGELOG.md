@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- new `jokeyrhyme env` command to export generated environment variables
+
+- vim: export EDITOR set to `nvim` (preferred) or `vim` as detected
+
 ### Fixed
 
 - Windows: fix builds again (oops)
