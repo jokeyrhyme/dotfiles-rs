@@ -13,6 +13,12 @@ Note that you need to "Run As Administrator" in Windows so that this tool can pr
 
 ## Features
 
+- `jokeyrhyme-dotfiles env`:
+
+  - export generated environment variables
+
+  - EDITOR: `nvim` (preferred), `vim`
+
 - `jokeyrhyme-dotfiles sync`:
 
   - copies or creates symbolic links from `~/.dotfiles` into `~` for settings

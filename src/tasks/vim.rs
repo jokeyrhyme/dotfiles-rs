@@ -1,5 +1,8 @@
 use std::{self, io, path::PathBuf};
 
+use which::which;
+
+use lib::env::Exports;
 use utils;
 
 const ERROR_MSG: &str = "vim";
@@ -25,6 +28,18 @@ const VIMS: [Vim; 2] = [
         rc_file: ".config/nvim/init.vim",
     },
 ];
+
+pub fn env(mut exports: Exports) -> Exports {
+    for vim in &VIMS {
+        match which(&vim.command) {
+            Ok(found) => {
+                exports.editor = found;
+            }
+            Err(_) => { /* do nothing */ }
+        }
+    }
+    exports
+}
 
 pub fn sync() {
     let src = utils::env::home_dir().join(".dotfiles/config/vimrc");

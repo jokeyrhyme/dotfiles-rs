@@ -18,6 +18,7 @@ extern crate zip;
 use clap::{App, SubCommand};
 
 mod lib {
+    pub mod env;
     pub mod ghratask;
     pub mod ghrtask;
     pub mod version;
@@ -43,7 +44,13 @@ fn main() {
         .subcommand(
             SubCommand::with_name("sync").about("install / update my settings on this computer"),
         ).subcommand(SubCommand::with_name("update").about("update packages on this computer"))
+        .subcommand(SubCommand::with_name("env").about("export generated environment variables"))
         .get_matches();
+
+    if let Some(_matches) = matches.subcommand_matches("env") {
+        tasks::env();
+        return;
+    }
 
     if let Some(_matches) = matches.subcommand_matches("sync") {
         println!("syncing...");

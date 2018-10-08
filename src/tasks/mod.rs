@@ -1,3 +1,7 @@
+use std::{env::var, path::PathBuf};
+
+use lib::env::{Exports, Shell};
+
 mod alacritty;
 mod atom;
 mod bash;
@@ -27,6 +31,16 @@ mod vscode;
 mod windows;
 mod yq;
 mod zsh;
+
+pub fn env() {
+    let mut exports = Exports {
+        editor: PathBuf::new(),
+        path: Vec::<PathBuf>::new(),
+    };
+    exports = vim::env(exports);
+    let shell = var("SHELL").unwrap_or_default();
+    println!("{}", exports.to_shell(Shell::from(shell.as_str())));
+}
 
 pub fn sync() {
     // must be first
