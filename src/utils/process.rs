@@ -1,9 +1,8 @@
-use std::process::Command;
-use std::process::ExitStatus;
-use std::process::Output;
 use std::{
     ffi::{OsStr, OsString},
-    io, str,
+    io,
+    process::{Command, ExitStatus, Output},
+    str,
 };
 
 #[cfg(not(windows))]
