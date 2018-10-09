@@ -1,7 +1,8 @@
-use std::{fs, str};
+use std::{fs, io, str};
 
 use toml;
 
+use lib;
 use utils;
 
 const ERROR_MSG: &str = "error: atom";
@@ -22,7 +23,12 @@ pub fn sync() {
 
     println!("atom: syncing ...");
 
-    // TODO: synchronise Atom settings
+    match configure_apm() {
+        Ok(_) => {}
+        Err(error) => {
+            println!("warning: atom: unable to configure apm: {}", error);
+        }
+    };
 
     let cfg_path = utils::env::home_dir().join(".dotfiles/config/atom.toml");
 
@@ -69,6 +75,21 @@ pub fn update() {
 
     utils::process::command_spawn_wait(COMMAND, &["upgrade", "--confirm", "false"])
         .expect(ERROR_MSG);
+}
+
+fn configure_apm() -> io::Result<()> {
+    match lib::python::which_v2() {
+        Some(exe) => {
+            utils::process::command_spawn_wait(
+                "apm",
+                &["config", "set", "python", exe.to_str().unwrap_or_default()],
+            )?;
+        }
+        None => {
+            utils::process::command_spawn_wait("apm", &["config", "delete", "python"])?;
+        }
+    };
+    Ok(())
 }
 
 fn has_apm() -> bool {

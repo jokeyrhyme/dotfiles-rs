@@ -1,6 +1,5 @@
 use std::{path::PathBuf, process::Output};
 
-use regex::Regex;
 use which;
 
 use utils;
@@ -33,9 +32,11 @@ fn extract_version(o: Output) -> String {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use regex::Regex;
 
     use utils::process::command_output;
+
+    use super::*;
 
     #[test]
     fn which_v2_does_not_find_v3() {
