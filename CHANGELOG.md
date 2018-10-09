@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.20.0] - 2018-10-09
+
 ### Added
 
 - new `jokeyrhyme env` command to export generated environment variables
@@ -16,6 +18,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - atom+nodejs: detect and configure path to Python 2.x executable
 
 ### Fixed
+
+- gitleaks: use "--version" to determine version
 
 - Windows: fix builds again (oops)
 
