@@ -21,6 +21,7 @@ mod lib {
     pub mod env;
     pub mod ghratask;
     pub mod ghrtask;
+    pub mod python;
     pub mod version;
 }
 mod tasks;

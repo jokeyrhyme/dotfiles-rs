@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - vim: export EDITOR set to `nvim` (preferred) or `vim` as detected
 
+- atom+nodejs: detect and configure path to Python 2.x executable
+
 ### Fixed
 
 - Windows: fix builds again (oops)

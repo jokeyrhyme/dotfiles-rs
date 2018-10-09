@@ -5,6 +5,7 @@ use std::{self, fs, io, str};
 use serde_json;
 use toml;
 
+use lib;
 use utils::{
     self,
     fs::mktemp,
@@ -45,7 +46,12 @@ pub fn sync() {
         };
     }
 
-    configure_npm();
+    match configure_npm() {
+        Ok(_) => {}
+        Err(error) => {
+            println!("warning: nodejs: unable to configure npm: {}", error);
+        }
+    };
     sync_npm_packages();
 }
 
@@ -78,13 +84,20 @@ pub fn update() {
     }
 }
 
-fn configure_npm() {
-    match utils::process::command_spawn_wait("npm", &["config", "set", "send-metric", "true"]) {
-        Ok(_status) => {}
-        Err(error) => {
-            println!("warning: nodejs: unable to enable npm metrics: {}", error);
+fn configure_npm() -> io::Result<()> {
+    match lib::python::which_v2() {
+        Some(exe) => {
+            utils::process::command_spawn_wait(
+                "npm",
+                &["config", "set", "python", exe.to_str().unwrap_or_default()],
+            )?;
         }
-    }
+        None => {
+            utils::process::command_spawn_wait("npm", &["config", "delete", "python"])?;
+        }
+    };
+    utils::process::command_spawn_wait("npm", &["config", "set", "send-metric", "true"])?;
+    Ok(())
 }
 
 #[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
