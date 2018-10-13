@@ -7,16 +7,6 @@ pub fn sync() {
 
     println!("zsh: syncing ...");
 
-    // TODO: deprecated, deleted this later
-    utils::fs::symbolic_link_if_exists(
-        utils::env::home_dir().join(".dotfiles/profile"),
-        utils::env::home_dir().join(".profile"),
-    );
-    utils::fs::symbolic_link_if_exists(
-        utils::env::home_dir().join(".dotfiles/zshrc"),
-        utils::env::home_dir().join(".zshrc"),
-    );
-
     utils::fs::symbolic_link_if_exists(
         utils::env::home_dir().join(".dotfiles/config/profile"),
         utils::env::home_dir().join(".profile"),

@@ -31,11 +31,8 @@ const VIMS: [Vim; 2] = [
 
 pub fn env(mut exports: Exports) -> Exports {
     for vim in &VIMS {
-        match which(&vim.command) {
-            Ok(found) => {
-                exports.editor = found;
-            }
-            Err(_) => { /* do nothing */ }
+        if let Ok(found) = which(&vim.command) {
+            exports.editor = found;
         }
     }
     exports
