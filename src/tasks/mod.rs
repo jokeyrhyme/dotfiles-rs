@@ -1,6 +1,9 @@
 use std::{env::var, path::PathBuf};
 
-use lib::env::{Exports, Shell};
+use lib::{
+    env::{Exports, Shell},
+    task::{Status, Task},
+};
 
 mod alacritty;
 mod atom;
@@ -46,9 +49,12 @@ pub fn sync() {
     // must be first
     dotfiles::sync();
 
-    alacritty::sync();
+    for t in tasks() {
+        // TODO: eventually handle all errors here
+        (t.sync)().unwrap_or(Status::Done);
+    }
+
     atom::sync();
-    bash::sync();
     dep::sync();
     git::sync();
     gitleaks::sync();
@@ -80,9 +86,12 @@ pub fn update() {
     // must be first
     dotfiles::update();
 
-    alacritty::update();
+    for t in tasks() {
+        // TODO: eventually handle all errors here
+        (t.update)().unwrap_or(Status::Done);
+    }
+
     atom::update();
-    bash::update();
     dep::update();
     git::update();
     gitleaks::update();
@@ -108,4 +117,8 @@ pub fn update() {
     windows::update();
     yq::update();
     zsh::update();
+}
+
+fn tasks() -> Vec<Task> {
+    vec![alacritty::task(), bash::task()]
 }

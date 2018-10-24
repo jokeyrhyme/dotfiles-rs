@@ -1,8 +1,22 @@
+use lib::task::{self, Status, Task};
 use utils;
 
-pub fn sync() {
+pub fn task() -> Task {
+    Task { sync, update }
+}
+
+fn has_bash() -> bool {
+    match utils::process::command_output("bash", &["--version"]) {
+        Ok(output) => output.status.success(),
+        Err(_error) => {
+            false // bash probably not installed
+        }
+    }
+}
+
+fn sync() -> task::Result {
     if !has_bash() {
-        return;
+        return Ok(Status::Skipped);
     }
 
     println!("bash: syncing ...");
@@ -44,11 +58,13 @@ pub fn sync() {
         utils::env::home_dir().join(".dotfiles/config/bashrc"),
         utils::env::home_dir().join(".bashrc"),
     );
+
+    Ok(Status::Done)
 }
 
-pub fn update() {
+fn update() -> task::Result {
     if !has_bash() {
-        return;
+        return Ok(Status::Skipped);
     }
 
     println!("bash: updating ...");
@@ -60,13 +76,6 @@ pub fn update() {
             Err(error) => println!("bash: unable to update bash-it: {}", error),
         }
     }
-}
 
-fn has_bash() -> bool {
-    match utils::process::command_output("bash", &["--version"]) {
-        Ok(output) => output.status.success(),
-        Err(_error) => {
-            false // bash probably not installed
-        }
-    }
+    Ok(Status::Done)
 }
