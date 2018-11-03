@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.21.0] - 2018-11-03
+
 ### Added
 
 - atlantis: keep [atlantis](https://github.com/runatlantis/atlantis) `sync`ed and `update`d
