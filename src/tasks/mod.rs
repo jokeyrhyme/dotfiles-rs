@@ -8,6 +8,7 @@ use lib::{
 mod alacritty;
 mod atom;
 mod bash;
+mod bazel;
 mod dep;
 mod dotfiles;
 mod git;
@@ -55,6 +56,7 @@ pub fn sync() {
     }
 
     atom::sync();
+    bazel::sync();
     dep::sync();
     git::sync();
     gitleaks::sync();
@@ -92,6 +94,7 @@ pub fn update() {
     }
 
     atom::update();
+    bazel::update();
     dep::update();
     git::update();
     gitleaks::update();

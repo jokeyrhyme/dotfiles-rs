@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- bazel: keep [bazel](https://github.com/bazelbuild/bazel) `sync`ed and `update`d
+
 ### Fixed
 
 - ssh: properly parse and honour the `Hostname` directive in SSH settings
