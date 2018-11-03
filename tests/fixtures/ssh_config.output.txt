@@ -3,10 +3,12 @@ ConnectTimeout 10
 VisualHostKey yes
 
 Host bar
+  Hostname bar.example
   IdentityFile ~/.ssh/id_rsa
 
 Host foo
   Ciphers aes128-ctr,aes192-ctr,aes256-ctr
+  Hostname foo.example
 
 Match exec true
   EscapeChar %
