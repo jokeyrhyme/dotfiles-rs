@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
+- atlantis: keep [atlantis](https://github.com/runatlantis/atlantis) `sync`ed and `update`d
+
 - bazel: keep [bazel](https://github.com/bazelbuild/bazel) `sync`ed and `update`d
 
 ### Fixed
