@@ -5,9 +5,11 @@ VisualHostKey yes
 
 # comment
 Host foo
+  Hostname foo.example
   Ciphers aes128-ctr,aes192-ctr,aes256-ctr
 
 Host bar
+  Hostname bar.example
   IdentityFile ~/.ssh/id_rsa
 
 # comment

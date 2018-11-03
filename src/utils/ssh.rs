@@ -53,7 +53,7 @@ pub struct Config {
     pub HostbasedKeyTypes: Option<String>,
     pub HostKeyAlgorithms: Option<String>,
     pub HostKeyAlias: Option<String>,
-    pub HostName: Option<String>,
+    pub Hostname: Option<String>,
     pub IdentitiesOnly: Option<bool>,
     pub IdentityAgent: Option<String>,
     pub IdentityFile: Option<PathBuf>,
@@ -237,8 +237,8 @@ impl BitOr for Config {
         if rhs.HostKeyAlias.is_some() {
             result.HostKeyAlias = rhs.HostKeyAlias;
         }
-        if rhs.HostName.is_some() {
-            result.HostName = rhs.HostName;
+        if rhs.Hostname.is_some() {
+            result.Hostname = rhs.Hostname;
         }
         if rhs.IdentitiesOnly.is_some() {
             result.IdentitiesOnly = rhs.IdentitiesOnly;
@@ -476,7 +476,7 @@ impl<'a> From<&'a str> for Config {
                 "HostbasedKeyTypes" => target.HostbasedKeyTypes = Some(value),
                 "HostKeyAlgorithms" => target.HostKeyAlgorithms = Some(value),
                 "HostKeyAlias" => target.HostKeyAlias = Some(value),
-                "HostName" => target.HostName = Some(value),
+                "Hostname" => target.Hostname = Some(value),
                 "IdentitiesOnly" => target.IdentitiesOnly = parse_config_bool(value),
                 "IdentityAgent" => target.IdentityAgent = Some(value),
                 "IdentityFile" => target.IdentityFile = parse_config_pathbuf(value),
@@ -666,7 +666,7 @@ impl<'a> From<&'a Config> for String {
             &source.HostKeyAlgorithms,
         ));
         result.push_str(&format_config_string(&"HostKeyAlias", &source.HostKeyAlias));
-        result.push_str(&format_config_string(&"HostName", &source.HostName));
+        result.push_str(&format_config_string(&"Hostname", &source.Hostname));
         result.push_str(&format_config_bool(
             &"IdentitiesOnly",
             source.IdentitiesOnly,
@@ -1005,13 +1005,20 @@ mod tests {
             Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/ssh_config.input.txt");
 
         let got = fs::read_to_string(&config_path).unwrap();
+        let want = example_config();
 
         let config = Config::from(got.as_str());
 
-        let mut want = Config::new();
-        want.AddKeysToAgent = Some(String::from("confirm"));
-        want.ConnectTimeout = Some(10);
-        want.VisualHostKey = Some(true);
+        assert_eq!(config.Hosts, want.Hosts);
+        assert_eq!(config.Matches, want.Matches);
+        assert_eq!(config, want);
+    }
+
+    fn example_config() -> Config {
+        let mut cfg = Config::new();
+        cfg.AddKeysToAgent = Some(String::from("confirm"));
+        cfg.ConnectTimeout = Some(10);
+        cfg.VisualHostKey = Some(true);
 
         let mut h1 = Config::new();
         h1.Ciphers = Some(vec![
@@ -1019,20 +1026,20 @@ mod tests {
             String::from("aes192-ctr"),
             String::from("aes256-ctr"),
         ]);
-        want.Hosts.insert(String::from("foo"), h1);
+        h1.Hostname = Some(String::from("foo.example"));
+        cfg.Hosts.insert(String::from("foo"), h1);
 
         let mut h2 = Config::new();
+        h2.Hostname = Some(String::from("bar.example"));
         h2.IdentityFile = Some(PathBuf::new().join("~").join(".ssh").join("id_rsa"));
-        want.Hosts.insert(String::from("bar"), h2);
+        cfg.Hosts.insert(String::from("bar"), h2);
 
         let mut m = Config::new();
         m.EscapeChar = Some('%');
         m.StrictHostKeyChecking = Some(YesNoAsk::Ask);
-        want.Matches.insert(String::from("exec true"), m);
+        cfg.Matches.insert(String::from("exec true"), m);
 
-        assert_eq!(config.Hosts, want.Hosts);
-        assert_eq!(config.Matches, want.Matches);
-        assert_eq!(config, want);
+        cfg
     }
 
     #[test]
@@ -1047,27 +1054,7 @@ mod tests {
         #[cfg(not(windows))]
         let want = fs::read_to_string(&config_path).unwrap();
 
-        let mut config = Config::new();
-        config.AddKeysToAgent = Some(String::from("confirm"));
-        config.ConnectTimeout = Some(10);
-        config.VisualHostKey = Some(true);
-
-        let mut h1 = Config::new();
-        h1.Ciphers = Some(vec![
-            String::from("aes128-ctr"),
-            String::from("aes192-ctr"),
-            String::from("aes256-ctr"),
-        ]);
-        config.Hosts.insert(String::from("foo"), h1);
-
-        let mut h2 = Config::new();
-        h2.IdentityFile = Some(PathBuf::new().join("~").join(".ssh").join("id_rsa"));
-        config.Hosts.insert(String::from("bar"), h2);
-
-        let mut m = Config::new();
-        m.EscapeChar = Some('%');
-        m.StrictHostKeyChecking = Some(YesNoAsk::Ask);
-        config.Matches.insert(String::from("exec true"), m);
+        let config = example_config();
 
         assert_eq!(String::from(&config), want);
     }
