@@ -2,20 +2,15 @@ use std::env::consts::ARCH;
 
 use regex::Regex;
 
-use lib::ghrtask::GHRTask;
+use lib::{
+    ghrtask::GHRTask,
+    task::{self, Status, Task},
+};
 use utils::github::Asset;
 use utils::golang::os;
 
-pub fn sync() {
-    match GHR_TASK.sync() {
-        _ => {}
-    }
-}
-
-pub fn update() {
-    match GHR_TASK.update() {
-        _ => {}
-    }
+pub fn task() -> Task {
+    Task { sync, update }
 }
 
 const GHR_TASK: GHRTask = GHRTask {
@@ -35,6 +30,11 @@ fn asset_filter(asset: &Asset) -> bool {
     re.is_match(&asset.name)
 }
 
+fn sync() -> task::Result {
+    match GHR_TASK.sync() {
+        _ => Ok(Status::Done),
+    }
+}
 #[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 fn trim_version(stdout: String) -> String {
     for line in stdout.lines() {
@@ -44,4 +44,10 @@ fn trim_version(stdout: String) -> String {
         }
     }
     String::from("unexpected")
+}
+
+fn update() -> task::Result {
+    match GHR_TASK.update() {
+        _ => Ok(Status::Done),
+    }
 }

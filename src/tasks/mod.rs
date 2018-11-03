@@ -6,6 +6,7 @@ use lib::{
 };
 
 mod alacritty;
+mod atlantis;
 mod atom;
 mod bash;
 mod bazel;
@@ -56,7 +57,6 @@ pub fn sync() {
     }
 
     atom::sync();
-    bazel::sync();
     dep::sync();
     git::sync();
     gitleaks::sync();
@@ -94,7 +94,6 @@ pub fn update() {
     }
 
     atom::update();
-    bazel::update();
     dep::update();
     git::update();
     gitleaks::update();
@@ -123,5 +122,10 @@ pub fn update() {
 }
 
 fn tasks() -> Vec<Task> {
-    vec![alacritty::task(), bash::task()]
+    vec![
+        alacritty::task(),
+        atlantis::task(),
+        bash::task(),
+        bazel::task(),
+    ]
 }
