@@ -3,7 +3,7 @@ use utils;
 
 pub fn task() -> Task {
     Task {
-        name: "bash".to_string(),
+        name: "zsh".to_string(),
         sync,
         update,
     }

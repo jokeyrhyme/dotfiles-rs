@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - use colors when displaying `Status` output
 
+- run GitHub Release tasks in parallel with all other tasks
+
 ## [0.21.0] - 2018-11-03
 
 ### Added

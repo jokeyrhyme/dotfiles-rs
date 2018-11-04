@@ -1,4 +1,4 @@
-use std::{env::var, path::PathBuf};
+use std::{env::var, path::PathBuf, thread};
 
 use lib::{
     env::{Exports, Shell},
@@ -47,24 +47,38 @@ pub fn env() {
     println!("{}", exports.to_shell(Shell::from(shell.as_str())));
 }
 
-pub fn sync() {
-    for t in tasks() {
-        println!("{}: sync: ...", t.name);
-        match (t.sync)() {
-            Ok(status) => println!("{}: sync: {}", t.name, status),
-            Err(error) => println!("{}: sync error: {:?}", t.name, error),
+pub fn all() {
+    // let's run GitHub Release tasks in serial,
+    // to not exacerbate rate limiting,
+    // but in parallel with everything else
+    let ghr_handle = thread::spawn(|| {
+        for t in ghr_tasks() {
+            t.sync_then_update()
         }
+    });
+
+    for t in tasks() {
+        t.sync_then_update()
     }
+
+    ghr_handle.join().unwrap();
 }
 
-pub fn update() {
-    for t in tasks() {
-        println!("{}: update: ...", t.name);
-        match (t.update)() {
-            Ok(status) => println!("{}: update: {}", t.name, status),
-            Err(error) => println!("{}: update error: {:?}", t.name, error),
-        }
-    }
+fn ghr_tasks() -> Vec<Task> {
+    vec![
+        atlantis::task(),
+        bazel::task(),
+        dep::task(),
+        gitleaks::task(),
+        gitsizer::task(),
+        hadolint::task(),
+        jq::task(),
+        minikube::task(),
+        shfmt::task(),
+        skaffold::task(),
+        vale::task(),
+        yq::task(),
+    ]
 }
 
 fn tasks() -> Vec<Task> {
@@ -88,18 +102,5 @@ fn tasks() -> Vec<Task> {
         zsh::task(),    // config
         #[cfg(windows)]
         windows::task(),
-        // GitHub Release tasks
-        atlantis::task(),
-        bazel::task(),
-        dep::task(),
-        gitleaks::task(),
-        gitsizer::task(),
-        hadolint::task(),
-        jq::task(),
-        minikube::task(),
-        shfmt::task(),
-        skaffold::task(),
-        vale::task(),
-        yq::task(),
     ]
 }
