@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Changed
+
+- tasks that download from GitHub Releases now output standard `Status`
+
 ## [0.21.0] - 2018-11-03
 
 ### Added

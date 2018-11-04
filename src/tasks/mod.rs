@@ -2,7 +2,7 @@ use std::{env::var, path::PathBuf};
 
 use lib::{
     env::{Exports, Shell},
-    task::{Status, Task},
+    task::Task,
 };
 
 mod alacritty;
@@ -52,35 +52,28 @@ pub fn sync() {
     dotfiles::sync();
 
     for t in tasks() {
-        // TODO: eventually handle all errors here
-        (t.sync)().unwrap_or(Status::Done);
+        println!("{}: sync: ...", t.name);
+        match (t.sync)() {
+            Ok(status) => println!("{}: sync: {}", t.name, status),
+            Err(error) => println!("{}: sync error: {:?}", t.name, error),
+        }
     }
 
     atom::sync();
-    dep::sync();
     git::sync();
-    gitleaks::sync();
-    gitsizer::sync();
     golang::sync();
-    hadolint::sync();
     hyper::sync();
-    jq::sync();
     #[cfg(target_os = "macos")]
     macos::sync();
-    minikube::sync();
     nodejs::sync();
     psql::sync();
     rust::sync();
-    shfmt::sync();
-    skaffold::sync();
     ssh::sync();
     tmux::sync();
-    vale::sync();
     vim::sync();
     vscode::sync();
     #[cfg(windows)]
     windows::sync();
-    yq::sync();
     zsh::sync();
 }
 
@@ -89,43 +82,47 @@ pub fn update() {
     dotfiles::update();
 
     for t in tasks() {
-        // TODO: eventually handle all errors here
-        (t.update)().unwrap_or(Status::Done);
+        println!("{}: update: ...", t.name);
+        match (t.update)() {
+            Ok(status) => println!("{}: update: {}", t.name, status),
+            Err(error) => println!("{}: update error: {:?}", t.name, error),
+        }
     }
 
     atom::update();
-    dep::update();
     git::update();
-    gitleaks::update();
-    gitsizer::update();
     golang::update();
-    hadolint::update();
     hyper::update();
-    jq::update();
     #[cfg(target_os = "macos")]
     macos::update();
-    minikube::update();
     nodejs::update();
     psql::update();
     rust::update();
-    shfmt::update();
-    skaffold::update();
     ssh::update();
     tmux::update();
-    vale::update();
     vim::update();
     vscode::update();
     #[cfg(windows)]
     windows::update();
-    yq::update();
     zsh::update();
 }
 
 fn tasks() -> Vec<Task> {
     vec![
         alacritty::task(),
-        atlantis::task(),
         bash::task(),
+        // GitHub Release tasks
+        atlantis::task(),
         bazel::task(),
+        dep::task(),
+        gitleaks::task(),
+        gitsizer::task(),
+        hadolint::task(),
+        jq::task(),
+        minikube::task(),
+        shfmt::task(),
+        skaffold::task(),
+        vale::task(),
+        yq::task(),
     ]
 }

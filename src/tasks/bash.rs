@@ -2,7 +2,11 @@ use lib::task::{self, Status, Task};
 use utils;
 
 pub fn task() -> Task {
-    Task { sync, update }
+    Task {
+        name: "bash".to_string(),
+        sync,
+        update,
+    }
 }
 
 fn has_bash() -> bool {
@@ -18,8 +22,6 @@ fn sync() -> task::Result {
     if !has_bash() {
         return Ok(Status::Skipped);
     }
-
-    println!("bash: syncing ...");
 
     let it_path = utils::env::home_dir().join(".bash_it");
     if !utils::git::path_is_git_repository(&it_path) {
@@ -66,8 +68,6 @@ fn update() -> task::Result {
     if !has_bash() {
         return Ok(Status::Skipped);
     }
-
-    println!("bash: updating ...");
 
     let it_path = utils::env::home_dir().join(".bash_it");
     if utils::git::path_is_git_repository(&it_path) {

@@ -4,13 +4,17 @@ use regex::Regex;
 
 use lib::{
     ghrtask::GHRTask,
-    task::{self, Status, Task},
+    task::{self, Task},
 };
 use utils::github::Asset;
 use utils::golang::os;
 
 pub fn task() -> Task {
-    Task { sync, update }
+    Task {
+        name: "bazel".to_string(),
+        sync,
+        update,
+    }
 }
 
 const GHR_TASK: GHRTask = GHRTask {
@@ -31,10 +35,9 @@ fn asset_filter(asset: &Asset) -> bool {
 }
 
 fn sync() -> task::Result {
-    match GHR_TASK.sync() {
-        _ => Ok(Status::Done),
-    }
+    GHR_TASK.sync()
 }
+
 #[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 fn trim_version(stdout: String) -> String {
     for line in stdout.lines() {
@@ -47,7 +50,5 @@ fn trim_version(stdout: String) -> String {
 }
 
 fn update() -> task::Result {
-    match GHR_TASK.update() {
-        _ => Ok(Status::Done),
-    }
+    GHR_TASK.update()
 }
