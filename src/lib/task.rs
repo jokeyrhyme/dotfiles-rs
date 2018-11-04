@@ -1,5 +1,7 @@
 use std::{fmt, io, result};
 
+use colored::*;
+
 use utils::github::GitHubError;
 
 #[derive(Debug)]
@@ -11,8 +13,12 @@ impl std::error::Error for Error {}
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match &self {
-            Error::GitHubError(msg, cause) => write!(f, "error: {}: {:?}", msg, cause),
-            Error::IOError(msg, cause) => write!(f, "error: {}: {:?}", msg, cause),
+            Error::GitHubError(msg, cause) => {
+                write!(f, "{}", format!("error: {}: {:?}", msg, cause).red())
+            }
+            Error::IOError(msg, cause) => {
+                write!(f, "{}", format!("error: {}: {:?}", msg, cause).red())
+            }
         }
     }
 }
@@ -40,12 +46,14 @@ pub enum Status {
 impl fmt::Display for Status {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match &self {
-            Status::Done => write!(f, "done"),
-            Status::NotImplemented => write!(f, "not implemented"),
-            Status::Skipped => write!(f, "skipped"),
+            Status::Done => write!(f, "{}", "done".green()),
+            Status::NotImplemented => write!(f, "{}", "not implemented".dimmed()),
+            Status::Skipped => write!(f, "{}", "skipped".blue()),
 
-            Status::Changed(old, new) => write!(f, "changed '{}' -> '{}'", old, new),
-            Status::NoChange(old) => write!(f, "'{}' -> no change", old),
+            Status::Changed(old, new) => {
+                write!(f, "{}", format!("changed '{}' -> '{}'", old, new).yellow())
+            }
+            Status::NoChange(old) => write!(f, "{}", format!("'{}' -> no change", old).green()),
         }
     }
 }

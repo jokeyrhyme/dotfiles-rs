@@ -1,5 +1,6 @@
 extern crate cabot;
 extern crate clap;
+extern crate colored;
 extern crate dirs;
 extern crate inflector;
 extern crate libflate;
