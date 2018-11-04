@@ -1,47 +1,11 @@
-use std::env::consts::{ARCH, OS};
-use std::error::Error;
-use std::path::PathBuf;
-use std::{self, fmt, io, str};
+use std::{
+    env::consts::{ARCH, OS},
+    path::PathBuf,
+    str,
+};
 
-use lib::version;
+use lib::{task, version};
 use utils;
-
-#[derive(Debug)]
-pub enum GolangError {
-    NoTagsError,
-    IoError(io::Error),
-}
-
-impl fmt::Display for GolangError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> std::fmt::Result {
-        match *self {
-            GolangError::NoTagsError => fmt::Display::fmt(&"NoTagsError", f),
-            GolangError::IoError(ref err) => fmt::Display::fmt(err, f),
-        }
-    }
-}
-
-impl Error for GolangError {
-    fn cause(&self) -> Option<&Error> {
-        match *self {
-            GolangError::NoTagsError => None,
-            GolangError::IoError(ref err) => Some(err as &Error),
-        }
-    }
-
-    fn description(&self) -> &str {
-        match *self {
-            GolangError::NoTagsError => &"NoTagsError",
-            GolangError::IoError(ref err) => err.description(),
-        }
-    }
-}
-
-impl From<io::Error> for GolangError {
-    fn from(error: io::Error) -> GolangError {
-        GolangError::IoError(error)
-    }
-}
 
 pub fn arch() -> &'static str {
     if ARCH == "x86_64" {
@@ -81,7 +45,7 @@ pub fn is_installed() -> bool {
     exe_path.is_file()
 }
 
-pub fn latest_version() -> Result<String, GolangError> {
+pub fn latest_version() -> Result<String, task::Error> {
     let tags: Vec<utils::github::Tag> = match utils::github::fetch_tags("golang", "go") {
         Ok(t) => {
             t.into_iter()
@@ -92,15 +56,15 @@ pub fn latest_version() -> Result<String, GolangError> {
                 }).collect()
         }
         Err(error) => {
-            return Err(GolangError::IoError(error));
+            return Err(task::Error::IOError("cannot fetch tags".to_string(), error));
         }
     };
     if tags.is_empty() {
-        return Err(GolangError::NoTagsError {});
+        return Err(task::Error::NoTagsError {});
     }
     match tags.last() {
         Some(latest) => Ok(latest.clone().id),
-        None => Err(GolangError::NoTagsError {}),
+        None => Err(task::Error::NoTagsError {}),
     }
 }
 

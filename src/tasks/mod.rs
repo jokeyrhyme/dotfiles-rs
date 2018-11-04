@@ -48,9 +48,6 @@ pub fn env() {
 }
 
 pub fn sync() {
-    // must be first
-    dotfiles::sync();
-
     for t in tasks() {
         println!("{}: sync: ...", t.name);
         match (t.sync)() {
@@ -58,29 +55,9 @@ pub fn sync() {
             Err(error) => println!("{}: sync error: {:?}", t.name, error),
         }
     }
-
-    atom::sync();
-    git::sync();
-    golang::sync();
-    hyper::sync();
-    #[cfg(target_os = "macos")]
-    macos::sync();
-    nodejs::sync();
-    psql::sync();
-    rust::sync();
-    ssh::sync();
-    tmux::sync();
-    vim::sync();
-    vscode::sync();
-    #[cfg(windows)]
-    windows::sync();
-    zsh::sync();
 }
 
 pub fn update() {
-    // must be first
-    dotfiles::update();
-
     for t in tasks() {
         println!("{}: update: ...", t.name);
         match (t.update)() {
@@ -88,29 +65,29 @@ pub fn update() {
             Err(error) => println!("{}: update error: {:?}", t.name, error),
         }
     }
-
-    atom::update();
-    git::update();
-    golang::update();
-    hyper::update();
-    #[cfg(target_os = "macos")]
-    macos::update();
-    nodejs::update();
-    psql::update();
-    rust::update();
-    ssh::update();
-    tmux::update();
-    vim::update();
-    vscode::update();
-    #[cfg(windows)]
-    windows::update();
-    zsh::update();
 }
 
 fn tasks() -> Vec<Task> {
     vec![
-        alacritty::task(),
-        bash::task(),
+        dotfiles::task(),  // must be before "config" tasks
+        alacritty::task(), // config
+        atom::task(),
+        bash::task(), // config
+        git::task(),
+        golang::task(),
+        hyper::task(), // config
+        #[cfg(target_os = "macos")]
+        macos::task(),
+        nodejs::task(),
+        psql::task(), // config
+        rust::task(),
+        ssh::task(),    // config
+        tmux::task(),   // config
+        vim::task(),    // config
+        vscode::task(), // config
+        zsh::task(),    // config
+        #[cfg(windows)]
+        windows::task(),
         // GitHub Release tasks
         atlantis::task(),
         bazel::task(),

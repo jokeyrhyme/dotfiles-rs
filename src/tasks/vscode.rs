@@ -3,9 +3,8 @@ use std::{fs, str};
 
 use toml;
 
+use lib::task::{self, Status, Task};
 use utils;
-
-const ERROR_MSG: &str = "error: vscode";
 
 const COMMAND: &str = "code";
 
@@ -15,61 +14,17 @@ struct Config {
     uninstall: Vec<String>,
 }
 
-pub fn sync() {
-    if !has_code() {
-        return;
+pub fn task() -> Task {
+    Task {
+        name: "vscode".to_string(),
+        sync,
+        update,
     }
-
-    println!("vscode: syncing ...");
-
-    let src = utils::env::home_dir().join(".dotfiles/config/vscode.json");
-
-    #[cfg(target_os = "macos")]
-    let settings_path = "Library/Application Support/Code/User/settings.json";
-    #[cfg(windows)]
-    let settings_path = "AppData/Roaming/Code/User/settings.json";
-    #[cfg(not(any(target_os = "macos", windows)))]
-    let settings_path = ".config/Code/User/settings.json";
-    let dest = utils::env::home_dir().join(Path::new(settings_path));
-
-    utils::fs::symbolic_link_if_exists(&src, &dest);
-
-    let cfg_path = utils::env::home_dir().join(".dotfiles/config/vscode.toml");
-
-    let contents = match fs::read_to_string(&cfg_path) {
-        Ok(s) => s,
-        Err(error) => {
-            println!("vscode: ignoring config: {}", error);
-            return;
-        }
-    };
-
-    let config: Config = toml::from_str(&contents).expect("cannot parse .../vscode.toml");
-
-    let exts = exts_installed();
-
-    for ext in config.install {
-        if !exts.contains(&ext) {
-            utils::process::command_spawn_wait(COMMAND, &["--install-extension", &ext])
-                .expect(ERROR_MSG);
-        }
-    }
-
-    for ext in config.uninstall {
-        if exts.contains(&ext) {
-            utils::process::command_spawn_wait(COMMAND, &["--uninstall-extension", &ext])
-                .expect(ERROR_MSG);
-        }
-    }
-
-    #[cfg(target_os = "macos")]
-    fix_macos();
 }
 
-pub fn update() {}
-
 fn exts_installed() -> Vec<String> {
-    let output = utils::process::command_output(COMMAND, &["--list-extensions"]).expect(ERROR_MSG);
+    let output = utils::process::command_output(COMMAND, &["--list-extensions"])
+        .expect("vscode: error: unable to list extensions");
     let stdout = str::from_utf8(&output.stdout).unwrap();
 
     let mut exts: Vec<String> = Vec::new();
@@ -110,4 +65,56 @@ fn has_code() -> bool {
             false // Visual Studio Code probably not installed
         }
     }
+}
+
+fn sync() -> task::Result {
+    if !has_code() {
+        return Ok(Status::Skipped);
+    }
+
+    let src = utils::env::home_dir().join(".dotfiles/config/vscode.json");
+
+    #[cfg(target_os = "macos")]
+    let settings_path = "Library/Application Support/Code/User/settings.json";
+    #[cfg(windows)]
+    let settings_path = "AppData/Roaming/Code/User/settings.json";
+    #[cfg(not(any(target_os = "macos", windows)))]
+    let settings_path = ".config/Code/User/settings.json";
+    let dest = utils::env::home_dir().join(Path::new(settings_path));
+
+    utils::fs::symbolic_link_if_exists(&src, &dest);
+
+    let cfg_path = utils::env::home_dir().join(".dotfiles/config/vscode.toml");
+
+    let contents = match fs::read_to_string(&cfg_path) {
+        Ok(s) => s,
+        Err(error) => {
+            return Err(task::Error::IOError("ignoring config".to_string(), error));
+        }
+    };
+
+    let config: Config = toml::from_str(&contents).expect("cannot parse .../vscode.toml");
+
+    let exts = exts_installed();
+
+    for ext in config.install {
+        if !exts.contains(&ext) {
+            utils::process::command_spawn_wait(COMMAND, &["--install-extension", &ext])?;
+        }
+    }
+
+    for ext in config.uninstall {
+        if exts.contains(&ext) {
+            utils::process::command_spawn_wait(COMMAND, &["--uninstall-extension", &ext])?;
+        }
+    }
+
+    #[cfg(target_os = "macos")]
+    fix_macos();
+
+    Ok(Status::Done)
+}
+
+fn update() -> task::Result {
+    Ok(Status::NotImplemented)
 }

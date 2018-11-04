@@ -2,94 +2,16 @@ use std::{fs, str};
 
 use regex;
 
+use lib::task::{self, Status, Task};
 use utils::{self, ssh::Config};
 
-pub fn sync() {
-    if !utils::ssh::has_ssh() {
-        return;
+pub fn task() -> Task {
+    Task {
+        name: "ssh".to_string(),
+        sync,
+        update,
     }
-
-    println!("ssh: syncing ...");
-
-    let source_path = utils::env::home_dir()
-        .join(".dotfiles")
-        .join("config")
-        .join("ssh");
-    let source = match fs::read_to_string(&source_path) {
-        Ok(s) => s,
-        Err(_error) => String::from(""),
-    };
-
-    let target_path = utils::env::home_dir().join(".ssh").join("config");
-    let target = match fs::read_to_string(&target_path) {
-        Ok(s) => s,
-        Err(_error) => String::from(""),
-    };
-
-    let version = ssh_version();
-    let do_blacklist = is_blacklist_supported(version);
-
-    let mut config = Config::from(target.as_str()) | Config::from(source.as_str());
-
-    let ciphers: Vec<String> = supported_ssh_ciphers()
-        .iter()
-        .filter_map(|cipher| {
-            if !do_blacklist && !is_weak_cipher(cipher as &str) {
-                return Some(cipher.clone());
-            }
-            if do_blacklist && is_weak_cipher(cipher as &str) {
-                return Some(format!("-{}", cipher));
-            }
-            None
-        }).collect();
-    if !ciphers.is_empty() {
-        config.Ciphers = Some(ciphers);
-    }
-
-    let kexs: Vec<String> = supported_ssh_kexs()
-        .iter()
-        .filter_map(|kex| {
-            if !do_blacklist && !is_weak_kex(kex as &str) {
-                return Some(kex.clone());
-            }
-            if do_blacklist && is_weak_kex(kex as &str) {
-                return Some(format!("-{}", kex));
-            }
-            None
-        }).collect();
-    if !kexs.is_empty() {
-        config.KexAlgorithms = Some(kexs);
-    }
-
-    let macs: Vec<String> = supported_ssh_macs()
-        .iter()
-        .filter_map(|mac| {
-            if !do_blacklist && !is_weak_mac(mac as &str) {
-                return Some(mac.clone());
-            }
-            if do_blacklist && is_weak_mac(mac as &str) {
-                return Some(format!("-{}", mac));
-            }
-            None
-        }).collect();
-    if !macs.is_empty() {
-        config.MACs = Some(macs);
-    }
-
-    match fs::create_dir_all(&target_path.parent().unwrap()) {
-        Ok(()) => match fs::write(&target_path, String::from(&config)) {
-            Ok(()) => {}
-            Err(error) => {
-                println!("error: ssh: unable to write config: {}", error);
-            }
-        },
-        Err(error) => {
-            println!("error: ssh: unable to create ~/.ssh: {}", error);
-        }
-    };
 }
-
-pub fn update() {}
 
 #[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 fn is_blacklist_supported<S>(ssh_version: S) -> bool
@@ -184,6 +106,95 @@ fn supported_ssh_macs() -> Vec<String> {
         }
         Err(_error) => Vec::<String>::new(),
     }
+}
+
+fn sync() -> task::Result {
+    if !utils::ssh::has_ssh() {
+        return Ok(Status::Skipped);
+    }
+
+    let source_path = utils::env::home_dir()
+        .join(".dotfiles")
+        .join("config")
+        .join("ssh");
+    let source = match fs::read_to_string(&source_path) {
+        Ok(s) => s,
+        Err(_error) => String::from(""),
+    };
+
+    let target_path = utils::env::home_dir().join(".ssh").join("config");
+    let target = match fs::read_to_string(&target_path) {
+        Ok(s) => s,
+        Err(_error) => String::from(""),
+    };
+
+    let version = ssh_version();
+    let do_blacklist = is_blacklist_supported(version);
+
+    let mut config = Config::from(target.as_str()) | Config::from(source.as_str());
+
+    let ciphers: Vec<String> = supported_ssh_ciphers()
+        .iter()
+        .filter_map(|cipher| {
+            if !do_blacklist && !is_weak_cipher(cipher as &str) {
+                return Some(cipher.clone());
+            }
+            if do_blacklist && is_weak_cipher(cipher as &str) {
+                return Some(format!("-{}", cipher));
+            }
+            None
+        }).collect();
+    if !ciphers.is_empty() {
+        config.Ciphers = Some(ciphers);
+    }
+
+    let kexs: Vec<String> = supported_ssh_kexs()
+        .iter()
+        .filter_map(|kex| {
+            if !do_blacklist && !is_weak_kex(kex as &str) {
+                return Some(kex.clone());
+            }
+            if do_blacklist && is_weak_kex(kex as &str) {
+                return Some(format!("-{}", kex));
+            }
+            None
+        }).collect();
+    if !kexs.is_empty() {
+        config.KexAlgorithms = Some(kexs);
+    }
+
+    let macs: Vec<String> = supported_ssh_macs()
+        .iter()
+        .filter_map(|mac| {
+            if !do_blacklist && !is_weak_mac(mac as &str) {
+                return Some(mac.clone());
+            }
+            if do_blacklist && is_weak_mac(mac as &str) {
+                return Some(format!("-{}", mac));
+            }
+            None
+        }).collect();
+    if !macs.is_empty() {
+        config.MACs = Some(macs);
+    }
+
+    match fs::create_dir_all(&target_path.parent().unwrap()) {
+        Ok(()) => match fs::write(&target_path, String::from(&config)) {
+            Ok(()) => {}
+            Err(error) => {
+                println!("error: ssh: unable to write config: {}", error);
+            }
+        },
+        Err(error) => {
+            println!("error: ssh: unable to create ~/.ssh: {}", error);
+        }
+    };
+
+    Ok(Status::Done)
+}
+
+fn update() -> task::Result {
+    Ok(Status::NotImplemented)
 }
 
 #[cfg(test)]

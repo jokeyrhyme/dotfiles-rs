@@ -2,7 +2,10 @@ use std::{fs, io, str};
 
 use toml;
 
-use lib;
+use lib::{
+    self,
+    task::{self, Status, Task},
+};
 use utils;
 
 const ERROR_MSG: &str = "error: atom";
@@ -16,65 +19,12 @@ struct Config {
     uninstall: Vec<String>,
 }
 
-pub fn sync() {
-    if !has_apm() {
-        return;
+pub fn task() -> Task {
+    Task {
+        name: "atom".to_string(),
+        sync,
+        update,
     }
-
-    println!("atom: syncing ...");
-
-    match configure_apm() {
-        Ok(_) => {}
-        Err(error) => {
-            println!("warning: atom: unable to configure apm: {}", error);
-        }
-    };
-
-    let cfg_path = utils::env::home_dir().join(".dotfiles/config/atom.toml");
-
-    let contents = match fs::read_to_string(&cfg_path) {
-        Ok(s) => s,
-        Err(error) => {
-            println!("atom: ignoring config: {}", error);
-            return;
-        }
-    };
-
-    let config: Config = toml::from_str(&contents).expect("cannot parse .../atom.toml");
-
-    let pkgs = pkgs_installed();
-
-    for ext in config.install {
-        if !pkgs.contains(&ext) {
-            utils::process::command_spawn_wait(
-                COMMAND,
-                &["install", "--compatible", "--production", "--quiet", &ext],
-            ).expect(ERROR_MSG);
-        }
-    }
-
-    let mut disable_args = vec![String::from("disable")];
-    disable_args.extend(config.disable);
-
-    utils::process::command_spawn_wait(COMMAND, &disable_args).expect(ERROR_MSG);
-
-    for ext in config.uninstall {
-        if pkgs.contains(&ext) {
-            utils::process::command_spawn_wait(COMMAND, &["uninstall", "--hard", &ext])
-                .expect(ERROR_MSG);
-        }
-    }
-}
-
-pub fn update() {
-    if !has_apm() {
-        return;
-    }
-
-    println!("atom: updating ...");
-
-    utils::process::command_spawn_wait(COMMAND, &["upgrade", "--confirm", "false"])
-        .expect(ERROR_MSG);
 }
 
 fn configure_apm() -> io::Result<()> {
@@ -118,4 +68,65 @@ fn pkgs_installed() -> Vec<String> {
         }
     }
     pkgs
+}
+
+fn sync() -> task::Result {
+    if !has_apm() {
+        return Ok(Status::Skipped);
+    }
+
+    match configure_apm() {
+        Ok(_) => {}
+        Err(error) => {
+            println!("warning: atom: unable to configure apm: {}", error);
+        }
+    };
+
+    let cfg_path = utils::env::home_dir().join(".dotfiles/config/atom.toml");
+
+    let contents = match fs::read_to_string(&cfg_path) {
+        Ok(s) => s,
+        Err(error) => {
+            println!("atom: ignoring config: {}", error);
+            return Ok(Status::Skipped);
+        }
+    };
+
+    let config: Config = toml::from_str(&contents).expect("cannot parse .../atom.toml");
+
+    let pkgs = pkgs_installed();
+
+    for ext in config.install {
+        if !pkgs.contains(&ext) {
+            utils::process::command_spawn_wait(
+                COMMAND,
+                &["install", "--compatible", "--production", "--quiet", &ext],
+            ).expect(ERROR_MSG);
+        }
+    }
+
+    let mut disable_args = vec![String::from("disable")];
+    disable_args.extend(config.disable);
+
+    utils::process::command_spawn_wait(COMMAND, &disable_args).expect(ERROR_MSG);
+
+    for ext in config.uninstall {
+        if pkgs.contains(&ext) {
+            utils::process::command_spawn_wait(COMMAND, &["uninstall", "--hard", &ext])
+                .expect(ERROR_MSG);
+        }
+    }
+
+    Ok(Status::Done)
+}
+
+fn update() -> task::Result {
+    if !has_apm() {
+        return Ok(Status::Skipped);
+    }
+
+    utils::process::command_spawn_wait(COMMAND, &["upgrade", "--confirm", "false"])
+        .expect(ERROR_MSG);
+
+    Ok(Status::Done)
 }

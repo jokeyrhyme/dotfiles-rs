@@ -2,10 +2,11 @@ use std::{self, io, path::PathBuf};
 
 use which::which;
 
-use lib::env::Exports;
+use lib::{
+    env::Exports,
+    task::{self, Status, Task},
+};
 use utils;
-
-const ERROR_MSG: &str = "vim";
 
 const PLUG_VIM: &str = "plug.vim";
 
@@ -38,14 +39,21 @@ pub fn env(mut exports: Exports) -> Exports {
     exports
 }
 
-pub fn sync() {
+pub fn task() -> Task {
+    Task {
+        name: "vim".to_string(),
+        sync,
+        update,
+    }
+}
+
+fn sync() -> task::Result {
     let src = utils::env::home_dir().join(".dotfiles/config/vimrc");
 
     for vim in &VIMS {
         if !vim.exists() {
             continue;
         }
-        println!("{}: syncing...", &vim.command);
 
         utils::fs::symbolic_link_if_exists(&src, &vim.rc_path());
 
@@ -65,25 +73,26 @@ pub fn sync() {
         utils::process::command_spawn_wait(
             &vim.command,
             &["-E", "-c", "PlugInstall", "-c", "q", "-c", "q"],
-        ).expect(ERROR_MSG);
+        )?;
         utils::process::command_spawn_wait(
             &vim.command,
             &["-E", "-c", "PlugClean[!]", "-c", "q", "-c", "q"],
-        ).expect(ERROR_MSG);
+        )?;
     }
 
     // BEGIN: remove old vim configurations
     let vim_runtime = utils::env::home_dir().join(".vim_runtime");
     utils::fs::delete_if_exists(&vim_runtime);
     // END: remove old vim configurations
+
+    Ok(Status::Done)
 }
 
-pub fn update() {
+fn update() -> task::Result {
     for vim in &VIMS {
         if !vim.exists() {
             continue;
         }
-        println!("{}: updating...", &vim.command);
 
         match vim.install_vim_plug() {
             Ok(_) => {}
@@ -99,8 +108,10 @@ pub fn update() {
         utils::process::command_spawn_wait(
             &vim.command,
             &["-E", "-c", "PlugUpdate", "-c", "q", "-c", "q"],
-        ).expect(ERROR_MSG);
+        )?;
     }
+
+    Ok(Status::Done)
 }
 
 #[derive(Debug)]

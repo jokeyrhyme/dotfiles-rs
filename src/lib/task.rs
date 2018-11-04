@@ -8,17 +8,17 @@ use utils::github::GitHubError;
 pub enum Error {
     GitHubError(String, GitHubError),
     IOError(String, io::Error),
+    NoTagsError,
 }
 impl std::error::Error for Error {}
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match &self {
             Error::GitHubError(msg, cause) => {
-                write!(f, "{}", format!("error: {}: {:?}", msg, cause).red())
+                write!(f, "{}", format!("{}: {:?}", msg, cause).red())
             }
-            Error::IOError(msg, cause) => {
-                write!(f, "{}", format!("error: {}: {:?}", msg, cause).red())
-            }
+            Error::IOError(msg, cause) => write!(f, "{}", format!("{}: {:?}", msg, cause).red()),
+            Error::NoTagsError => write!(f, "{}", "NoTagsError".red()),
         }
     }
 }

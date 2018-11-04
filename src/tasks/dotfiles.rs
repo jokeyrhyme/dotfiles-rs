@@ -1,13 +1,23 @@
+use lib::task::{self, Status, Task};
 use utils;
 
-pub fn sync() {
-    println!("dotfiles: syncing ...");
+pub fn task() -> Task {
+    Task {
+        name: "dotfiles".to_string(),
+        sync,
+        update,
+    }
+}
 
+fn sync() -> task::Result {
     let target = utils::env::home_dir().join(".dotfiles");
 
     if utils::git::has_git() && utils::git::path_is_git_repository(&target) {
         utils::git::pull(&target);
     }
+    Ok(Status::Done)
 }
 
-pub fn update() {}
+fn update() -> task::Result {
+    Ok(Status::NotImplemented)
+}
