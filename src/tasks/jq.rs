@@ -1,17 +1,16 @@
 use std::env::consts::{ARCH, OS};
 
-use lib::ghrtask::GHRTask;
+use lib::{
+    ghrtask::GHRTask,
+    task::{self, Task},
+};
 use utils::github::Asset;
 
-pub fn sync() {
-    match GHR_TASK.sync() {
-        _ => {}
-    }
-}
-
-pub fn update() {
-    match GHR_TASK.update() {
-        _ => {}
+pub fn task() -> Task {
+    Task {
+        name: "jq".to_string(),
+        sync,
+        update,
     }
 }
 
@@ -56,7 +55,15 @@ fn os_arch() -> String {
     )
 }
 
+fn sync() -> task::Result {
+    GHR_TASK.sync()
+}
+
 #[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 fn trim_version(stdout: String) -> String {
     String::from(stdout.trim())
+}
+
+fn update() -> task::Result {
+    GHR_TASK.update()
 }

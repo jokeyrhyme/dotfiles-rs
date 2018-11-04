@@ -1,25 +1,25 @@
+use lib::task::{self, Status, Task};
 use utils;
 
 const ERROR_MSG: &str = "error: git";
 
-#[derive(Debug, Deserialize)]
-struct Config {
-    disable: Vec<String>,
-    install: Vec<String>,
-    uninstall: Vec<String>,
+pub fn task() -> Task {
+    Task {
+        name: "git".to_string(),
+        sync,
+        update,
+    }
 }
 
-pub fn sync() {
+fn sync() -> task::Result {
     // TODO: synchronise git settings
 
     if !utils::git::has_git() {
-        return;
+        return Ok(Status::Skipped);
     }
     if !utils::nodejs::has_npx() {
-        return;
+        return Ok(Status::Skipped);
     }
-
-    println!("git: syncing ...");
 
     // https://www.npmjs.com/package/npm-merge-driver
     utils::process::command_spawn_wait("npx", &["-q", "npm-merge-driver", "install", "--global"])
@@ -43,6 +43,10 @@ pub fn sync() {
             ],
         ).expect(ERROR_MSG);
     }
+
+    Ok(Status::Done)
 }
 
-pub fn update() {}
+fn update() -> task::Result {
+    Ok(Status::NotImplemented)
+}

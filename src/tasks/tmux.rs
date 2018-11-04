@@ -1,13 +1,27 @@
+use lib::task::{self, Status, Task};
 use utils;
 
-const ERROR_MSG: &str = "error: tmux";
-
-pub fn sync() {
-    if !has_tmux() {
-        return;
+pub fn task() -> Task {
+    Task {
+        name: "tmux".to_string(),
+        sync,
+        update,
     }
+}
 
-    println!("tmux: syncing ...");
+fn has_tmux() -> bool {
+    match utils::process::command_output("tmux", &["-V"]) {
+        Ok(output) => output.status.success(),
+        Err(_error) => {
+            false // tmux probably not installed
+        }
+    }
+}
+
+fn sync() -> task::Result {
+    if !has_tmux() {
+        return Ok(Status::Skipped);
+    }
 
     let src = utils::env::home_dir().join(".dotfiles/config/tmux.conf");
     let dest = utils::env::home_dir().join(".tmux.conf");
@@ -31,22 +45,22 @@ pub fn sync() {
         utils::process::command_spawn_wait(
             tpm_install_path.into_os_string().to_str().unwrap(),
             &empty_args,
-        ).expect(ERROR_MSG);
+        )?;
 
         let tpm_clean_path = tpm_path.join("bin/clean_plugins");
         utils::process::command_spawn_wait(
             tpm_clean_path.into_os_string().to_str().unwrap(),
             &empty_args,
-        ).expect(ERROR_MSG);
+        )?;
     }
+
+    Ok(Status::Done)
 }
 
-pub fn update() {
+fn update() -> task::Result {
     if !has_tmux() {
-        return;
+        return Ok(Status::Skipped);
     }
-
-    println!("tmux: updating ...");
 
     let tpm_path = utils::env::home_dir().join(".tmux/plugins/tpm");
     if utils::git::path_is_git_repository(&tpm_path) {
@@ -59,15 +73,8 @@ pub fn update() {
         utils::process::command_spawn_wait(
             tpm_update_path.into_os_string().to_str().unwrap(),
             &["all"],
-        ).expect(ERROR_MSG);
+        )?;
     }
-}
 
-fn has_tmux() -> bool {
-    match utils::process::command_output("tmux", &["-V"]) {
-        Ok(output) => output.status.success(),
-        Err(_error) => {
-            false // tmux probably not installed
-        }
-    }
+    Ok(Status::Done)
 }

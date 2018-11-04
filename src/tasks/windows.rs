@@ -1,6 +1,15 @@
+use lib::task::{self, Status, Task};
 use utils;
 
-pub fn sync() {
+pub fn task() -> Task {
+    Task {
+        name: "windows".to_string(),
+        sync,
+        update,
+    }
+}
+
+fn sync() -> task::Result {
     println!("windows: manually configure %PATH% to include:");
 
     let bin_path = utils::env::home_dir().join(".local").join("bin");
@@ -11,6 +20,10 @@ pub fn sync() {
 
     let node_bin_path = utils::env::home_dir().join(".local").join("node");
     println!("- {}", node_bin_path.display());
+
+    Ok(Status::Done)
 }
 
-pub fn update() {}
+fn update() -> task::Result {
+    Ok(Status::NotImplemented)
+}

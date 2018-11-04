@@ -1,8 +1,8 @@
-use std::{env::var, path::PathBuf};
+use std::{env::var, path::PathBuf, thread};
 
 use lib::{
     env::{Exports, Shell},
-    task::{Status, Task},
+    task::Task,
 };
 
 mod alacritty;
@@ -47,85 +47,60 @@ pub fn env() {
     println!("{}", exports.to_shell(Shell::from(shell.as_str())));
 }
 
-pub fn sync() {
-    // must be first
-    dotfiles::sync();
+pub fn all() {
+    // let's run GitHub Release tasks in serial,
+    // to not exacerbate rate limiting,
+    // but in parallel with everything else
+    let ghr_handle = thread::spawn(|| {
+        for t in ghr_tasks() {
+            t.sync_then_update()
+        }
+    });
 
     for t in tasks() {
-        // TODO: eventually handle all errors here
-        (t.sync)().unwrap_or(Status::Done);
+        t.sync_then_update()
     }
 
-    atom::sync();
-    dep::sync();
-    git::sync();
-    gitleaks::sync();
-    gitsizer::sync();
-    golang::sync();
-    hadolint::sync();
-    hyper::sync();
-    jq::sync();
-    #[cfg(target_os = "macos")]
-    macos::sync();
-    minikube::sync();
-    nodejs::sync();
-    psql::sync();
-    rust::sync();
-    shfmt::sync();
-    skaffold::sync();
-    ssh::sync();
-    tmux::sync();
-    vale::sync();
-    vim::sync();
-    vscode::sync();
-    #[cfg(windows)]
-    windows::sync();
-    yq::sync();
-    zsh::sync();
+    ghr_handle.join().unwrap();
 }
 
-pub fn update() {
-    // must be first
-    dotfiles::update();
-
-    for t in tasks() {
-        // TODO: eventually handle all errors here
-        (t.update)().unwrap_or(Status::Done);
-    }
-
-    atom::update();
-    dep::update();
-    git::update();
-    gitleaks::update();
-    gitsizer::update();
-    golang::update();
-    hadolint::update();
-    hyper::update();
-    jq::update();
-    #[cfg(target_os = "macos")]
-    macos::update();
-    minikube::update();
-    nodejs::update();
-    psql::update();
-    rust::update();
-    shfmt::update();
-    skaffold::update();
-    ssh::update();
-    tmux::update();
-    vale::update();
-    vim::update();
-    vscode::update();
-    #[cfg(windows)]
-    windows::update();
-    yq::update();
-    zsh::update();
+fn ghr_tasks() -> Vec<Task> {
+    vec![
+        atlantis::task(),
+        bazel::task(),
+        dep::task(),
+        gitleaks::task(),
+        gitsizer::task(),
+        hadolint::task(),
+        jq::task(),
+        minikube::task(),
+        shfmt::task(),
+        skaffold::task(),
+        vale::task(),
+        yq::task(),
+    ]
 }
 
 fn tasks() -> Vec<Task> {
     vec![
-        alacritty::task(),
-        atlantis::task(),
-        bash::task(),
-        bazel::task(),
+        dotfiles::task(),  // must be before "config" tasks
+        alacritty::task(), // config
+        atom::task(),
+        bash::task(), // config
+        git::task(),
+        golang::task(),
+        hyper::task(), // config
+        #[cfg(target_os = "macos")]
+        macos::task(),
+        nodejs::task(),
+        psql::task(), // config
+        rust::task(),
+        ssh::task(),    // config
+        tmux::task(),   // config
+        vim::task(),    // config
+        vscode::task(), // config
+        zsh::task(),    // config
+        #[cfg(windows)]
+        windows::task(),
     ]
 }

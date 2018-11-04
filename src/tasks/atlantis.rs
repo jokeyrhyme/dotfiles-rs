@@ -2,7 +2,7 @@ use regex::Regex;
 
 use lib::{
     ghratask::GHRATask,
-    task::{self, Status, Task},
+    task::{self, Task},
 };
 use utils::{
     github::Asset,
@@ -10,7 +10,11 @@ use utils::{
 };
 
 pub fn task() -> Task {
-    Task { sync, update }
+    Task {
+        name: "atlantis".to_string(),
+        sync,
+        update,
+    }
 }
 
 const GHRA_TASK: GHRATask = GHRATask {
@@ -31,9 +35,7 @@ fn asset_filter(asset: &Asset) -> bool {
 }
 
 fn sync() -> task::Result {
-    match GHRA_TASK.sync() {
-        _ => Ok(Status::Done),
-    }
+    GHRA_TASK.sync()
 }
 
 #[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
@@ -42,7 +44,5 @@ fn trim_version(stdout: String) -> String {
 }
 
 fn update() -> task::Result {
-    match GHRA_TASK.update() {
-        _ => Ok(Status::Done),
-    }
+    GHRA_TASK.update()
 }

@@ -1,20 +1,19 @@
 use regex::Regex;
 
-use lib::ghratask::GHRATask;
+use lib::{
+    ghratask::GHRATask,
+    task::{self, Task},
+};
 use utils::{
     github::Asset,
     golang::{arch, os},
 };
 
-pub fn sync() {
-    match GHRA_TASK.sync() {
-        _ => {}
-    }
-}
-
-pub fn update() {
-    match GHRA_TASK.update() {
-        _ => {}
+pub fn task() -> Task {
+    Task {
+        name: "git-sizer".to_string(),
+        sync,
+        update,
     }
 }
 
@@ -35,7 +34,15 @@ fn asset_filter(asset: &Asset) -> bool {
     re.is_match(&asset.name)
 }
 
+fn sync() -> task::Result {
+    GHRA_TASK.sync()
+}
+
 #[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 fn trim_version(stdout: String) -> String {
     String::from(stdout.trim())
+}
+
+fn update() -> task::Result {
+    GHRA_TASK.update()
 }

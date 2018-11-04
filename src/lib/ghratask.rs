@@ -1,6 +1,10 @@
 use std::{fs, io};
 
-use lib::{ghrtask::GHRTask, version};
+use lib::{
+    ghrtask::GHRTask,
+    task::{self, Status},
+    version,
+};
 use utils::{
     self,
     archive::{extract_tar_gz, extract_zip},
@@ -18,27 +22,25 @@ pub struct GHRATask<'a> {
 }
 
 impl<'a> GHRATask<'a> {
-    pub fn sync(&mut self) -> io::Result<()> {
+    pub fn sync(&mut self) -> task::Result {
         if self.exists() {
-            return Ok(());
+            return Ok(Status::Skipped);
         }
-        println!("{}: syncing...", &self.command);
 
         let release = match self.latest_release() {
             Ok(r) => r,
             Err(error) => {
-                println!(
-                    "error: unable to check latest release: {:?} {:?}",
-                    &self.repo, error
-                );
-                return Ok(());
+                return Err(task::Error::GitHubError(
+                    format!("unable to check latest release for {:?}", &self.repo),
+                    error,
+                ));
             }
         };
         self.install_release(&release)?;
-        Ok(())
+        Ok(Status::Changed("absent".to_string(), release.tag_name))
     }
 
-    pub fn update(&mut self) -> io::Result<()> {
+    pub fn update(&mut self) -> task::Result {
         self.as_ghrtask().update()
     }
 

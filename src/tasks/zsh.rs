@@ -1,11 +1,27 @@
+use lib::task::{self, Status, Task};
 use utils;
 
-pub fn sync() {
-    if !has_zsh() {
-        return;
+pub fn task() -> Task {
+    Task {
+        name: "zsh".to_string(),
+        sync,
+        update,
     }
+}
 
-    println!("zsh: syncing ...");
+fn has_zsh() -> bool {
+    match utils::process::command_output("zsh", &["--version"]) {
+        Ok(output) => output.status.success(),
+        Err(_error) => {
+            false // zsh probably not installed
+        }
+    }
+}
+
+fn sync() -> task::Result {
+    if !has_zsh() {
+        return Ok(Status::Skipped);
+    }
 
     utils::fs::symbolic_link_if_exists(
         utils::env::home_dir().join(".dotfiles/config/profile"),
@@ -44,14 +60,14 @@ pub fn sync() {
         utils::env::home_dir().join(".zsh-pure/async.zsh"),
         utils::env::home_dir().join(".oh-my-zsh/custom/async.zsh"),
     );
+
+    Ok(Status::Done)
 }
 
-pub fn update() {
+fn update() -> task::Result {
     if !has_zsh() {
-        return;
+        return Ok(Status::Skipped);
     }
-
-    println!("zsh: updating ...");
 
     let oh_path = utils::env::home_dir().join(".oh-my-zsh");
     if utils::git::path_is_git_repository(&oh_path) {
@@ -68,13 +84,6 @@ pub fn update() {
             Err(error) => println!("zsh: unable to update pure: {}", error),
         }
     }
-}
 
-fn has_zsh() -> bool {
-    match utils::process::command_output("zsh", &["--version"]) {
-        Ok(output) => output.status.success(),
-        Err(_error) => {
-            false // zsh probably not installed
-        }
-    }
+    Ok(Status::Done)
 }

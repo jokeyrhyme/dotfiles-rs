@@ -2,18 +2,17 @@ use std::env::consts::{ARCH, OS};
 
 use regex::Regex;
 
-use lib::ghratask::GHRATask;
+use lib::{
+    ghratask::GHRATask,
+    task::{self, Task},
+};
 use utils::github::Asset;
 
-pub fn sync() {
-    match GHRA_TASK.sync() {
-        _ => {}
-    }
-}
-
-pub fn update() {
-    match GHRA_TASK.update() {
-        _ => {}
+pub fn task() -> Task {
+    Task {
+        name: "vale".to_string(),
+        sync,
+        update,
     }
 }
 
@@ -54,7 +53,15 @@ pub fn os() -> &'static str {
     }
 }
 
+fn sync() -> task::Result {
+    GHRA_TASK.sync()
+}
+
 #[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 fn trim_version(stdout: String) -> String {
     String::from(stdout.trim())
+}
+
+fn update() -> task::Result {
+    GHRA_TASK.update()
 }

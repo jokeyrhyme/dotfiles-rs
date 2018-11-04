@@ -1,6 +1,9 @@
 use std::io;
 
-use lib::version;
+use lib::{
+    task::{self, Status},
+    version,
+};
 use utils::{
     self,
     github::{self, Asset, Release},
@@ -46,41 +49,36 @@ impl<'a> GHRTask<'a> {
         github::latest_release(String::from(self.repo.0), String::from(self.repo.1))
     }
 
-    pub fn sync(&self) -> io::Result<()> {
+    pub fn sync(&self) -> task::Result {
         if self.exists() {
-            return Ok(());
+            return Ok(Status::Skipped);
         }
-        println!("{}: syncing...", &self.command);
 
         let release = match self.latest_release() {
             Ok(r) => r,
             Err(error) => {
-                println!(
-                    "error: unable to check latest release: {:?} {:?}",
-                    &self.repo, error
-                );
-                return Ok(());
+                return Err(task::Error::GitHubError(
+                    format!("unable to check latest release for {:?}", &self.repo),
+                    error,
+                ));
             }
         };
         self.install_release(&release)?;
-        Ok(())
+        Ok(Status::Changed("absent".to_string(), release.tag_name))
     }
 
-    pub fn update(&self) -> io::Result<()> {
+    pub fn update(&self) -> task::Result {
         if !self.exists() {
-            return Ok(());
+            return Ok(Status::Skipped);
         }
-        println!("{}: updating...", &self.command);
 
         let current = self.current_version();
-        if let Some(r) = github::release_versus_current(
-            current,
-            String::from(self.repo.0),
-            String::from(self.repo.1),
-        ) {
+        if let Some(r) = github::release_versus_current(current.as_ref(), self.repo.0, self.repo.1)
+        {
             self.install_release(&r)?;
+            return Ok(Status::Changed(current, r.tag_name.to_string()));
         };
-        Ok(())
+        Ok(Status::NoChange(current))
     }
 
     fn install_release(&self, release: &Release) -> io::Result<()> {

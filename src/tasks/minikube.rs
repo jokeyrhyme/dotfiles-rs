@@ -1,16 +1,15 @@
-use lib::ghrtask::GHRTask;
+use lib::{
+    ghrtask::GHRTask,
+    task::{self, Task},
+};
 use utils::github::Asset;
 use utils::golang::{arch, os};
 
-pub fn sync() {
-    match GHR_TASK.sync() {
-        _ => {}
-    }
-}
-
-pub fn update() {
-    match GHR_TASK.update() {
-        _ => {}
+pub fn task() -> Task {
+    Task {
+        name: "minikube".to_string(),
+        sync,
+        update,
     }
 }
 
@@ -31,6 +30,10 @@ fn asset_filter(asset: &Asset) -> bool {
     asset.name == name
 }
 
+fn sync() -> task::Result {
+    GHR_TASK.sync()
+}
+
 #[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 fn trim_version(stdout: String) -> String {
     let line = stdout.lines().next().unwrap_or_default();
@@ -39,6 +42,10 @@ fn trim_version(stdout: String) -> String {
         return String::from(parts[1].trim());
     }
     String::from("unexpected")
+}
+
+fn update() -> task::Result {
+    GHR_TASK.update()
 }
 
 #[cfg(test)]

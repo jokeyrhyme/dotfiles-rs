@@ -3,19 +3,18 @@ use std::env::consts::ARCH;
 use inflector::Inflector;
 use regex::Regex;
 
-use lib::ghrtask::GHRTask;
+use lib::{
+    ghrtask::GHRTask,
+    task::{self, Task},
+};
 use utils::github::Asset;
 use utils::golang::os;
 
-pub fn sync() {
-    match GHR_TASK.sync() {
-        _ => {}
-    }
-}
-
-pub fn update() {
-    match GHR_TASK.update() {
-        _ => {}
+pub fn task() -> Task {
+    Task {
+        name: "hadolint".to_string(),
+        sync,
+        update,
     }
 }
 
@@ -41,6 +40,10 @@ fn asset_filter(asset: &Asset) -> bool {
     asset.name == name
 }
 
+fn sync() -> task::Result {
+    GHR_TASK.sync()
+}
+
 #[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 fn trim_version(stdout: String) -> String {
     let re = Regex::new(r"(\d+\.\d+\.\d+)").unwrap();
@@ -49,4 +52,8 @@ fn trim_version(stdout: String) -> String {
         Some(c) => c.as_str().to_string(),
         None => String::from("unexpected"),
     }
+}
+
+fn update() -> task::Result {
+    GHR_TASK.update()
 }

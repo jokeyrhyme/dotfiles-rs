@@ -1,5 +1,6 @@
 extern crate cabot;
 extern crate clap;
+extern crate colored;
 extern crate dirs;
 extern crate inflector;
 extern crate libflate;
@@ -44,25 +45,18 @@ fn main() {
         .version(env!("CARGO_PKG_VERSION"))
         .about(env!("CARGO_PKG_DESCRIPTION"))
         .subcommand(
-            SubCommand::with_name("sync").about("install / update my settings on this computer"),
-        ).subcommand(SubCommand::with_name("update").about("update packages on this computer"))
-        .subcommand(SubCommand::with_name("env").about("export generated environment variables"))
+            SubCommand::with_name("all")
+                .about("sync / update my settings and packages on this computer"),
+        ).subcommand(SubCommand::with_name("env").about("export generated environment variables"))
         .get_matches();
+
+    if let Some(_matches) = matches.subcommand_matches("all") {
+        tasks::all();
+        return;
+    }
 
     if let Some(_matches) = matches.subcommand_matches("env") {
         tasks::env();
-        return;
-    }
-
-    if let Some(_matches) = matches.subcommand_matches("sync") {
-        println!("syncing...");
-        tasks::sync();
-        return;
-    }
-
-    if let Some(_matches) = matches.subcommand_matches("update") {
-        println!("updating...");
-        tasks::update();
         return;
     }
 }

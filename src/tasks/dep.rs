@@ -1,16 +1,15 @@
-use lib::ghrtask::GHRTask;
+use lib::{
+    ghrtask::GHRTask,
+    task::{self, Task},
+};
 use utils::github::Asset;
 use utils::golang::{arch, os};
 
-pub fn sync() {
-    match GHR_TASK.sync() {
-        _ => {}
-    }
-}
-
-pub fn update() {
-    match GHR_TASK.update() {
-        _ => {}
+pub fn task() -> Task {
+    Task {
+        name: "dep".to_string(),
+        sync,
+        update,
     }
 }
 
@@ -34,6 +33,10 @@ fn asset_filter(asset: &Asset) -> bool {
     asset.name == name
 }
 
+fn sync() -> task::Result {
+    GHR_TASK.sync()
+}
+
 #[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 fn trim_version(stdout: String) -> String {
     for line in stdout.lines() {
@@ -43,4 +46,8 @@ fn trim_version(stdout: String) -> String {
         }
     }
     String::from("unexpected")
+}
+
+fn update() -> task::Result {
+    GHR_TASK.update()
 }

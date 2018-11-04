@@ -4,6 +4,7 @@ use std::{fs, io, str};
 use regex::Regex;
 use toml;
 
+use lib::task::{self, Status, Task};
 use utils;
 
 const ERROR_MSG: &str = "error: rust";
@@ -13,94 +14,12 @@ struct Config {
     install: Vec<String>,
 }
 
-pub fn sync() {
-    if !has_cargo() {
-        return;
+pub fn task() -> Task {
+    Task {
+        name: "rust".to_string(),
+        sync,
+        update,
     }
-
-    println!("rust: syncing ...");
-
-    let cfg_path = utils::env::home_dir().join(".dotfiles/config/rust.toml");
-
-    let contents = match fs::read_to_string(&cfg_path) {
-        Ok(s) => s,
-        Err(error) => {
-            println!("rust: ignoring config: {}", error);
-            return;
-        }
-    };
-
-    let config: Config = toml::from_str(&contents).expect("cannot parse .../rust.toml");
-
-    let krates = cargo_installed();
-
-    let missing: Vec<String> = config
-        .install
-        .into_iter()
-        .filter_map(|krate| {
-            if krates.contains_key(&krate) {
-                return None;
-            }
-            Some(krate)
-        }).collect();
-
-    if missing.is_empty() {
-        return; // nothing to do
-    }
-
-    let mut install_args = vec![String::from("install")];
-    install_args.extend(missing);
-
-    utils::process::command_spawn_wait("cargo", &install_args).expect(ERROR_MSG);
-
-    println!("rust: ensuring `cargo fmt` works ...");
-    match fix_cargo_fmt() {
-        Ok(()) => {}
-        Err(error) => println!("error: rust: unable to fix `cargo fmt`: {:?}", error),
-    };
-}
-
-pub fn update() {
-    if !has_rustup() {
-        return;
-    }
-
-    println!("rust: updating ...");
-
-    utils::process::command_spawn_wait("rustup", &["self", "update"]).expect(ERROR_MSG);
-
-    utils::process::command_spawn_wait("rustup", &["override", "set", "stable"]).expect(ERROR_MSG);
-
-    utils::process::command_spawn_wait("rustup", &["update", "stable"]).expect(ERROR_MSG);
-
-    if !has_cargo() {
-        return;
-    }
-
-    let krates = cargo_installed();
-
-    let outdated: Vec<String> = krates
-        .into_iter()
-        .filter_map(
-            |(krate, version)| match cargo_latest_version(krate.as_str()) {
-                Ok(latest) => {
-                    if version == latest {
-                        return None;
-                    }
-                    Some(krate)
-                }
-                Err(_) => None,
-            },
-        ).collect();
-
-    if outdated.is_empty() {
-        return; // nothing to do
-    }
-
-    let mut install_args = vec![String::from("install"), String::from("--force")];
-    install_args.extend(outdated);
-
-    utils::process::command_spawn_wait("cargo", &install_args).expect(ERROR_MSG);
 }
 
 fn cargo_installed() -> HashMap<String, String> {
@@ -204,6 +123,94 @@ where
         }
     }
     krates
+}
+
+fn sync() -> task::Result {
+    if !has_cargo() {
+        return Ok(Status::Skipped);
+    }
+
+    let cfg_path = utils::env::home_dir().join(".dotfiles/config/rust.toml");
+
+    let contents = match fs::read_to_string(&cfg_path) {
+        Ok(s) => s,
+        Err(error) => {
+            return Err(task::Error::IOError("ignoring config".to_string(), error));
+        }
+    };
+
+    let config: Config = toml::from_str(&contents).expect("cannot parse .../rust.toml");
+
+    let krates = cargo_installed();
+
+    let missing: Vec<String> = config
+        .install
+        .into_iter()
+        .filter_map(|krate| {
+            if krates.contains_key(&krate) {
+                return None;
+            }
+            Some(krate)
+        }).collect();
+
+    if missing.is_empty() {
+        return Ok(Status::Done);
+    }
+
+    let mut install_args = vec![String::from("install")];
+    install_args.extend(missing);
+
+    utils::process::command_spawn_wait("cargo", &install_args).expect(ERROR_MSG);
+
+    println!("rust: ensuring `cargo fmt` works ...");
+    match fix_cargo_fmt() {
+        Ok(()) => {}
+        Err(error) => println!("error: rust: unable to fix `cargo fmt`: {:?}", error),
+    };
+
+    Ok(Status::Done)
+}
+
+fn update() -> task::Result {
+    if !has_rustup() {
+        return Ok(Status::Skipped);
+    }
+
+    utils::process::command_spawn_wait("rustup", &["self", "update"]).expect(ERROR_MSG);
+
+    utils::process::command_spawn_wait("rustup", &["override", "set", "stable"]).expect(ERROR_MSG);
+
+    utils::process::command_spawn_wait("rustup", &["update", "stable"]).expect(ERROR_MSG);
+
+    if !has_cargo() {
+        return Ok(Status::Done);
+    }
+
+    let krates = cargo_installed();
+
+    let outdated: Vec<String> = krates
+        .into_iter()
+        .filter_map(
+            |(krate, version)| match cargo_latest_version(krate.as_str()) {
+                Ok(latest) => {
+                    if version == latest {
+                        return None;
+                    }
+                    Some(krate)
+                }
+                Err(_) => None,
+            },
+        ).collect();
+
+    if outdated.is_empty() {
+        return Ok(Status::Done);
+    }
+
+    let mut install_args = vec![String::from("install"), String::from("--force")];
+    install_args.extend(outdated);
+
+    utils::process::command_spawn_wait("cargo", &install_args)?;
+    Ok(Status::Done)
 }
 
 #[cfg(test)]

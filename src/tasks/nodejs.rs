@@ -5,7 +5,10 @@ use std::{self, fs, io, str};
 use serde_json;
 use toml;
 
-use lib;
+use lib::{
+    self,
+    task::{self, Status, Task},
+};
 use utils::{
     self,
     fs::mktemp,
@@ -35,52 +38,11 @@ impl Config {
     }
 }
 
-pub fn sync() {
-    println!("nodejs: syncing ...");
-
-    if !utils::nodejs::has_node() {
-        let latest = utils::nodejs::latest_version();
-        match install_nodejs(latest) {
-            Ok(()) => {}
-            Err(error) => println!("error: nodejs: unable to install Node.js: {:?}", error),
-        };
-    }
-
-    match configure_npm() {
-        Ok(_) => {}
-        Err(error) => {
-            println!("warning: nodejs: unable to configure npm: {}", error);
-        }
-    };
-    sync_npm_packages();
-}
-
-pub fn update() {
-    if !utils::nodejs::has_node() {
-        return;
-    }
-
-    println!("nodejs: updating ...");
-
-    let current = utils::nodejs::current_version();
-    let latest = utils::nodejs::latest_version();
-    println!("current={} latest={}", &current, &latest);
-
-    if current != latest {
-        match install_nodejs(latest) {
-            Ok(()) => {}
-            Err(error) => println!("error: nodejs: unable to install Node.js: {:?}", error),
-        };
-        sync_npm_packages();
-    }
-
-    if utils::nodejs::has_npx() {
-        match utils::process::command_spawn_wait("npx", &["-q", "npm", "update", "--global"]) {
-            Ok(_status) => {}
-            Err(_error) => {
-                // private packages will fail on incorrect networks, ignore this
-            }
-        }
+pub fn task() -> Task {
+    Task {
+        name: "nodejs".to_string(),
+        sync,
+        update,
     }
 }
 
@@ -196,7 +158,28 @@ fn read_config() -> Config {
     }
 }
 
-fn sync_npm_packages() {
+fn sync() -> task::Result {
+    if utils::nodejs::has_node() {
+        return Ok(Status::Skipped);
+    }
+
+    let latest = utils::nodejs::latest_version();
+    match install_nodejs(latest.clone()) {
+        Ok(()) => {}
+        Err(error) => println!("error: nodejs: unable to install Node.js: {:?}", error),
+    };
+
+    match configure_npm() {
+        Ok(_) => {}
+        Err(error) => {
+            println!("warning: nodejs: unable to configure npm: {}", error);
+        }
+    };
+    sync_npm_packages().unwrap_or(Status::Done);
+    Ok(Status::Changed("unknown".to_string(), latest))
+}
+
+fn sync_npm_packages() -> task::Result {
     // these often are included with the Windows version,
     // and prevent `npm` from updating itself
     for filename in &["npm", "npm.cmd", "npx", "npx.cmd"] {
@@ -233,7 +216,7 @@ fn sync_npm_packages() {
         }).collect();
 
     if missing.is_empty() {
-        return; // nothing to do
+        return Ok(Status::Done);
     }
 
     let mut install_args = vec![String::from("install"), String::from("--global")];
@@ -258,7 +241,7 @@ fn sync_npm_packages() {
         }).collect();
 
     if found.is_empty() {
-        return; // nothing to do
+        return Ok(Status::Done);
     }
 
     let mut uninstall_args = vec![String::from("uninstall"), String::from("--global")];
@@ -271,4 +254,34 @@ fn sync_npm_packages() {
             error
         ),
     };
+
+    Ok(Status::Done)
+}
+
+fn update() -> task::Result {
+    if !utils::nodejs::has_node() {
+        return Ok(Status::Skipped);
+    }
+
+    let current = utils::nodejs::current_version();
+    let latest = utils::nodejs::latest_version();
+
+    if current != latest {
+        match install_nodejs(latest.clone()) {
+            Ok(()) => {}
+            Err(error) => println!("error: nodejs: unable to install Node.js: {:?}", error),
+        };
+        sync_npm_packages().unwrap_or(Status::Done);
+    }
+
+    if utils::nodejs::has_npx() {
+        match utils::process::command_spawn_wait("npx", &["-q", "npm", "update", "--global"]) {
+            Ok(_status) => {}
+            Err(_error) => {
+                // private packages will fail on incorrect networks, ignore this
+            }
+        }
+    }
+
+    Ok(Status::Changed(current, latest))
 }
