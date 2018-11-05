@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - run GitHub Release tasks in parallel with all other tasks
 
+### Removed
+
+- no longer display progress dots during archive extraction
+
 ## [0.21.0] - 2018-11-03
 
 ### Added
