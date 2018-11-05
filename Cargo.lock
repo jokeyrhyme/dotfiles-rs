@@ -282,7 +282,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "jokeyrhyme-dotfiles"
-version = "0.21.0"
+version = "0.22.0"
 dependencies = [
  "Inflector 0.11.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "cabot 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
