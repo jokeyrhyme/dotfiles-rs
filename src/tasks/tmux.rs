@@ -26,7 +26,7 @@ fn sync() -> task::Result {
     let src = utils::env::home_dir().join(".dotfiles/config/tmux.conf");
     let dest = utils::env::home_dir().join(".tmux.conf");
 
-    utils::fs::symbolic_link_if_exists(&src, &dest);
+    utils::fs::symbolic_link_if_exists(&src, &dest)?;
 
     let tpm_path = utils::env::home_dir().join(".tmux/plugins/tpm");
     if !utils::git::path_is_git_repository(&tpm_path) {

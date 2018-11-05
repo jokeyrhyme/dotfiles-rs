@@ -51,15 +51,15 @@ fn sync() -> task::Result {
     utils::fs::symbolic_link_if_exists(
         utils::env::home_dir().join(".dotfiles/config/inputrc"),
         utils::env::home_dir().join(".inputrc"),
-    );
+    )?;
     utils::fs::symbolic_link_if_exists(
         utils::env::home_dir().join(".dotfiles/config/profile"),
         utils::env::home_dir().join(".profile"),
-    );
+    )?;
     utils::fs::symbolic_link_if_exists(
         utils::env::home_dir().join(".dotfiles/config/bashrc"),
         utils::env::home_dir().join(".bashrc"),
-    );
+    )?;
 
     Ok(Status::Done)
 }

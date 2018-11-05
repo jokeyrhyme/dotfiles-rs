@@ -11,6 +11,8 @@ use std::{
 
 use mktemp;
 
+use lib::task::{self, Status};
+
 #[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 pub fn delete_if_exists<P>(path: P)
 where
@@ -79,19 +81,18 @@ where
 }
 
 #[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
-pub fn symbolic_link_if_exists<P>(src: P, dest: P)
+pub fn symbolic_link_if_exists<P>(src: P, dest: P) -> task::Result
 where
     P: Into<PathBuf> + AsRef<Path> + Debug,
 {
     match std::fs::read_link(dest.as_ref()) {
         Ok(target) => {
             if src.as_ref() == target {
-                println!(
+                return Ok(Status::NoChange(format!(
                     "already symlinked: {} -> {}",
                     dest.as_ref().display(),
                     target.display(),
-                );
-                return;
+                )));
             }
         }
         Err(_error) => {
@@ -99,19 +100,13 @@ where
         }
     };
 
-    match std::fs::symlink_metadata(src.as_ref()) {
-        Ok(attr) => attr,
-        Err(error) => {
-            println!("unable to access {}: {:?}", src.as_ref().display(), error);
-            return;
-        }
-    };
+    if std::fs::symlink_metadata(src.as_ref()).is_err() {
+        return Ok(Status::Skipped);
+    }
 
     if let Some(parent) = dest.as_ref().parent() {
-        std::fs::create_dir_all(&parent).unwrap_or_else(|_| {
-            println!("unable to create directories {}", parent.display());
-        });
-    };
+        std::fs::create_dir_all(&parent)?;
+    }
 
     match std::fs::symlink_metadata(dest.as_ref()) {
         Ok(_attr) => {
@@ -120,24 +115,16 @@ where
         Err(_error) => { /* might not exist, continue */ }
     }
 
-    match symbolic_link(src.as_ref(), dest.as_ref()) {
-        Ok(()) => {
-            println!(
-                "symlinked: {} -> {}",
-                dest.as_ref().display(),
-                src.as_ref().display(),
-            );
-        }
-        Err(error) => {
-            println!(
-                "unable to symlink {} to {}: {:?}",
-                dest.as_ref().display(),
-                src.as_ref().display(),
-                error
-            );
-            return;
-        }
-    };
+    symbolic_link(src.as_ref(), dest.as_ref())?;
+
+    Ok(Status::Changed(
+        "previous symlink".to_string(),
+        format!(
+            "symlinked: {} -> {}",
+            dest.as_ref().display(),
+            src.as_ref().display(),
+        ),
+    ))
 }
 
 #[cfg(not(windows))]

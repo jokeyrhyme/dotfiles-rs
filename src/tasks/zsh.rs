@@ -26,11 +26,11 @@ fn sync() -> task::Result {
     utils::fs::symbolic_link_if_exists(
         utils::env::home_dir().join(".dotfiles/config/profile"),
         utils::env::home_dir().join(".profile"),
-    );
+    )?;
     utils::fs::symbolic_link_if_exists(
         utils::env::home_dir().join(".dotfiles/config/zshrc"),
         utils::env::home_dir().join(".zshrc"),
-    );
+    )?;
 
     let oh_path = utils::env::home_dir().join(".oh-my-zsh");
     if !utils::git::path_is_git_repository(&oh_path) {
@@ -55,11 +55,11 @@ fn sync() -> task::Result {
     utils::fs::symbolic_link_if_exists(
         utils::env::home_dir().join(".zsh-pure/pure.zsh"),
         utils::env::home_dir().join(".oh-my-zsh/custom/pure.zsh-theme"),
-    );
+    )?;
     utils::fs::symbolic_link_if_exists(
         utils::env::home_dir().join(".zsh-pure/async.zsh"),
         utils::env::home_dir().join(".oh-my-zsh/custom/async.zsh"),
-    );
+    )?;
 
     Ok(Status::Done)
 }

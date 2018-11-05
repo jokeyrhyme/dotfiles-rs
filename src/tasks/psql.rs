@@ -26,8 +26,7 @@ fn sync() -> task::Result {
     let src = utils::env::home_dir().join(".dotfiles/config/psqlrc");
     let dest = utils::env::home_dir().join(".psqlrc");
 
-    utils::fs::symbolic_link_if_exists(&src, &dest);
-    Ok(Status::Done)
+    utils::fs::symbolic_link_if_exists(&src, &dest)
 }
 
 fn update() -> task::Result {
