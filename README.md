@@ -19,7 +19,7 @@ Note that you need to "Run As Administrator" in Windows so that this tool can pr
 
   - EDITOR: `nvim` (preferred), `vim`
 
-- `jokeyrhyme-dotfiles sync`:
+- `jokeyrhyme-dotfiles all`:
 
   - copies or creates symbolic links from `~/.dotfiles` into `~` for settings
 
@@ -29,32 +29,36 @@ Note that you need to "Run As Administrator" in Windows so that this tool can pr
 
   - configures [npm-merge-driver](https://www.npmjs.com/package/npm-merge-driver) when possible
 
-  - reads from TOML file and (un)installs desired [Atom](https://atom.io/) packages
+  - reads from TOML file and (un)installs/updates desired [Atom](https://atom.io/) packages
 
-  - reads from TOML file and (un)installs desired [`npm`](https://www.npmjs.com/) packages
+  - reads from TOML file and (un)installs/updates desired [`npm`](https://www.npmjs.com/) packages
 
-  - reads from TOML file and installs desired [rust](https://www.rust-lang.org/) [crates](https://crates.io/)
+  - reads from TOML file and installs/updates desired [rust](https://www.rust-lang.org/) [crates](https://crates.io/)
 
-  - reads from TOML file and (un)installs desired [Visual Studio Code](https://code.visualstudio.com) extensions
+  - reads from TOML file and (un)installs/updates desired [Visual Studio Code](https://code.visualstudio.com) extensions
 
-  - (un)installs vim-plug and desired vim plugins
+  - (un)installs/updates [tpm](https://github.com/tmux-plugins/tpm) and desired tmux plugins
 
-- `jokeyrhyme-dotfiles update`:
-
-  - updates installed Atom packages
-
-  - updates installed `npm` packages
-
-  - updates rust and installed rust crates
-
-  - updates vim-plug and vim plugins
+  - (un)installs/updates vim-plug and desired vim / [neovim](https://github.com/neovim/neovim) plugins
 
 - installs and updates the following tools:
 
+  - [atlantis](https://github.com/runatlantis/atlantis)
+  - [bazel](https://github.com/bazelbuild/bazel)
+  - [bash-it](https://github.com/Bash-it/bash-it)
+  - [dep](https://github.com/golang/dep)
+  - [git-sizer](https://github.com/github/git-sizer)
+  - [gitleaks](https://github.com/zricethezav/gitleaks)
+  - [golang](https://golang.org/)
+  - [jq](https://github.com/stedolan/jq)
+  - [hadolint](https://github.com/hadolint/hadolint)
+  - [minikube](https://github.com/kubernetes/minikube)
+  - [nodejs](https://nodejs.org)
+  - [oh-my-zsh](https://github.com/robbyrussell/oh-my-zsh)
+  - [pure](https://github.com/sindresorhus/pure)
   - [shfmt](https://github.com/mvdan/sh)
-
   - [skaffold](https://github.com/GoogleCloudPlatform/skaffold)
-
+  - [vale](https://github.com/errata-ai/vale)
   - [yq](https://github.com/mikefarah/yq)
 
 ## Configuration

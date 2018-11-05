@@ -23,6 +23,7 @@ mod jq;
 mod macos;
 mod minikube;
 mod nodejs;
+mod npm;
 mod psql;
 mod rust;
 mod shfmt;
@@ -93,6 +94,7 @@ fn tasks() -> Vec<Task> {
         #[cfg(target_os = "macos")]
         macos::task(),
         nodejs::task(),
+        npm::task(),  // must be after nodejs
         psql::task(), // config
         rust::task(),
         ssh::task(),    // config
