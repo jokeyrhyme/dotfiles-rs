@@ -82,7 +82,7 @@ fn sync() -> task::Result {
     let settings_path = ".config/Code/User/settings.json";
     let dest = utils::env::home_dir().join(Path::new(settings_path));
 
-    utils::fs::symbolic_link_if_exists(&src, &dest);
+    utils::fs::symbolic_link_if_exists(&src, &dest)?;
 
     let cfg_path = utils::env::home_dir().join(".dotfiles/config/vscode.toml");
 

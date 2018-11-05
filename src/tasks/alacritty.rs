@@ -13,8 +13,7 @@ fn sync() -> task::Result {
     let src = utils::env::home_dir().join(".dotfiles/config/alacritty.yml");
     let dest = utils::env::home_dir().join(".config/alacritty/alacritty.yml");
 
-    utils::fs::symbolic_link_if_exists(&src, &dest);
-    Ok(Status::Done)
+    utils::fs::symbolic_link_if_exists(&src, &dest)
 }
 
 fn update() -> task::Result {

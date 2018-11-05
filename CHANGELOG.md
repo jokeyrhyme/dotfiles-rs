@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- new `all` sub-command that both synchronises and updates everything
+
 ### Changed
 
 - all tasks now output a typed `Status` result
@@ -14,6 +18,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - use colors when displaying `Status` output
 
 - run GitHub Release tasks in parallel with all other tasks
+
+- nodejs: extract out separate "npm" task for better flow / status
+
+### Removed
+
+- no longer display progress dots during archive extraction
+
+- remove separate `sync` and `update` commands
 
 ## [0.21.0] - 2018-11-03
 
@@ -63,7 +75,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- git-sizer: keep [vale](https://github.com/github/git-sizer) `sync`ed and `update`d
+- git-sizer: keep [git-sizer](https://github.com/github/git-sizer) `sync`ed and `update`d
 
 - vale: keep [vale](https://github.com/errata-ai/vale) `sync`ed and `update`d
 

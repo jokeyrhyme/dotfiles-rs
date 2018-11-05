@@ -55,7 +55,7 @@ fn sync() -> task::Result {
             continue;
         }
 
-        utils::fs::symbolic_link_if_exists(&src, &vim.rc_path());
+        utils::fs::symbolic_link_if_exists(&src, &vim.rc_path())?;
 
         if !vim.has_vim_plug() {
             match vim.install_vim_plug() {
