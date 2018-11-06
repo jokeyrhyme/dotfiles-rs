@@ -12,7 +12,10 @@ pub fn task() -> Task {
 fn sync() -> task::Result {
     match utils::process::command_spawn_wait("qlmanage", &["-d", "1", "-r", "cache"]) {
         Ok(_) => Ok(Status::Done),
-        Err(error) => task::Error::IOError("unable to wipe Quick Look cache", error),
+        Err(error) => Err(task::Error::IOError(
+            "unable to wipe Quick Look cache".to_string(),
+            error,
+        )),
     }
 }
 
