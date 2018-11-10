@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+- golang: hunt for old `dep` in the correct directory
+
 ## [0.22.1] - 2018-11-07
 
 ### Fixed

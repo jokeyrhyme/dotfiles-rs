@@ -118,7 +118,6 @@ fn sync() -> task::Result {
         &home_dir
             .join("go")
             .join("src")
-            .join("src")
             .join("github.com")
             .join("golang")
             .join("dep"),
