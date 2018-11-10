@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Changed
+
+- golang: extract out separate "goget" task for better flow / status
+
+### Fixed
+
+- golang: hunt for old `dep` in the correct directory
+
 ## [0.22.1] - 2018-11-07
 
 ### Fixed

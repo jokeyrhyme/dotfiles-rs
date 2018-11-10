@@ -15,6 +15,7 @@ mod dotfiles;
 mod git;
 mod gitleaks;
 mod gitsizer;
+mod goget;
 mod golang;
 mod hadolint;
 mod hyper;
@@ -90,6 +91,7 @@ fn tasks() -> Vec<Task> {
         bash::task(), // config
         git::task(),
         golang::task(),
+        goget::task(), // must be after golang
         hyper::task(), // config
         #[cfg(target_os = "macos")]
         macos::task(),
