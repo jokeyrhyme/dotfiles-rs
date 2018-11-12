@@ -4,6 +4,7 @@ use std::{fs, io, str};
 
 use serde_json;
 use toml;
+use which;
 
 use lib::{
     self,
@@ -34,6 +35,13 @@ impl Config {
     }
 }
 
+#[derive(Debug, Deserialize)]
+struct Package {
+    bin: HashMap<String, String>,
+    name: String,
+    version: String,
+}
+
 pub fn task() -> Task {
     Task {
         name: "npm".to_string(),
@@ -58,6 +66,28 @@ fn configure_npm() -> io::Result<()> {
     Ok(())
 }
 
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+fn is_global_package_bin_linked<S>(name: S) -> bool
+where
+    S: Into<String> + AsRef<str>,
+{
+    let pkg = match read_global_package(name.as_ref()) {
+        Ok(p) => p,
+        Err(_) => {
+            return false;
+        }
+    };
+    for pair in pkg.bin {
+        match which::which(pair.0) {
+            Ok(_) => {}
+            Err(_) => {
+                return false;
+            }
+        }
+    }
+    true
+}
+
 fn pkgs_installed() -> Vec<String> {
     let output = utils::process::command_output("npm", &["ls", "--global", "--depth=0", "--json"])
         .expect(ERROR_MSG);
@@ -71,12 +101,12 @@ fn pkgs_installed() -> Vec<String> {
         }
     };
 
-    let mut pkgs: Vec<String> = Vec::new();
-
-    for pair in globals.dependencies {
-        pkgs.push(pair.0);
-    }
-    pkgs
+    globals
+        .dependencies
+        .keys()
+        .map(|name| name.clone())
+        .filter(|name| is_global_package_bin_linked(name.as_str()))
+        .collect()
 }
 
 fn read_config() -> Config {
@@ -100,6 +130,22 @@ fn read_config() -> Config {
             );
             Config::new()
         }
+    }
+}
+
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+fn read_global_package<S>(name: S) -> io::Result<Package>
+where
+    S: Into<String> + AsRef<str>,
+{
+    let pkg_path = utils::nodejs::lib_dir()
+        .join("node_modules")
+        .join(name.as_ref())
+        .join("package.json");
+    let contents = fs::read_to_string(&pkg_path)?;
+    match serde_json::from_str(&contents) {
+        Ok(pkg) => Ok(pkg),
+        Err(e) => Err(io::Error::new(io::ErrorKind::Other, e)),
     }
 }
 
@@ -208,4 +254,45 @@ fn update() -> task::Result {
     }
 
     Ok(Status::Done)
+}
+
+#[cfg(tests)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn is_global_package_bin_linked_for_npx() {
+        if !utils::nodejs::has_npx() {
+            return;
+        }
+        assert!(is_global_package_bin_linked("npx"));
+    }
+
+    #[test]
+    fn pkgs_installed_works() {
+        let pkgs = pkgs_installed();
+        if utils::nodejs::has_npm() {
+            assert!(pkgs.contains("npm"));
+        }
+        if utils::nodejs::has_npx() {
+            assert!(pkgs.contains("npx"));
+        }
+    }
+
+    #[test]
+    fn read_global_package_for_npx() {
+        if !utils::nodejs::has_npx() {
+            return;
+        }
+        match read_global_package("npx") {
+            Ok(pkg) => {
+                assert_eq!(pkg.name, "npx");
+                assert!(pkg.bin.get("npx") != None);
+            }
+            Err(e) => {
+                println!("read_global_package_for_npx: {:?}", e);
+                assert!(false);
+            }
+        }
+    }
 }
