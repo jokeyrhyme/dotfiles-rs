@@ -27,6 +27,7 @@ mod nodejs;
 mod npm;
 mod psql;
 mod rust;
+mod rustc;
 mod rustup;
 mod shfmt;
 mod skaffold;
@@ -92,7 +93,7 @@ fn ghr_tasks() -> Vec<Task> {
 }
 
 fn rust_tasks() -> Vec<Task> {
-    vec![rustup::task(), rust::task()]
+    vec![rustup::task(), rustc::task(), rust::task()]
 }
 
 fn tasks() -> Vec<Task> {

@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - rust: extract out separate "rustup" task
 
+- rust: extract out separate "rustc" task
+
 ## [0.22.2] - 2018-11-13
 
 ### Changed

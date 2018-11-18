@@ -20,6 +20,19 @@ where
     command_spawn_wait(rustup_exe(), args).map(|_| ())
 }
 
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+pub fn rustup_output<S>(args: &[S]) -> io::Result<String>
+where
+    S: Into<String> + AsRef<str>,
+{
+    let output = command_output(rustup_exe(), args)?;
+    Ok(format!(
+        "{}\n{}",
+        String::from_utf8_lossy(&output.stdout).trim(),
+        String::from_utf8_lossy(&output.stderr).trim(),
+    ).to_string())
+}
+
 pub fn rustup_version() -> String {
     match command_output(rustup_exe(), &["--version"]) {
         Ok(output) => String::from_utf8_lossy(&output.stdout).trim().to_string(),

@@ -166,12 +166,6 @@ fn sync() -> task::Result {
 }
 
 fn update() -> task::Result {
-    if !rust::has_rustup() {
-        return Ok(Status::Skipped);
-    }
-
-    rust::rustup(&["update", "stable"]).expect(ERROR_MSG);
-
     if !has_cargo() {
         return Ok(Status::Done);
     }
