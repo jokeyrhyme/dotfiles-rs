@@ -4,7 +4,10 @@ use std::{fs, io, str};
 use regex::Regex;
 use toml;
 
-use lib::task::{self, Status, Task};
+use lib::{
+    rust,
+    task::{self, Status, Task},
+};
 use utils;
 
 const ERROR_MSG: &str = "error: rust";
@@ -58,7 +61,7 @@ where
 }
 
 fn fix_cargo_fmt() -> io::Result<()> {
-    if !has_cargo() || !has_rustup() {
+    if !has_cargo() || !rust::has_rustup() {
         return Ok(());
     }
     if has_cargo_installed_rustfmt() {
@@ -68,8 +71,8 @@ fn fix_cargo_fmt() -> io::Result<()> {
         )?;
     }
     if !has_cargo_fmt() {
-        utils::process::command_spawn_wait("rustup", &["component", "remove", "rustfmt-preview"])?;
-        utils::process::command_spawn_wait("rustup", &["component", "add", "rustfmt-preview"])?;
+        rust::rustup(&["component", "remove", "rustfmt-preview"])?;
+        rust::rustup(&["component", "add", "rustfmt-preview"])?;
     }
     Ok(())
 }
@@ -95,15 +98,6 @@ fn has_cargo_fmt() -> bool {
 fn has_cargo_installed_rustfmt() -> bool {
     let krates = cargo_installed();
     krates.contains_key("rustfmt")
-}
-
-fn has_rustup() -> bool {
-    match utils::process::command_output("rustup", &["--version"]) {
-        Ok(output) => output.status.success(),
-        Err(_error) => {
-            false // rustup probably not installed
-        }
-    }
 }
 
 #[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
@@ -172,15 +166,11 @@ fn sync() -> task::Result {
 }
 
 fn update() -> task::Result {
-    if !has_rustup() {
+    if !rust::has_rustup() {
         return Ok(Status::Skipped);
     }
 
-    utils::process::command_spawn_wait("rustup", &["self", "update"]).expect(ERROR_MSG);
-
-    utils::process::command_spawn_wait("rustup", &["override", "set", "stable"]).expect(ERROR_MSG);
-
-    utils::process::command_spawn_wait("rustup", &["update", "stable"]).expect(ERROR_MSG);
+    rust::rustup(&["update", "stable"]).expect(ERROR_MSG);
 
     if !has_cargo() {
         return Ok(Status::Done);

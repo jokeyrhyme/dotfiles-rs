@@ -1,7 +1,6 @@
 use std::fs;
 
 use toml;
-use which;
 
 use lib::task::{self, Status, Task};
 use utils;

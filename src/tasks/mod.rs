@@ -27,6 +27,7 @@ mod nodejs;
 mod npm;
 mod psql;
 mod rust;
+mod rustup;
 mod shfmt;
 mod skaffold;
 mod ssh;
@@ -55,15 +56,22 @@ pub fn all() {
     // but in parallel with everything else
     let ghr_handle = thread::spawn(|| {
         for t in ghr_tasks() {
-            t.sync_then_update()
+            t.sync_then_update();
+        }
+    });
+
+    let rust_handle = thread::spawn(|| {
+        for t in rust_tasks() {
+            t.sync_then_update();
         }
     });
 
     for t in tasks() {
-        t.sync_then_update()
+        t.sync_then_update();
     }
 
     ghr_handle.join().unwrap();
+    rust_handle.join().unwrap();
 }
 
 fn ghr_tasks() -> Vec<Task> {
@@ -83,6 +91,10 @@ fn ghr_tasks() -> Vec<Task> {
     ]
 }
 
+fn rust_tasks() -> Vec<Task> {
+    vec![rustup::task(), rust::task()]
+}
+
 fn tasks() -> Vec<Task> {
     vec![
         dotfiles::task(),  // must be before "config" tasks
@@ -96,9 +108,8 @@ fn tasks() -> Vec<Task> {
         #[cfg(target_os = "macos")]
         macos::task(),
         nodejs::task(),
-        npm::task(),  // must be after nodejs
-        psql::task(), // config
-        rust::task(),
+        npm::task(),    // must be after nodejs
+        psql::task(),   // config
         ssh::task(),    // config
         tmux::task(),   // config
         vim::task(),    // config

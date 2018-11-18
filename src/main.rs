@@ -23,6 +23,7 @@ mod lib {
     pub mod ghratask;
     pub mod ghrtask;
     pub mod python;
+    pub mod rust;
     pub mod task;
     pub mod version;
 }
