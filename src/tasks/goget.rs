@@ -1,7 +1,6 @@
 use std::fs;
 
 use toml;
-use which;
 
 use lib::task::{self, Status, Task};
 use utils;
@@ -89,12 +88,6 @@ fn sync() -> task::Result {
         println!("warning: goget: unable to install packages: {}", error);
     };
 
-    if which::which("gometalinter").is_ok() {
-        if let Err(error) = utils::process::command_spawn_wait("gometalinter", &["--install"]) {
-            println!("warning: goget: unable to install linters: {}", error);
-        };
-    };
-
     Ok(Status::Done)
 }
 
@@ -110,14 +103,6 @@ fn update() -> task::Result {
 
     if let Err(error) = utils::process::command_spawn_wait("go", &install_args) {
         println!("warning: goget: unable to update packages: {}", error);
-    };
-
-    if which::which("gometalinter").is_ok() {
-        if let Err(error) =
-            utils::process::command_spawn_wait("gometalinter", &["--install", "--force"])
-        {
-            println!("warning: goget: unable to update linters: {}", error);
-        };
     };
 
     Ok(Status::Changed(
