@@ -1,4 +1,4 @@
-use std::{path::PathBuf, thread};
+use std::thread;
 
 use lib::{env::Exports, task::Task};
 
@@ -39,11 +39,12 @@ mod yq;
 mod zsh;
 
 pub fn env() -> Exports {
-    let exports = Exports {
-        editor: PathBuf::new(),
-        path: Vec::<PathBuf>::new(),
-    };
-    vim::env(exports)
+    let mut exports: Exports = Default::default();
+    exports = golang::env(exports);
+    exports = nodejs::env(exports);
+    exports = rustup::env(exports);
+    exports = vim::env(exports);
+    exports
 }
 
 pub fn all() {

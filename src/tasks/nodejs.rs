@@ -1,11 +1,24 @@
 use std::{self, io, str};
 
-use lib::task::{self, Status, Task};
+use lib::{
+    env::Exports,
+    task::{self, Status, Task},
+};
 use utils::{
     self,
     fs::mktemp,
-    nodejs::{arch, os},
+    nodejs::{arch, bin_dir, os},
 };
+
+pub fn env(mut exports: Exports) -> Exports {
+    let dir = bin_dir();
+    if !exports.path.contains(&dir) {
+        let mut paths = vec![dir];
+        exports.path.append(&mut paths);
+        exports.path = paths;
+    }
+    exports
+}
 
 pub fn task() -> Task {
     Task {
