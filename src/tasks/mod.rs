@@ -17,6 +17,7 @@ mod golang;
 mod hadolint;
 mod hyper;
 mod jq;
+mod local;
 #[cfg(target_os = "macos")]
 mod macos;
 mod minikube;
@@ -41,6 +42,7 @@ mod zsh;
 pub fn env() -> Exports {
     let mut exports: Exports = Default::default();
     exports = golang::env(exports);
+    exports = local::env(exports);
     exports = nodejs::env(exports);
     exports = rustup::env(exports);
     exports = vim::env(exports);

@@ -14,7 +14,7 @@ pub fn env(mut exports: Exports) -> Exports {
     let dir = bin_dir();
     if !exports.path.contains(&dir) {
         let mut paths = vec![dir];
-        exports.path.append(&mut paths);
+        paths.append(&mut exports.path);
         exports.path = paths;
     }
     exports

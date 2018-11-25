@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- local: new task; add "~/.local/bin" to PATH given by `env` command
+
 ### Changed
 
 - goget: no longer run `gometalinter --install`
