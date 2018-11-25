@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - rust: extract out separate "rustc" task
 
+### Fixed
+
+- ssh: support "TIME FORMAT" values besides raw integers (seconds)
+
 ## [0.22.2] - 2018-11-13
 
 ### Changed
