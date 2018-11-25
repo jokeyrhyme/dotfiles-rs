@@ -1,9 +1,6 @@
-use std::{env::var, path::PathBuf, thread};
+use std::thread;
 
-use lib::{
-    env::{Exports, Shell},
-    task::Task,
-};
+use lib::{env::Exports, task::Task};
 
 mod alacritty;
 mod atlantis;
@@ -20,6 +17,7 @@ mod golang;
 mod hadolint;
 mod hyper;
 mod jq;
+mod local;
 #[cfg(target_os = "macos")]
 mod macos;
 mod minikube;
@@ -41,14 +39,14 @@ mod windows;
 mod yq;
 mod zsh;
 
-pub fn env() {
-    let mut exports = Exports {
-        editor: PathBuf::new(),
-        path: Vec::<PathBuf>::new(),
-    };
+pub fn env() -> Exports {
+    let mut exports: Exports = Default::default();
+    exports = golang::env(exports);
+    exports = local::env(exports);
+    exports = nodejs::env(exports);
+    exports = rustup::env(exports);
     exports = vim::env(exports);
-    let shell = var("SHELL").unwrap_or_default();
-    println!("{}", exports.to_shell(Shell::from(shell.as_str())));
+    exports
 }
 
 pub fn all() {

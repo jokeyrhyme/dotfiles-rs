@@ -5,6 +5,10 @@ use utils::{
     process::{command_output, command_spawn_wait},
 };
 
+pub fn bin_dir() -> PathBuf {
+    home_dir().join(".cargo").join("bin")
+}
+
 pub fn has_rustup() -> bool {
     match command_output(rustup_exe(), &["--version"]) {
         Ok(_) => true,
@@ -42,9 +46,9 @@ pub fn rustup_version() -> String {
 
 fn rustup_exe() -> PathBuf {
     #[cfg(windows)]
-    let pb = home_dir().join(".cargo\\bin\\rustup.exe");
+    let pb = bin_dir().join("rustup.exe");
     #[cfg(not(windows))]
-    let pb = home_dir().join(".cargo/bin/rustup");
+    let pb = bin_dir().join("rustup");
 
     pb
 }

@@ -16,6 +16,8 @@ extern crate toml;
 extern crate which;
 extern crate zip;
 
+use std::env::var;
+
 use clap::{App, SubCommand};
 
 mod lib {
@@ -42,6 +44,8 @@ mod utils {
     pub mod ssh;
 }
 
+use lib::env::Shell;
+
 fn main() {
     let matches = App::new(env!("CARGO_PKG_NAME"))
         .version(env!("CARGO_PKG_VERSION"))
@@ -58,7 +62,9 @@ fn main() {
     }
 
     if let Some(_matches) = matches.subcommand_matches("env") {
-        tasks::env();
+        let exports = tasks::env();
+        let shell = var("SHELL").unwrap_or_default();
+        println!("{}", exports.to_shell(Shell::from(shell.as_str())));
         return;
     }
 }

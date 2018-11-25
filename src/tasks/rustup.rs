@@ -1,4 +1,5 @@
 use lib::{
+    env::Exports,
     rust,
     task::{self, Status, Task},
 };
@@ -6,6 +7,16 @@ use lib::{
 #[derive(Debug, Deserialize)]
 struct Config {
     install: Vec<String>,
+}
+
+pub fn env(mut exports: Exports) -> Exports {
+    let dir = rust::bin_dir();
+    if !exports.path.contains(&dir) {
+        let mut paths = vec![dir];
+        paths.append(&mut exports.path);
+        exports.path = paths;
+    }
+    exports
 }
 
 pub fn task() -> Task {

@@ -15,6 +15,10 @@ pub fn arch() -> &'static str {
     }
 }
 
+pub fn bin_dir() -> PathBuf {
+    install_path().join("bin")
+}
+
 pub fn current_version() -> String {
     #[cfg(windows)]
     let exe_path = install_path().join("bin").join("go.exe");
@@ -32,15 +36,11 @@ pub fn current_version() -> String {
     }
 }
 
-fn install_path() -> PathBuf {
-    utils::env::home_dir().join(".local").join("go")
-}
-
 pub fn is_installed() -> bool {
     #[cfg(windows)]
-    let exe_path = install_path().join("bin").join("go.exe");
+    let exe_path = bin_dir().join("go.exe");
     #[cfg(not(windows))]
-    let exe_path = install_path().join("bin").join("go");
+    let exe_path = bin_dir().join("go");
 
     exe_path.is_file()
 }
@@ -74,6 +74,10 @@ pub fn os() -> &'static str {
     } else {
         OS
     }
+}
+
+fn install_path() -> PathBuf {
+    utils::env::home_dir().join(".local").join("go")
 }
 
 #[cfg(test)]

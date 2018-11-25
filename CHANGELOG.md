@@ -7,13 +7,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- local: new task; add "~/.local/bin" to PATH given by `env` command
+
 ### Changed
 
 - goget: no longer run `gometalinter --install`
 
+- golang, nodejs, rustup: modify PATH given by `env` command
+
 - rust: extract out separate "rustup" task
 
 - rust: extract out separate "rustc" task
+
+- use values from `env` command for child processes
 
 ### Fixed
 
