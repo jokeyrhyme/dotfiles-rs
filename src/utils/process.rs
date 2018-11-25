@@ -5,6 +5,8 @@ use std::{
     str,
 };
 
+use tasks;
+
 #[cfg(not(windows))]
 #[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 pub fn command_output<O, S>(cmd: O, args: &[S]) -> io::Result<Output>
@@ -13,7 +15,7 @@ where
     S: Into<String> + AsRef<str>,
 {
     let cmd_args: Vec<&str> = args.into_iter().map(|s| s.as_ref()).collect();
-    Command::new(cmd).args(cmd_args).output()
+    with_env(Command::new(cmd).args(cmd_args)).output()
 }
 
 #[cfg(windows)]
@@ -27,7 +29,7 @@ where
     let cmd_lossy = cmd_os.to_string_lossy();
     let mut cmd_args: Vec<&str> = vec!["/c", cmd_lossy.as_ref()];
     cmd_args.extend::<Vec<&str>>(args.into_iter().map(|s| s.as_ref()).collect());
-    Command::new("cmd").args(cmd_args).output()
+    with_env(Command::new("cmd").args(cmd_args)).output()
 }
 
 #[cfg(not(windows))]
@@ -38,7 +40,7 @@ where
     S: Into<String> + AsRef<str>,
 {
     let cmd_args: Vec<&str> = args.into_iter().map(|s| s.as_ref()).collect();
-    Command::new(cmd).args(cmd_args).spawn()?.wait()
+    with_env(Command::new(cmd).args(cmd_args)).spawn()?.wait()
 }
 
 #[cfg(windows)]
@@ -52,7 +54,12 @@ where
     let cmd_lossy = cmd_os.to_string_lossy();
     let mut cmd_args: Vec<&str> = vec!["/c", cmd_lossy.as_ref()];
     cmd_args.extend::<Vec<&str>>(args.into_iter().map(|s| s.as_ref()).collect());
-    Command::new("cmd").args(cmd_args).spawn()?.wait()
+    with_env(Command::new("cmd").args(cmd_args)).spawn()?.wait()
+}
+
+fn with_env(c: &mut Command) -> &mut Command {
+    let env = tasks::env();
+    c.env("EDITOR", env.editor)
 }
 
 #[cfg(test)]

@@ -1,9 +1,6 @@
-use std::{env::var, path::PathBuf, thread};
+use std::{path::PathBuf, thread};
 
-use lib::{
-    env::{Exports, Shell},
-    task::Task,
-};
+use lib::{env::Exports, task::Task};
 
 mod alacritty;
 mod atlantis;
@@ -41,14 +38,12 @@ mod windows;
 mod yq;
 mod zsh;
 
-pub fn env() {
-    let mut exports = Exports {
+pub fn env() -> Exports {
+    let exports = Exports {
         editor: PathBuf::new(),
         path: Vec::<PathBuf>::new(),
     };
-    exports = vim::env(exports);
-    let shell = var("SHELL").unwrap_or_default();
-    println!("{}", exports.to_shell(Shell::from(shell.as_str())));
+    vim::env(exports)
 }
 
 pub fn all() {
