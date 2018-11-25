@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.23.0] - 2018-11-25
+
 ### Added
 
 - local: new task; add "~/.local/bin" to PATH given by `env` command
