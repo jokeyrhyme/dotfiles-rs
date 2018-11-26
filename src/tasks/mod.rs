@@ -99,6 +99,7 @@ fn tasks() -> Vec<Task> {
         dotfiles::task(),  // must be before "config" tasks
         alacritty::task(), // config
         atom::task(),
+        #[cfg(not(windows))]
         bash::task(), // config
         git::task(),
         golang::task(),
@@ -113,6 +114,7 @@ fn tasks() -> Vec<Task> {
         tmux::task(),   // config
         vim::task(),    // config
         vscode::task(), // config
+        #[cfg(not(windows))]
         zsh::task(),    // config
         #[cfg(windows)]
         windows::task(),
