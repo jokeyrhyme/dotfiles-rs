@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
+- dotfiles, vim: run serially before everything else
+
 - bash, zsh: don't `sync` or `update` on Windows
 
 ## [0.23.0] - 2018-11-25

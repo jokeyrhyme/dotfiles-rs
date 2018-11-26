@@ -50,6 +50,10 @@ pub fn env() -> Exports {
 }
 
 pub fn all() {
+    for t in serial_tasks() {
+        t.sync_then_update();
+    }
+
     // let's run GitHub Release tasks in serial,
     // to not exacerbate rate limiting,
     // but in parallel with everything else
@@ -94,9 +98,16 @@ fn rust_tasks() -> Vec<Task> {
     vec![rustup::task(), rustc::task(), rust::task()]
 }
 
-fn tasks() -> Vec<Task> {
+// these tasks should not be run concurrently with others
+fn serial_tasks() -> Vec<Task> {
     vec![
         dotfiles::task(),  // must be before "config" tasks
+        vim::task(),    // config, causes vim to take over the terminal
+    ]
+}
+
+fn tasks() -> Vec<Task> {
+    vec![
         alacritty::task(), // config
         atom::task(),
         #[cfg(not(windows))]
@@ -112,7 +123,6 @@ fn tasks() -> Vec<Task> {
         psql::task(),   // config
         ssh::task(),    // config
         tmux::task(),   // config
-        vim::task(),    // config
         vscode::task(), // config
         #[cfg(not(windows))]
         zsh::task(),    // config
