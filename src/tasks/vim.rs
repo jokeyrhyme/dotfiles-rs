@@ -2,11 +2,11 @@ use std::{self, io, path::PathBuf};
 
 use which::which;
 
-use lib::{
+use crate::lib::{
     env::Exports,
     task::{self, Status, Task},
 };
-use utils;
+use crate::utils;
 
 const PLUG_VIM: &str = "plug.vim";
 

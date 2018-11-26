@@ -4,11 +4,11 @@ use std::{fs, io, str};
 use regex::Regex;
 use toml;
 
-use lib::{
+use crate::lib::{
     rust,
     task::{self, Status, Task},
 };
-use utils;
+use crate::utils;
 
 const ERROR_MSG: &str = "error: rust";
 

@@ -3,8 +3,8 @@ use std::{fs, str};
 
 use toml;
 
-use lib::task::{self, Status, Task};
-use utils;
+use crate::lib::task::{self, Status, Task};
+use crate::utils;
 
 const COMMAND: &str = "code";
 

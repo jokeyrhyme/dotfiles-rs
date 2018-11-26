@@ -1,10 +1,10 @@
 use std::{self, io, str};
 
-use lib::{
+use crate::lib::{
     env::Exports,
     task::{self, Status, Task},
 };
-use utils::{
+use crate::utils::{
     self,
     fs::mktemp,
     nodejs::{arch, bin_dir, os},

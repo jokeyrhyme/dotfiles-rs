@@ -2,7 +2,7 @@ use std::{path::PathBuf, process::Output};
 
 use which;
 
-use utils;
+use crate::utils;
 
 const PYTHONS: &[&str] = &["python2", "python"];
 const VERSION_ARGS: &[&str] = &["--version"];
@@ -34,7 +34,7 @@ fn extract_version(o: Output) -> String {
 mod tests {
     use regex::Regex;
 
-    use utils::process::command_output;
+    use crate::utils::process::command_output;
 
     use super::*;
 

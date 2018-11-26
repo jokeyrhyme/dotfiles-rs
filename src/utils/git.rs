@@ -3,7 +3,7 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use utils;
+use crate::utils;
 
 pub fn has_git() -> bool {
     match utils::process::command_output("git", &["--version"]) {
@@ -81,7 +81,7 @@ where
 
 #[cfg(test)]
 mod tests {
-    use utils::fs::mkdtemp;
+    use crate::utils::fs::mkdtemp;
 
     use super::*;
 

@@ -1,11 +1,11 @@
 use std::{fs, io};
 
-use lib::{
+use crate::lib::{
     ghrtask::GHRTask,
     task::{self, Status},
     version,
 };
-use utils::{
+use crate::utils::{
     self,
     archive::{extract_tar_gz, extract_zip},
     fs::{mkdtemp, mktemp, set_executable},

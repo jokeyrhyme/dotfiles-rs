@@ -1,11 +1,11 @@
 use regex::Regex;
 
-use lib::{
+use crate::lib::{
     ghrtask::GHRTask,
     task::{self, Task},
 };
-use utils::github::Asset;
-use utils::golang::{arch, os};
+use crate::utils::github::Asset;
+use crate::utils::golang::{arch, os};
 
 pub fn task() -> Task {
     Task {

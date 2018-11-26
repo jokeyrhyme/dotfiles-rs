@@ -1,10 +1,10 @@
 use std::io;
 
-use lib::{
+use crate::lib::{
     task::{self, Status},
     version,
 };
-use utils::{
+use crate::utils::{
     self,
     github::{self, Asset, Release},
 };

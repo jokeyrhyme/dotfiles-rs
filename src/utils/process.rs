@@ -5,7 +5,7 @@ use std::{
     str,
 };
 
-use tasks;
+use crate::tasks;
 
 #[cfg(not(windows))]
 #[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]

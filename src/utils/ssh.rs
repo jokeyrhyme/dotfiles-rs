@@ -3,7 +3,7 @@ use std::{collections::HashMap, fmt::Display, ops::BitOr, path::PathBuf};
 use textwrap;
 use which;
 
-use lib::ssh::fields::{Duration, YesNo, YesNoAsk, YesNoAskAutoAutoAsk, YesNoDuration};
+use crate::lib::ssh::fields::{Duration, YesNo, YesNoAsk, YesNoAskAutoAutoAsk, YesNoDuration};
 
 #[allow(non_snake_case)]
 #[derive(Clone, Debug, Default, PartialEq)]

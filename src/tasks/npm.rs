@@ -6,11 +6,11 @@ use serde_json;
 use toml;
 use which;
 
-use lib::{
+use crate::lib::{
     self,
     task::{self, Status, Task},
 };
-use utils;
+use crate::utils;
 
 const ERROR_MSG: &str = "error: nodejs";
 
