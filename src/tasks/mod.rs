@@ -63,6 +63,18 @@ pub fn all() {
         }
     });
 
+    let golang_handle = thread::spawn(|| {
+        for t in golang_tasks() {
+            t.sync_then_update();
+        }
+    });
+
+    let nodejs_handle = thread::spawn(|| {
+        for t in nodejs_tasks() {
+            t.sync_then_update();
+        }
+    });
+
     let rust_handle = thread::spawn(|| {
         for t in rust_tasks() {
             t.sync_then_update();
@@ -74,6 +86,8 @@ pub fn all() {
     }
 
     ghr_handle.join().unwrap();
+    golang_handle.join().unwrap();
+    nodejs_handle.join().unwrap();
     rust_handle.join().unwrap();
 }
 
@@ -94,6 +108,20 @@ fn ghr_tasks() -> Vec<Task> {
     ]
 }
 
+fn golang_tasks() -> Vec<Task> {
+    vec![
+      golang::task(),
+      goget::task(), // must be after golang
+    ]
+}
+
+fn nodejs_tasks() -> Vec<Task> {
+    vec![
+        nodejs::task(),
+        npm::task(), // must be after nodejs
+    ]
+}
+
 fn rust_tasks() -> Vec<Task> {
     vec![rustup::task(), rustc::task(), rust::task()]
 }
@@ -101,8 +129,8 @@ fn rust_tasks() -> Vec<Task> {
 // these tasks should not be run concurrently with others
 fn serial_tasks() -> Vec<Task> {
     vec![
-        dotfiles::task(),  // must be before "config" tasks
-        vim::task(),    // config, causes vim to take over the terminal
+        dotfiles::task(), // must be before "config" tasks
+        vim::task(),      // config, causes vim to take over the terminal
     ]
 }
 
@@ -113,13 +141,9 @@ fn tasks() -> Vec<Task> {
         #[cfg(not(windows))]
         bash::task(), // config
         git::task(),
-        golang::task(),
-        goget::task(), // must be after golang
         hyper::task(), // config
         #[cfg(target_os = "macos")]
         macos::task(),
-        nodejs::task(),
-        npm::task(),    // must be after nodejs
         psql::task(),   // config
         ssh::task(),    // config
         tmux::task(),   // config
