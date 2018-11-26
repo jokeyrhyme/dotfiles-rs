@@ -18,10 +18,11 @@ pub trait Favourites {
         let before = self.found();
         self.cull()?;
         let after = self.found();
-        if before == after {
-            Ok(Status::NoChange(after.join(",")))
+        let diff = diff_before_after(before, after);
+        if diff.0.len() == 0 && diff.1.len() == 0 {
+            Ok(Status::NoChange(String::new()))
         } else {
-            Ok(Status::Changed(before.join(","), after.join(",")))
+            Ok(Status::Changed(diff.0.join(","), diff.1.join(",")))
         }
     }
     // fill_and_status()
@@ -29,10 +30,11 @@ pub trait Favourites {
         let before = self.found();
         self.fill()?;
         let after = self.found();
-        if before == after {
-            Ok(Status::NoChange(after.join(",")))
+        let diff = diff_before_after(before, after);
+        if diff.0.len() == 0 && diff.1.len() == 0 {
+            Ok(Status::NoChange(String::new()))
         } else {
-            Ok(Status::Changed(before.join(","), after.join(",")))
+            Ok(Status::Changed(diff.0.join(","), diff.1.join(",")))
         }
     }
 
@@ -55,9 +57,36 @@ pub trait Favourites {
     }
 }
 
+// diff_before_after() returns favourites that are newly absent and newly present
+fn diff_before_after<S>(before: Vec<S>, after: Vec<S>) -> (Vec<String>, Vec<String>)
+where
+    S: Into<String> + AsRef<str> + PartialEq,
+{
+    let absent: Vec<String> = before
+        .iter()
+        .filter(|b| !after.contains(&b))
+        .map(|b| String::from(b.as_ref()))
+        .collect();
+    let present: Vec<String> = after
+        .iter()
+        .filter(|a| !before.contains(&a))
+        .map(|a| String::from(a.as_ref()))
+        .collect();
+    (absent, present)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn diff_before_after_works() {
+        let before = vec!["a", "b", "c", "d"];
+        let after = vec!["c", "d", "e", "f"];
+        let got = diff_before_after(before, after);
+        assert_eq!(vec!["a", "b"], got.0);
+        assert_eq!(vec!["e", "f"], got.1);
+    }
 
     struct MyFavourites {
         install: Vec<String>,
@@ -115,10 +144,7 @@ mod tests {
         match favs.cull_and_status() {
             Ok(s) => {
                 assert_eq!(
-                    Status::Changed(
-                        String::from("sideloaded,wanted-found,unwanted"),
-                        String::from("sideloaded,wanted-found")
-                    ),
+                    Status::Changed(String::from("unwanted"), String::from("")),
                     s
                 );
             }
@@ -126,7 +152,7 @@ mod tests {
         };
         match favs.cull_and_status() {
             Ok(s) => {
-                assert_eq!(Status::NoChange(String::from("sideloaded,wanted-found")), s);
+                assert_eq!(Status::NoChange(String::from("")), s);
             }
             Err(_) => assert!(false),
         };
@@ -138,10 +164,7 @@ mod tests {
         match favs.fill_and_status() {
             Ok(s) => {
                 assert_eq!(
-                    Status::Changed(
-                        String::from("sideloaded,wanted-found,unwanted"),
-                        String::from("sideloaded,wanted-found,unwanted,wanted-missing")
-                    ),
+                    Status::Changed(String::from(""), String::from("wanted-missing")),
                     s
                 );
             }
@@ -149,12 +172,7 @@ mod tests {
         };
         match favs.fill_and_status() {
             Ok(s) => {
-                assert_eq!(
-                    Status::NoChange(String::from(
-                        "sideloaded,wanted-found,unwanted,wanted-missing"
-                    )),
-                    s
-                );
+                assert_eq!(Status::NoChange(String::from("")), s);
             }
             Err(_) => assert!(false),
         };
