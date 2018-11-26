@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Changed
+
+- dotfiles, vim: run serially before everything else
+
+- bash, zsh: don't `sync` or `update` on Windows
+
+- golang, goget: run concurrently with other tasks
+
+- nodejs npm: run concurrently with other tasks
+
 ## [0.23.0] - 2018-11-25
 
 ### Added
