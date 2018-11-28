@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- rust: support TOML list of crates to uninstall
+
 ## [0.23.0] - 2018-11-25
 
 ### Added

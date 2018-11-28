@@ -19,7 +19,7 @@ pub trait Favourites {
         self.cull()?;
         let after = self.found();
         let diff = diff_before_after(before, after);
-        if diff.0.len() == 0 && diff.1.len() == 0 {
+        if diff.0.is_empty() && diff.1.is_empty() {
             Ok(Status::NoChange(String::new()))
         } else {
             Ok(Status::Changed(diff.0.join(","), diff.1.join(",")))
@@ -31,7 +31,7 @@ pub trait Favourites {
         self.fill()?;
         let after = self.found();
         let diff = diff_before_after(before, after);
-        if diff.0.len() == 0 && diff.1.len() == 0 {
+        if diff.0.is_empty() && diff.1.is_empty() {
             Ok(Status::NoChange(String::new()))
         } else {
             Ok(Status::Changed(diff.0.join(","), diff.1.join(",")))

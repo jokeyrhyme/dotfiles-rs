@@ -1,21 +1,17 @@
-use std::collections::HashMap;
 use std::{fs, io, str};
 
 use regex::Regex;
 use toml;
 
-use crate::lib::{
-    rust,
-    task::{self, Status, Task},
+use crate::{
+    lib::{
+        cargo::{self, CargoFavourites},
+        favourites::Favourites,
+        rust,
+        task::{self, Status, Task},
+    },
+    utils,
 };
-use crate::utils;
-
-const ERROR_MSG: &str = "error: rust";
-
-#[derive(Debug, Deserialize)]
-struct Config {
-    install: Vec<String>,
-}
 
 pub fn task() -> Task {
     Task {
@@ -23,18 +19,6 @@ pub fn task() -> Task {
         sync,
         update,
     }
-}
-
-fn cargo_installed() -> HashMap<String, String> {
-    if !has_cargo() {
-        return HashMap::<String, String>::new();
-    }
-
-    let output = utils::process::command_output("cargo", &["install", "--list"]).expect(ERROR_MSG);
-    let stdout = str::from_utf8(&output.stdout).unwrap();
-
-    let krates: HashMap<String, String> = parse_installed(stdout);
-    krates
 }
 
 #[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
@@ -46,10 +30,8 @@ where
     pattern.push_str(krate.as_ref());
     pattern.push_str(r#"\s=\s"(\S+)""#);
     let re = Regex::new(&pattern).unwrap();
-    let output =
-        utils::process::command_output("cargo", &["search", "--limit", "1", krate.as_ref()])
-            .expect(ERROR_MSG);
-    let stdout = str::from_utf8(&output.stdout).unwrap();
+    let stdout =
+        cargo::cargo_output(&["search", "--limit", "1", krate.as_ref()]).unwrap_or_default();
     let lines = stdout.lines();
     for line in lines {
         if let Some(caps) = re.captures(line) {
@@ -61,29 +43,17 @@ where
 }
 
 fn fix_cargo_fmt() -> io::Result<()> {
-    if !has_cargo() || !rust::has_rustup() {
+    if !cargo::has_cargo() || !rust::has_rustup() {
         return Ok(());
     }
     if has_cargo_installed_rustfmt() {
-        utils::process::command_spawn_wait(
-            "cargo",
-            &["uninstall", "rustfmt", "rustfmt-nightly", "rustfmt-preview"],
-        )?;
+        cargo::cargo(&["uninstall", "rustfmt", "rustfmt-nightly", "rustfmt-preview"])?;
     }
     if !has_cargo_fmt() {
         rust::rustup(&["component", "remove", "rustfmt-preview"])?;
         rust::rustup(&["component", "add", "rustfmt-preview"])?;
     }
     Ok(())
-}
-
-fn has_cargo() -> bool {
-    match utils::process::command_output("cargo", &["--version"]) {
-        Ok(output) => output.status.success(),
-        Err(_error) => {
-            false // cargo probably not installed
-        }
-    }
 }
 
 fn has_cargo_fmt() -> bool {
@@ -96,31 +66,11 @@ fn has_cargo_fmt() -> bool {
 }
 
 fn has_cargo_installed_rustfmt() -> bool {
-    let krates = cargo_installed();
-    krates.contains_key("rustfmt")
-}
-
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
-fn parse_installed<S>(stdout: S) -> HashMap<String, String>
-where
-    S: Into<String> + AsRef<str>,
-{
-    let re = Regex::new(r"^(?P<name>\S+)\sv(?P<version>\S+):").unwrap();
-    let lines = stdout.as_ref().lines();
-    let mut krates: HashMap<String, String> = HashMap::new();
-
-    for line in lines {
-        if let Some(caps) = re.captures(line) {
-            let krate = caps.get(1).unwrap().as_str();
-            let version = caps.get(2).unwrap().as_str();
-            krates.insert(String::from(krate), String::from(version));
-        }
-    }
-    krates
+    cargo::found_versions().contains_key("rustfmt")
 }
 
 fn sync() -> task::Result {
-    if !has_cargo() {
+    if !cargo::has_cargo() {
         return Ok(Status::Skipped);
     }
 
@@ -133,28 +83,9 @@ fn sync() -> task::Result {
         }
     };
 
-    let config: Config = toml::from_str(&contents).expect("cannot parse .../rust.toml");
-
-    let krates = cargo_installed();
-
-    let missing: Vec<String> = config
-        .install
-        .into_iter()
-        .filter_map(|krate| {
-            if krates.contains_key(&krate) {
-                return None;
-            }
-            Some(krate)
-        }).collect();
-
-    if missing.is_empty() {
-        return Ok(Status::Done);
-    }
-
-    let mut install_args = vec![String::from("install")];
-    install_args.extend(missing);
-
-    utils::process::command_spawn_wait("cargo", &install_args).expect(ERROR_MSG);
+    let mut favs: CargoFavourites = toml::from_str(&contents).expect("cannot parse .../rust.toml");
+    Favourites::fill_and_status(&mut favs)?;
+    Favourites::cull_and_status(&mut favs)?;
 
     println!("rust: ensuring `cargo fmt` works ...");
     match fix_cargo_fmt() {
@@ -166,11 +97,11 @@ fn sync() -> task::Result {
 }
 
 fn update() -> task::Result {
-    if !has_cargo() {
+    if !cargo::has_cargo() {
         return Ok(Status::Done);
     }
 
-    let krates = cargo_installed();
+    let krates = cargo::found_versions();
 
     let outdated: Vec<String> = krates
         .into_iter()
@@ -193,18 +124,13 @@ fn update() -> task::Result {
     let mut install_args = vec![String::from("install"), String::from("--force")];
     install_args.extend(outdated);
 
-    utils::process::command_spawn_wait("cargo", &install_args)?;
+    cargo::cargo(&install_args)?;
     Ok(Status::Done)
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn test_cargo_installed() {
-        cargo_installed();
-    }
 
     #[test]
     fn test_cargo_latest_version() {
@@ -216,27 +142,5 @@ mod tests {
             Ok(_) => assert!(false),
             Err(error) => assert_eq!("not found", error),
         }
-    }
-
-    #[test]
-    fn test_parse_installed() {
-        let input = "
-racer v2.0.12:
-    racer
-rustfmt v0.10.0:
-    cargo-fmt
-    rustfmt
-rustsym v0.3.2:
-    rustsym
-";
-        let want: HashMap<String, String> = [
-            (String::from("racer"), String::from("2.0.12")),
-            (String::from("rustfmt"), String::from("0.10.0")),
-            (String::from("rustsym"), String::from("0.3.2")),
-        ]
-            .iter()
-            .cloned()
-            .collect();
-        assert_eq!(want, parse_installed(input));
     }
 }

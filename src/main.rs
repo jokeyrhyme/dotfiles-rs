@@ -21,6 +21,7 @@ use std::env::var;
 use clap::{App, SubCommand};
 
 mod lib {
+    pub mod cargo;
     pub mod env;
     pub mod favourites;
     pub mod ghratask;
