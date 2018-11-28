@@ -1,5 +1,5 @@
-use lib::env::Exports;
-use utils::env::home_dir;
+use crate::lib::env::Exports;
+use crate::utils::env::home_dir;
 
 pub fn env(mut exports: Exports) -> Exports {
     let dir = home_dir().join(".local").join("bin");

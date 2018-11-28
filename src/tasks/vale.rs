@@ -2,11 +2,11 @@ use std::env::consts::{ARCH, OS};
 
 use regex::Regex;
 
-use lib::{
+use crate::lib::{
     ghratask::GHRATask,
     task::{self, Task},
 };
-use utils::github::Asset;
+use crate::utils::github::Asset;
 
 pub fn task() -> Task {
     Task {

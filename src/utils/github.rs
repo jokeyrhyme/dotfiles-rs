@@ -9,8 +9,8 @@ use std::{
 use cabot::request::Request;
 use serde_json;
 
-use lib::version;
-use utils;
+use crate::lib::version;
+use crate::utils;
 
 #[derive(Clone, Debug, Deserialize)]
 pub struct Asset {

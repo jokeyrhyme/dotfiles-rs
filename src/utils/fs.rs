@@ -11,7 +11,7 @@ use std::{
 
 use mktemp;
 
-use lib::task::{self, Status};
+use crate::lib::task::{self, Status};
 
 #[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 pub fn delete_if_exists<P>(path: P)

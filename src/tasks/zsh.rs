@@ -1,5 +1,5 @@
-use lib::task::{self, Status, Task};
-use utils;
+use crate::lib::task::{self, Status, Task};
+use crate::utils;
 
 pub fn task() -> Task {
     Task {

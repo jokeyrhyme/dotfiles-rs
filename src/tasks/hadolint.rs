@@ -3,12 +3,12 @@ use std::env::consts::ARCH;
 use inflector::Inflector;
 use regex::Regex;
 
-use lib::{
+use crate::lib::{
     ghrtask::GHRTask,
     task::{self, Task},
 };
-use utils::github::Asset;
-use utils::golang::os;
+use crate::utils::github::Asset;
+use crate::utils::golang::os;
 
 pub fn task() -> Task {
     Task {

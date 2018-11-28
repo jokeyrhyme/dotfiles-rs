@@ -1,6 +1,6 @@
 use std::thread;
 
-use lib::{env::Exports, task::Task};
+use crate::lib::{env::Exports, task::Task};
 
 mod alacritty;
 mod atlantis;

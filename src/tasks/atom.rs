@@ -2,11 +2,11 @@ use std::{fs, io, str};
 
 use toml;
 
-use lib::{
+use crate::lib::{
     self,
     task::{self, Status, Task},
 };
-use utils;
+use crate::utils;
 
 const ERROR_MSG: &str = "error: atom";
 

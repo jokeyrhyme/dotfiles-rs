@@ -7,7 +7,7 @@ use libflate;
 use tar;
 use zip;
 
-use utils::{self, fs::mktemp};
+use crate::utils::{self, fs::mktemp};
 
 pub fn extract_gz(source: &Path, target: &Path) -> io::Result<()> {
     println!("extract_gz: {} -> {}", source.display(), target.display());
@@ -111,7 +111,7 @@ pub fn extract_zip(source: &Path, target: &Path) -> io::Result<()> {
 mod tests {
     use std::io::Read;
 
-    use utils::fs::mkdtemp;
+    use crate::utils::fs::mkdtemp;
 
     use super::*;
 

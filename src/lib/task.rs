@@ -2,7 +2,7 @@ use std::{fmt, io, result};
 
 use colored::*;
 
-use utils::github::GitHubError;
+use crate::utils::github::GitHubError;
 
 #[derive(Debug)]
 pub enum Error {
@@ -30,7 +30,7 @@ impl From<io::Error> for Error {
 
 pub type Result = result::Result<Status, Error>;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum Status {
     Done,           // started, and finished
     NotImplemented, // never starting

@@ -4,6 +4,7 @@ fmt:
 
 .NOCACHE: lint
 lint:
+	cargo fix --allow-dirty --allow-staged --edition --edition-idioms
 	# `rustup target add` may exit with error if target already added
 	# rustup target add x86_64-apple-darwin || true
 	# cargo check --all-features --target x86_64-apple-darwin

@@ -1,10 +1,10 @@
 use regex::Regex;
 
-use lib::{
+use crate::lib::{
     ghratask::GHRATask,
     task::{self, Task},
 };
-use utils::{
+use crate::utils::{
     github::Asset,
     golang::{arch, os},
 };

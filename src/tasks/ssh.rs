@@ -2,8 +2,8 @@ use std::{fs, str};
 
 use regex;
 
-use lib::task::{self, Status, Task};
-use utils::{self, ssh::Config};
+use crate::lib::task::{self, Status, Task};
+use crate::utils::{self, ssh::Config};
 
 pub fn task() -> Task {
     Task {

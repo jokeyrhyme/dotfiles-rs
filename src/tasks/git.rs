@@ -1,5 +1,5 @@
-use lib::task::{self, Status, Task};
-use utils;
+use crate::lib::task::{self, Status, Task};
+use crate::utils;
 
 const ERROR_MSG: &str = "error: git";
 

@@ -2,8 +2,8 @@ use std::fs;
 
 use toml;
 
-use lib::task::{self, Status, Task};
-use utils;
+use crate::lib::task::{self, Status, Task};
+use crate::utils;
 
 #[derive(Debug, Deserialize)]
 struct Config {

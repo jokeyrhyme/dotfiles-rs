@@ -21,7 +21,9 @@ use std::env::var;
 use clap::{App, SubCommand};
 
 mod lib {
+    pub mod cargo;
     pub mod env;
+    pub mod favourites;
     pub mod ghratask;
     pub mod ghrtask;
     pub mod python;
@@ -44,7 +46,7 @@ mod utils {
     pub mod ssh;
 }
 
-use lib::env::Shell;
+use crate::lib::env::Shell;
 
 fn main() {
     let matches = App::new(env!("CARGO_PKG_NAME"))

@@ -1,6 +1,6 @@
 use std::{io, path::PathBuf};
 
-use utils::{
+use crate::utils::{
     env::home_dir,
     process::{command_output, command_spawn_wait},
 };

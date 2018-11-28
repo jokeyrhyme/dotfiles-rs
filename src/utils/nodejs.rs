@@ -5,8 +5,8 @@ use std::string::String;
 
 use serde_json;
 
-use lib::version;
-use utils;
+use crate::lib::version;
+use crate::utils;
 
 const DIST_JSON_URL: &str = "https://nodejs.org/dist/index.json";
 const ERROR_MSG: &str = "error: utils: nodejs";

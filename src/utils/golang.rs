@@ -4,8 +4,8 @@ use std::{
     str,
 };
 
-use lib::{task, version};
-use utils;
+use crate::lib::{task, version};
+use crate::utils;
 
 pub fn arch() -> &'static str {
     if ARCH == "x86_64" {
