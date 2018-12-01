@@ -50,13 +50,8 @@ pub fn env() -> Exports {
 }
 
 pub fn all() {
-    for t in serial_tasks() {
-        t.sync_then_update();
-    }
+    dotfiles::task().sync_then_update(); // provides: config; must be first
 
-    // let's run GitHub Release tasks in serial,
-    // to not exacerbate rate limiting,
-    // but in parallel with everything else
     let ghr_handle = thread::spawn(|| {
         for t in ghr_tasks() {
             t.sync_then_update();
@@ -81,14 +76,16 @@ pub fn all() {
         }
     });
 
-    for t in tasks() {
-        t.sync_then_update();
-    }
-
     ghr_handle.join().unwrap();
     golang_handle.join().unwrap();
     nodejs_handle.join().unwrap();
     rust_handle.join().unwrap();
+
+    // run remaining tasks in serial,
+    // without any other concurrent tasks
+    for t in tasks() {
+        t.sync_then_update();
+    }
 }
 
 fn ghr_tasks() -> Vec<Task> {
@@ -111,14 +108,14 @@ fn ghr_tasks() -> Vec<Task> {
 fn golang_tasks() -> Vec<Task> {
     vec![
         golang::task(),
-        goget::task(), // must be after golang
+        goget::task(), // deps: golang
     ]
 }
 
 fn nodejs_tasks() -> Vec<Task> {
     vec![
         nodejs::task(),
-        npm::task(), // must be after nodejs
+        npm::task(), // deps: nodejs
     ]
 }
 
@@ -126,30 +123,23 @@ fn rust_tasks() -> Vec<Task> {
     vec![rustup::task(), rustc::task(), rust::task()]
 }
 
-// these tasks should not be run concurrently with others
-fn serial_tasks() -> Vec<Task> {
-    vec![
-        dotfiles::task(), // must be before "config" tasks
-        vim::task(),      // config, causes vim to take over the terminal
-    ]
-}
-
 fn tasks() -> Vec<Task> {
     vec![
-        alacritty::task(), // config
+        alacritty::task(), // deps: config
         atom::task(),
         #[cfg(not(windows))]
-        bash::task(), // config
-        git::task(),
-        hyper::task(), // config
+        bash::task(), // deps: config
+        git::task(),   // deps: nodejs/npm
+        hyper::task(), // deps: config
         #[cfg(target_os = "macos")]
         macos::task(),
-        psql::task(),   // config
-        ssh::task(),    // config
-        tmux::task(),   // config
-        vscode::task(), // config
+        psql::task(),   // deps: config
+        ssh::task(),    // deps: config
+        tmux::task(),   // deps: config
+        vim::task(),    // deps: config; takes over the terminal
+        vscode::task(), // deps: config
         #[cfg(not(windows))]
-        zsh::task(), // config
+        zsh::task(), // deps: config
         #[cfg(windows)]
         windows::task(),
     ]

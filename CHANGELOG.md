@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+- git: reorder tasks to avoid race with node/npm tasks
+
 ## [0.24.0] - 2018-12-01
 
 ### Added
