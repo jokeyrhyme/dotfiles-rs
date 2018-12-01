@@ -110,8 +110,8 @@ fn ghr_tasks() -> Vec<Task> {
 
 fn golang_tasks() -> Vec<Task> {
     vec![
-      golang::task(),
-      goget::task(), // must be after golang
+        golang::task(),
+        goget::task(), // must be after golang
     ]
 }
 
@@ -149,7 +149,7 @@ fn tasks() -> Vec<Task> {
         tmux::task(),   // config
         vscode::task(), // config
         #[cfg(not(windows))]
-        zsh::task(),    // config
+        zsh::task(), // config
         #[cfg(windows)]
         windows::task(),
     ]

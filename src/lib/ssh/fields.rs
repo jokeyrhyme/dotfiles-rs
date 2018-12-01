@@ -46,49 +46,6 @@ where
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn str_into_duration() {
-        struct TestCase<'a> {
-            input: &'a str,
-            want: Duration,
-        }
-        let cases = &[
-            TestCase {
-                input: "",
-                want: Duration::Time(String::new()),
-            },
-            TestCase {
-                input: "30",
-                want: Duration::Seconds(30),
-            },
-            TestCase {
-                input: "s30", // invalid, wrong token order
-                want: Duration::Time(String::new()),
-            },
-            TestCase {
-                input: "30x", // invalid, unknown unit token
-                want: Duration::Time(String::new()),
-            },
-            TestCase {
-                input: "30s",
-                want: Duration::Time(String::from("30s")),
-            },
-            TestCase {
-                input: "1m30s",
-                want: Duration::Time(String::from("1m30s")),
-            },
-        ];
-        for c in cases {
-            let got = Duration::from(c.input);
-            assert_eq!(c.want, got);
-        }
-    }
-}
-
 #[derive(Clone, Debug, PartialEq)]
 pub enum YesNo {
     Yes,
@@ -173,6 +130,7 @@ where
     fn from(source: S) -> Self {
         match source.as_ref() {
             YES | NO | ASK => YesNoAskAutoAutoAsk::YesNoAsk(YesNoAsk::from(source)),
+            AUTO => YesNoAskAutoAutoAsk::Auto,
             _ => YesNoAskAutoAutoAsk::AutoAsk,
         }
     }
@@ -213,4 +171,111 @@ where
             _ => YesNoDuration::Duration(Duration::from(source)),
         }
     }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn duration_to_from_str() {
+        let cases = &[
+            ("", Duration::Time(String::new())),
+            ("30", Duration::Seconds(30)), // invalid, wrong token order
+            ("s30", Duration::Time(String::new())), // invalid, unknown unit token
+            ("30x", Duration::Time(String::new())),
+            ("30s", Duration::Time(String::from("30s"))),
+            ("1m30s", Duration::Time(String::from("1m30s"))),
+        ];
+        for c in cases {
+            let got = Duration::from(c.0);
+            assert_eq!(c.1, got);
+            let reverse = format!("{}", got);
+            if !c.0.is_empty() && !reverse.is_empty() {
+                assert_eq!(c.0, reverse);
+            }
+        }
+    }
+
+    #[test]
+    fn yesno_to_from_str() {
+        let cases = &[("", YesNo::No), ("no", YesNo::No), ("yes", YesNo::Yes)];
+        for c in cases {
+            let got = YesNo::from(c.0);
+            assert_eq!(c.1, got);
+            let reverse = format!("{}", got);
+            if !c.0.is_empty() && !reverse.is_empty() {
+                assert_eq!(c.0, reverse);
+            }
+        }
+    }
+
+    #[test]
+    fn yesnoask_to_from_str() {
+        let cases = &[
+            ("", YesNoAsk::Ask),
+            ("no", YesNoAsk::YesNo(YesNo::No)),
+            ("yes", YesNoAsk::YesNo(YesNo::Yes)),
+            ("ask", YesNoAsk::Ask),
+        ];
+        for c in cases {
+            let got = YesNoAsk::from(c.0);
+            assert_eq!(c.1, got);
+            let reverse = format!("{}", got);
+            if !c.0.is_empty() && !reverse.is_empty() {
+                assert_eq!(c.0, reverse);
+            }
+        }
+    }
+
+    #[test]
+    fn yesnoaskautoautoask_to_from_str() {
+        let cases = &[
+            ("", YesNoAskAutoAutoAsk::AutoAsk),
+            (
+                "no",
+                YesNoAskAutoAutoAsk::YesNoAsk(YesNoAsk::YesNo(YesNo::No)),
+            ),
+            (
+                "yes",
+                YesNoAskAutoAutoAsk::YesNoAsk(YesNoAsk::YesNo(YesNo::Yes)),
+            ),
+            ("ask", YesNoAskAutoAutoAsk::YesNoAsk(YesNoAsk::Ask)),
+            ("auto", YesNoAskAutoAutoAsk::Auto),
+            ("autoask", YesNoAskAutoAutoAsk::AutoAsk),
+        ];
+        for c in cases {
+            let got = YesNoAskAutoAutoAsk::from(c.0);
+            assert_eq!(c.1, got);
+            let reverse = format!("{}", got);
+            if !c.0.is_empty() && !reverse.is_empty() {
+                assert_eq!(c.0, reverse);
+            }
+        }
+    }
+
+    #[test]
+    fn yesnoduration_to_from_str() {
+        let cases = &[
+            ("", YesNoDuration::Duration(Duration::Time(String::new()))),
+            ("no", YesNoDuration::YesNo(YesNo::No)),
+            ("yes", YesNoDuration::YesNo(YesNo::Yes)),
+            ("0", YesNoDuration::Duration(Duration::Seconds(0))),
+            ("1", YesNoDuration::Duration(Duration::Seconds(1))),
+            ("30", YesNoDuration::Duration(Duration::Seconds(30))),
+            (
+                "30m",
+                YesNoDuration::Duration(Duration::Time(String::from("30m"))),
+            ),
+        ];
+        for c in cases {
+            let got = YesNoDuration::from(c.0);
+            assert_eq!(c.1, got);
+            let reverse = format!("{}", got);
+            if !c.0.is_empty() && !reverse.is_empty() {
+                assert_eq!(c.0, reverse);
+            }
+        }
+    }
+
 }

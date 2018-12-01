@@ -21,6 +21,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - nodejs npm: run concurrently with other tasks
 
+### Fixed
+
+- ssh: honour ControlMaster "auto" value
+
 ## [0.23.0] - 2018-11-25
 
 ### Added
