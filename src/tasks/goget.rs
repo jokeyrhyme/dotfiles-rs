@@ -2,21 +2,14 @@ use std::fs;
 
 use toml;
 
-use crate::lib::task::{self, Status, Task};
-use crate::utils;
-
-#[derive(Debug, Deserialize)]
-struct Config {
-    install: Vec<String>,
-}
-
-impl Config {
-    fn new() -> Config {
-        Config {
-            install: Vec::<String>::new(),
-        }
-    }
-}
+use crate::{
+    lib::{
+        favourites::Favourites,
+        goget::GoGetFavourites,
+        task::{self, Status, Task},
+    },
+    utils,
+};
 
 pub fn task() -> Task {
     Task {
@@ -26,14 +19,14 @@ pub fn task() -> Task {
     }
 }
 
-fn read_config() -> Config {
+fn read_config() -> GoGetFavourites {
     let cfg_path = utils::env::home_dir().join(".dotfiles/config/golang.toml");
 
     let contents = match fs::read_to_string(&cfg_path) {
         Ok(s) => s,
         Err(error) => {
             println!("goget: ignoring config: {}", error);
-            return Config::new();
+            return Default::default();
         }
     };
 
@@ -45,48 +38,19 @@ fn read_config() -> Config {
                 &cfg_path.display(),
                 error
             );
-            Config::new()
+            Default::default()
         }
     }
 }
 
 fn sync() -> task::Result {
-    let home_dir = utils::env::home_dir();
-
-    // uninstall `dep` installed by `go get -u ...`
-    // we install `dep` via GitHub Release instead as recommended
-    utils::fs::delete_if_exists(&home_dir.join("go").join("bin").join("dep"));
-    utils::fs::delete_if_exists(&home_dir.join("go").join("bin").join("dep.exe"));
-    utils::fs::delete_if_exists(
-        &home_dir
-            .join("go")
-            .join("pkg")
-            .join("src")
-            .join("github.com")
-            .join("golang")
-            .join("dep"),
-    );
-    utils::fs::delete_if_exists(
-        &home_dir
-            .join("go")
-            .join("src")
-            .join("github.com")
-            .join("golang")
-            .join("dep"),
-    );
-
     if !utils::golang::is_installed() {
         return Ok(Status::Done);
     }
 
-    let config = read_config();
-
-    let mut install_args = vec![String::from("get"), String::from("-v")];
-    install_args.extend(config.install);
-
-    if let Err(error) = utils::process::command_spawn_wait("go", &install_args) {
-        println!("warning: goget: unable to install packages: {}", error);
-    };
+    let mut favs = read_config();
+    Favourites::fill_and_status(&mut favs)?;
+    Favourites::cull_and_status(&mut favs)?;
 
     Ok(Status::Done)
 }
@@ -96,14 +60,12 @@ fn update() -> task::Result {
         return Ok(Status::Skipped);
     }
 
-    let config = read_config();
+    let favs = read_config();
 
-    let mut install_args = vec![String::from("get"), String::from("-u"), String::from("-v")];
-    install_args.extend(config.install);
+    let mut install_args = vec![String::from("get"), String::from("-u")];
+    install_args.extend(favs.found());
 
-    if let Err(error) = utils::process::command_spawn_wait("go", &install_args) {
-        println!("warning: goget: unable to update packages: {}", error);
-    };
+    utils::process::command_spawn_wait("go", &install_args)?;
 
     Ok(Status::Changed(
         "unknown".to_string(),

@@ -1,7 +1,7 @@
 use std::{env::var, fmt::Display, path::PathBuf};
 
 pub const EDITOR: &str = "EDITOR";
-pub const PATH: &'static str = "PATH";
+pub const PATH: &str = "PATH";
 
 #[derive(Debug)]
 pub struct Exports {
