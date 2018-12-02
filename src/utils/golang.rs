@@ -16,14 +16,14 @@ pub fn arch() -> &'static str {
 }
 
 pub fn bin_dir() -> PathBuf {
-    install_path().join("bin")
+    goroot().join("bin")
 }
 
 pub fn current_version() -> String {
     #[cfg(windows)]
-    let exe_path = install_path().join("bin").join("go.exe");
+    let exe_path = bin_dir().join("go.exe");
     #[cfg(not(windows))]
-    let exe_path = install_path().join("bin").join("go");
+    let exe_path = bin_dir().join("go");
 
     match utils::process::command_output(exe_path.to_str().unwrap(), &["version"]) {
         Ok(output) => {
@@ -34,6 +34,14 @@ pub fn current_version() -> String {
         }
         Err(_error) => String::from(""),
     }
+}
+
+pub fn gopath() -> PathBuf {
+    utils::env::home_dir().join("go")
+}
+
+pub fn goroot() -> PathBuf {
+    utils::env::home_dir().join(".local").join("go")
 }
 
 pub fn is_installed() -> bool {
@@ -74,10 +82,6 @@ pub fn os() -> &'static str {
     } else {
         OS
     }
-}
-
-fn install_path() -> PathBuf {
-    utils::env::home_dir().join(".local").join("go")
 }
 
 #[cfg(test)]

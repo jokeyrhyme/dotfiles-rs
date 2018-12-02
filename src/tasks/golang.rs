@@ -83,6 +83,8 @@ fn sync() -> task::Result {
 
         install_golang(latest_version)
     }
+
+    // TODO: cleanup GOPATH/pkg: https://github.com/golang/go/issues/4719
 }
 
 fn update() -> task::Result {

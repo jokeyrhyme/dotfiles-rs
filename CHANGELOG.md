@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- goget: support TOML list of packages to uninstall
+
+### Changed
+
+- goget: install/update with less verbosity
+
 ### Fixed
 
 - git: reorder tasks to avoid race with node/npm tasks
