@@ -20,11 +20,7 @@ pub fn bin_dir() -> PathBuf {
 }
 
 pub fn current_version() -> String {
-    #[cfg(windows)]
-    let exe_path = bin_dir().join("go.exe");
-    #[cfg(not(windows))]
-    let exe_path = bin_dir().join("go");
-
+    let exe_path = bin_dir().join(if OS == "windows" { "go.exe" } else { "go" });
     match utils::process::command_output(exe_path.to_str().unwrap(), &["version"]) {
         Ok(output) => {
             let stdout = str::from_utf8(&output.stdout).unwrap_or_default().trim();
@@ -45,11 +41,7 @@ pub fn goroot() -> PathBuf {
 }
 
 pub fn is_installed() -> bool {
-    #[cfg(windows)]
-    let exe_path = bin_dir().join("go.exe");
-    #[cfg(not(windows))]
-    let exe_path = bin_dir().join("go");
-
+    let exe_path = bin_dir().join(if OS == "windows" { "go.exe" } else { "go" });
     exe_path.is_file()
 }
 

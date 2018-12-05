@@ -1,3 +1,5 @@
+use std::env::consts::OS;
+
 use crate::lib::{
     env::Exports,
     task::{self, Status, Task},
@@ -39,31 +41,24 @@ where
 
     let temp_path = mktemp()?;
 
-    #[cfg(windows)]
     let remote_url = format!(
-        "https://dl.google.com/go/{}.{}-{}.zip",
+        "https://dl.google.com/go/{}.{}-{}.{}",
         version.as_ref(),
         os(),
-        arch()
+        arch(),
+        if OS == "windows" { "exe" } else { "tar.gz" },
     );
-    #[cfg(not(windows))]
-    let remote_url = format!(
-        "https://dl.google.com/go/{}.{}-{}.tar.gz",
-        version.as_ref(),
-        os(),
-        arch()
-    );
-
     utils::http::download(remote_url, &temp_path)?;
 
     let local_path = utils::env::home_dir().join(".local");
     let target_path = local_path.join("go");
     utils::fs::delete_if_exists(&target_path);
 
-    #[cfg(windows)]
-    utils::archive::extract_zip(&temp_path, &local_path)?;
-    #[cfg(not(windows))]
-    utils::archive::extract_tar_gz(&temp_path, &local_path)?;
+    if OS == "windows" {
+        utils::archive::extract_zip(&temp_path, &local_path)?;
+    } else {
+        utils::archive::extract_tar_gz(&temp_path, &local_path)?;
+    }
 
     utils::fs::delete_if_exists(&temp_path);
 

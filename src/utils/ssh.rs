@@ -879,8 +879,7 @@ where
 
 #[cfg(test)]
 mod tests {
-    use std::fs;
-    use std::path::Path;
+    use std::{env::consts::OS, fs, path::Path};
 
     use super::*;
 
@@ -946,13 +945,13 @@ mod tests {
         let config_path =
             Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/ssh_config.output.txt");
 
-        #[cfg(windows)]
-        let want = fs::read_to_string(&config_path)
-            .unwrap()
-            .replace("IdentityFile ~/.ssh/id_rsa", "IdentityFile ~\\.ssh\\id_rsa");
-        #[cfg(not(windows))]
-        let want = fs::read_to_string(&config_path).unwrap();
-
+        let want = if OS == "windows" {
+            fs::read_to_string(&config_path)
+                .unwrap()
+                .replace("IdentityFile ~/.ssh/id_rsa", "IdentityFile ~\\.ssh\\id_rsa")
+        } else {
+            fs::read_to_string(&config_path).unwrap()
+        };
         let config = example_config();
 
         assert_eq!(String::from(&config), want);

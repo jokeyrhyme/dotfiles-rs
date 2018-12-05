@@ -1,4 +1,8 @@
-use std::{env::var, fmt::Display, path::PathBuf};
+use std::{
+    env::{consts::OS, var},
+    fmt::Display,
+    path::PathBuf,
+};
 
 pub const EDITOR: &str = "EDITOR";
 pub const PATH: &str = "PATH";
@@ -34,10 +38,13 @@ impl Exports {
             .into_iter()
             .map(|p| p.as_path().to_string_lossy().into_owned())
             .collect();
-        #[cfg(windows)]
-        let path_line = export_shell(&shell, PATH, path_strings.join(";").as_str());
-        #[cfg(not(windows))]
-        let path_line = export_shell(&shell, PATH, path_strings.join(":").as_str());
+        let path_line = export_shell(
+            &shell,
+            PATH,
+            path_strings
+                .join(if OS == "windows" { ";" } else { ":" })
+                .as_str(),
+        );
 
         let lines: &[String] = &[editor_line, path_line];
         lines.join("\n")
@@ -49,11 +56,7 @@ impl Default for Exports {
         let mut exports = Self::new();
         exports.path = match var("PATH") {
             Ok(paths) => {
-                #[cfg(windows)]
-                let path_strings = paths.split(";");
-                #[cfg(not(windows))]
-                let path_strings = paths.split(":");
-
+                let path_strings = paths.split(if OS == "windows" { ";" } else { ":" });
                 path_strings.map(|p| PathBuf::from(p)).collect()
             }
             Err(_) => exports.path,

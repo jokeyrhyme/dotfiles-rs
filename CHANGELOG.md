@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Changed
+
+- check OS at runtime rather than at compile time in more places
+
+### Fixed
+
+- Windows: builds again (probably), yay
+
 ## [0.25.0] - 2018-12-02
 
 ### Added

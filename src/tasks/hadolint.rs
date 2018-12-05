@@ -1,14 +1,15 @@
-use std::env::consts::ARCH;
+use std::env::consts::{ARCH, EXE_SUFFIX};
 
 use inflector::Inflector;
 use regex::Regex;
 
-use crate::lib::{
-    ghrtask::GHRTask,
-    task::{self, Task},
+use crate::{
+    lib::{
+        ghrtask::GHRTask,
+        task::{self, Task},
+    },
+    utils::{github::Asset, golang::os},
 };
-use crate::utils::github::Asset;
-use crate::utils::golang::os;
 
 pub fn task() -> Task {
     Task {
@@ -31,12 +32,7 @@ const GHR_TASK: GHRTask = GHRTask {
 
 fn asset_filter(asset: &Asset) -> bool {
     let os_title = os().to_title_case();
-
-    #[cfg(windows)]
-    let name = format!("hadolint-{}-{}.exe", os_title, ARCH);
-    #[cfg(not(windows))]
-    let name = format!("hadolint-{}-{}", os_title, ARCH);
-
+    let name = format!("hadolint-{}-{}{}", os_title, ARCH, EXE_SUFFIX);
     asset.name == name
 }
 

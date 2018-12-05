@@ -13,7 +13,7 @@ lint:
 	# rustup target add x86_64-unknown-linux-gnu || true
 	# cargo check --all-features --target x86_64-unknown-linux-gnu
 	cargo check --all-features --benches --tests
-	cargo clippy -- --deny clippy::all
+	cargo clippy --all-features --benches --tests -- --deny clippy::all
 
 .NOCACHE: test
 test:

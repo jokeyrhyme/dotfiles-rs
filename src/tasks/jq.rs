@@ -1,10 +1,12 @@
-use std::env::consts::{ARCH, OS};
+use std::env::consts::{ARCH, EXE_SUFFIX, OS};
 
-use crate::lib::{
-    ghrtask::GHRTask,
-    task::{self, Task},
+use crate::{
+    lib::{
+        ghrtask::GHRTask,
+        task::{self, Task},
+    },
+    utils::github::Asset,
 };
-use crate::utils::github::Asset;
 
 pub fn task() -> Task {
     Task {
@@ -26,15 +28,11 @@ const GHR_TASK: GHRTask = GHRTask {
 };
 
 fn asset_filter(asset: &Asset) -> bool {
-    #[cfg(windows)]
-    let name = format!("jq-{}.exe", os_arch());
-    #[cfg(not(windows))]
-    let name = format!("jq-{}", os_arch());
-
+    let name = format!("jq-{}{}", os_arch(), EXE_SUFFIX);
     asset.name == name
 }
 
-// this is unfortunately only true for jq 1.5,
+// this is unfortunately only true for jq 1.5 and 1.6,
 // may need to make this smarter to match all past and future versions
 fn os_arch() -> String {
     if ARCH == "x86_64" && OS == "macos" {
