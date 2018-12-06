@@ -7,7 +7,7 @@ use libflate;
 use tar;
 use zip;
 
-use crate::utils::{self, fs::mktemp};
+use crate::utils::{self, fs::mkftemp};
 
 pub fn extract_gz(source: &Path, target: &Path) -> io::Result<()> {
     println!("extract_gz: {} -> {}", source.display(), target.display());
@@ -69,7 +69,7 @@ pub fn extract_tar_gz(source: &Path, target: &Path) -> io::Result<()> {
         target.display()
     );
 
-    let temp_path = mktemp()?;
+    let temp_path = mkftemp()?;
     extract_gz(&source, &temp_path)?;
     extract_tar(&temp_path, &target)?;
 
@@ -117,7 +117,7 @@ mod tests {
 
     #[test]
     fn extract_fixture_foo_txt_gz() {
-        let temp_path = mktemp().unwrap();
+        let temp_path = mkftemp().unwrap();
 
         let foo_path = Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/foo.txt.gz");
 

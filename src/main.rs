@@ -56,7 +56,8 @@ fn main() {
         .subcommand(
             SubCommand::with_name("all")
                 .about("sync / update my settings and packages on this computer"),
-        ).subcommand(SubCommand::with_name("env").about("export generated environment variables"))
+        )
+        .subcommand(SubCommand::with_name("env").about("export generated environment variables"))
         .get_matches();
 
     if let Some(_matches) = matches.subcommand_matches("all") {

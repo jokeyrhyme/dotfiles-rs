@@ -143,7 +143,8 @@ fn sync() -> task::Result {
                 return Some(format!("-{}", cipher));
             }
             None
-        }).collect();
+        })
+        .collect();
     if !ciphers.is_empty() {
         config.Ciphers = Some(ciphers);
     }
@@ -158,7 +159,8 @@ fn sync() -> task::Result {
                 return Some(format!("-{}", kex));
             }
             None
-        }).collect();
+        })
+        .collect();
     if !kexs.is_empty() {
         config.KexAlgorithms = Some(kexs);
     }
@@ -173,7 +175,8 @@ fn sync() -> task::Result {
                 return Some(format!("-{}", mac));
             }
             None
-        }).collect();
+        })
+        .collect();
     if !macs.is_empty() {
         config.MACs = Some(macs);
     }

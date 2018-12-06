@@ -41,7 +41,8 @@ fn sync() -> task::Result {
                 "--files",
                 "yarn.lock",
             ],
-        ).expect(ERROR_MSG);
+        )
+        .expect(ERROR_MSG);
     }
 
     Ok(Status::Done)

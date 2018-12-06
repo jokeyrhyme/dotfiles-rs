@@ -115,7 +115,8 @@ fn update() -> task::Result {
                 }
                 Err(_) => None,
             },
-        ).collect();
+        )
+        .collect();
 
     if outdated.is_empty() {
         return Ok(Status::Done);

@@ -45,7 +45,8 @@ fn asset_filter(asset: &Asset) -> bool {
         } else {
             r"\.tar\.gz"
         }
-    )).unwrap();
+    ))
+    .unwrap();
 
     re.is_match(&asset.name)
 }

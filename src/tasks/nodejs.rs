@@ -6,7 +6,7 @@ use crate::lib::{
 };
 use crate::utils::{
     self,
-    fs::mktemp,
+    fs::mkftemp,
     nodejs::{arch, bin_dir, os},
 };
 
@@ -33,7 +33,7 @@ fn install_nodejs<S>(version: S) -> io::Result<()>
 where
     S: Into<String> + AsRef<str>,
 {
-    let temp_path = mktemp()?;
+    let temp_path = mkftemp()?;
 
     let prefix = format!("node-{}-{}-{}", version.as_ref(), os(), arch());
 

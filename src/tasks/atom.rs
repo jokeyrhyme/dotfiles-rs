@@ -101,7 +101,8 @@ fn sync() -> task::Result {
             utils::process::command_spawn_wait(
                 COMMAND,
                 &["install", "--compatible", "--production", "--quiet", &ext],
-            ).expect(ERROR_MSG);
+            )
+            .expect(ERROR_MSG);
         }
     }
 

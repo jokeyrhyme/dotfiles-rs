@@ -8,7 +8,7 @@ use crate::lib::{
 use crate::utils::{
     self,
     archive::{extract_tar_gz, extract_zip},
-    fs::{mkdtemp, mktemp, set_executable},
+    fs::{mkdtemp, mkftemp, set_executable},
     github::{self, Asset, Release},
 };
 
@@ -79,7 +79,7 @@ impl<'a> GHRATask<'a> {
             .join("bin")
             .join(&self.command);
 
-        let archive_path = mktemp()?;
+        let archive_path = mkftemp()?;
         github::download_release_asset(&asset, &archive_path);
 
         println!("{}: extracting...", &self.command);

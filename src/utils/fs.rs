@@ -160,7 +160,7 @@ pub fn mkdtemp() -> io::Result<PathBuf> {
     Ok(temp_path)
 }
 
-pub fn mktemp() -> io::Result<PathBuf> {
+pub fn mkftemp() -> io::Result<PathBuf> {
     let temp_path;
     {
         let mut temp = mktemp::Temp::new_file()?;

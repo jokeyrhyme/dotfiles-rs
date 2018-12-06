@@ -78,7 +78,8 @@ where
         "{}\n{}",
         String::from_utf8_lossy(&output.stdout).trim(),
         String::from_utf8_lossy(&output.stderr).trim(),
-    ).to_string())
+    )
+    .to_string())
 }
 
 fn cargo_exe() -> PathBuf {
@@ -128,9 +129,9 @@ rustsym v0.3.2:
             (String::from("rustfmt"), String::from("0.10.0")),
             (String::from("rustsym"), String::from("0.3.2")),
         ]
-            .iter()
-            .cloned()
-            .collect();
+        .iter()
+        .cloned()
+        .collect();
         assert_eq!(want, parse_installed(input));
     }
 }

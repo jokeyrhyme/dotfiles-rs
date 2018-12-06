@@ -6,7 +6,7 @@ use crate::lib::{
 };
 use crate::utils::{
     self,
-    fs::mktemp,
+    fs::mkftemp,
     golang::{arch, bin_dir, os},
 };
 
@@ -39,7 +39,7 @@ where
         "absent".to_string()
     };
 
-    let temp_path = mktemp()?;
+    let temp_path = mkftemp()?;
 
     let remote_url = format!(
         "https://dl.google.com/go/{}.{}-{}.{}",

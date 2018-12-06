@@ -170,7 +170,8 @@ where
         .map(|t| Tag {
             id: str::replace(&t.id, "refs/tags/", ""),
             url: t.url,
-        }).collect())
+        })
+        .collect())
 }
 
 #[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]

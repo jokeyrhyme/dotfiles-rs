@@ -194,7 +194,8 @@ fn sync() -> task::Result {
                 return None;
             }
             Some(pkg)
-        }).collect();
+        })
+        .collect();
 
     if missing.is_empty() {
         return Ok(Status::Done);
@@ -219,7 +220,8 @@ fn sync() -> task::Result {
                 return Some(pkg);
             }
             None
-        }).collect();
+        })
+        .collect();
 
     if found.is_empty() {
         return Ok(Status::Done);
