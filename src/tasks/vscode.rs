@@ -1,10 +1,11 @@
-use std::path::Path;
-use std::{fs, str};
+use std::{env::consts::OS, fs, path::Path, str};
 
 use toml;
 
-use crate::lib::task::{self, Status, Task};
-use crate::utils;
+use crate::{
+    lib::task::{self, Status, Task},
+    utils,
+};
 
 const COMMAND: &str = "code";
 
@@ -74,12 +75,11 @@ fn sync() -> task::Result {
 
     let src = utils::env::home_dir().join(".dotfiles/config/vscode.json");
 
-    #[cfg(target_os = "macos")]
-    let settings_path = "Library/Application Support/Code/User/settings.json";
-    #[cfg(windows)]
-    let settings_path = "AppData/Roaming/Code/User/settings.json";
-    #[cfg(not(any(target_os = "macos", windows)))]
-    let settings_path = ".config/Code/User/settings.json";
+    let settings_path = match OS {
+        "macos" => "Library/Application Support/Code/User/settings.json",
+        "windows" => "AppData/Roaming/Code/User/settings.json",
+        _ => ".config/Code/User/settings.json",
+    };
     let dest = utils::env::home_dir().join(Path::new(settings_path));
 
     utils::fs::symbolic_link_if_exists(&src, &dest)?;

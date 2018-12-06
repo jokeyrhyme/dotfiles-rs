@@ -1,4 +1,4 @@
-use std::{self, io, str};
+use std::{self, env::consts::OS, io, str};
 
 use crate::lib::{
     env::Exports,
@@ -37,19 +37,12 @@ where
 
     let prefix = format!("node-{}-{}-{}", version.as_ref(), os(), arch());
 
-    #[cfg(windows)]
     let remote_url = format!(
-        "https://nodejs.org/dist/{}/{}.zip",
+        "https://nodejs.org/dist/{}/{}.{}",
         version.as_ref(),
-        &prefix
+        &prefix,
+        if OS == "windows" { "zip" } else { "tar.gz" },
     );
-    #[cfg(not(windows))]
-    let remote_url = format!(
-        "https://nodejs.org/dist/{}/{}.tar.gz",
-        version.as_ref(),
-        &prefix
-    );
-
     match utils::http::download(remote_url, &temp_path) {
         Ok(()) => {}
         Err(error) => {
@@ -64,10 +57,11 @@ where
     let interim_path = local_path.join(&prefix);
     utils::fs::delete_if_exists(&interim_path);
 
-    #[cfg(windows)]
-    utils::archive::extract_zip(&temp_path, &local_path)?;
-    #[cfg(not(windows))]
-    utils::archive::extract_tar_gz(&temp_path, &local_path)?;
+    if OS == "windows" {
+        utils::archive::extract_zip(&temp_path, &local_path)?;
+    } else {
+        utils::archive::extract_tar_gz(&temp_path, &local_path)?;
+    }
 
     let target_path = local_path.join("node");
     utils::fs::delete_if_exists(&target_path);

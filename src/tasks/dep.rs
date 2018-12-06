@@ -1,3 +1,5 @@
+use std::env::consts::OS;
+
 use crate::lib::{
     ghrtask::GHRTask,
     task::{self, Task},
@@ -25,10 +27,11 @@ const GHR_TASK: GHRTask = GHRTask {
 };
 
 fn asset_filter(asset: &Asset) -> bool {
-    #[cfg(windows)]
-    let name = format!("dep-{}-{}.exe", os(), arch());
-    #[cfg(not(windows))]
-    let name = format!("dep-{}-{}", os(), arch());
+    let name = if OS == "windows" {
+        format!("dep-{}-{}.exe", os(), arch())
+    } else {
+        format!("dep-{}-{}", os(), arch())
+    };
 
     asset.name == name
 }

@@ -36,10 +36,16 @@ pub fn arch() -> &'static str {
 }
 
 fn asset_filter(asset: &Asset) -> bool {
-    #[cfg(windows)]
-    let re = Regex::new(&format!(r"^vale_.*_{}_{}\.zip$", os(), arch())).unwrap();
-    #[cfg(not(windows))]
-    let re = Regex::new(&format!(r"^vale_.*_{}_{}\.tar\.gz$", os(), arch())).unwrap();
+    let re = Regex::new(&format!(
+        r"^vale_.*_{}_{}{}$",
+        os(),
+        arch(),
+        if OS == "windows" {
+            r"\.zip"
+        } else {
+            r"\.tar\.gz"
+        }
+    )).unwrap();
 
     re.is_match(&asset.name)
 }

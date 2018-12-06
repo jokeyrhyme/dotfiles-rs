@@ -25,10 +25,11 @@ pub fn arch() -> &'static str {
 }
 
 pub fn bin_dir() -> PathBuf {
-    #[cfg(windows)]
-    return install_path();
-    #[cfg(not(windows))]
-    return install_path().join("bin");
+    if OS == "windows" {
+        install_path()
+    } else {
+        install_path().join("bin")
+    }
 }
 
 pub fn current_version() -> String {
@@ -43,12 +44,9 @@ pub fn current_version() -> String {
 }
 
 pub fn has_node() -> bool {
-    #[cfg(windows)]
-    let exe_path = bin_dir().join("node.exe");
-    #[cfg(not(windows))]
-    let exe_path = bin_dir().join("node");
-
-    exe_path.is_file()
+    bin_dir()
+        .join(if OS == "windows" { "node.exe" } else { "node" })
+        .is_file()
 }
 
 pub fn has_npm() -> bool {
@@ -106,10 +104,11 @@ pub fn latest_version() -> String {
 }
 
 pub fn lib_dir() -> PathBuf {
-    #[cfg(windows)]
-    return install_path();
-    #[cfg(not(windows))]
-    return install_path().join("lib");
+    if OS == "windows" {
+        install_path()
+    } else {
+        install_path().join("lib")
+    }
 }
 
 pub fn os() -> &'static str {

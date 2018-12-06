@@ -1,4 +1,4 @@
-use std::{io, path::PathBuf};
+use std::{env::consts::EXE_SUFFIX, io, path::PathBuf};
 
 use crate::{
     lib::favourites::Favourites,
@@ -30,11 +30,10 @@ impl Favourites for GoGetFavourites {
 
             match p.file_name() {
                 Some(f) => {
-                    #[cfg(windows)]
-                    let bin = gopath().join("bin").join(format!("{}.exe", f));
-                    #[cfg(not(windows))]
-                    let bin = gopath().join("bin").join(f);
-
+                    let bin =
+                        gopath()
+                            .join("bin")
+                            .join(format!("{}{}", f.to_string_lossy(), EXE_SUFFIX));
                     delete_if_exists(bin);
                 }
                 None => {}
@@ -81,10 +80,9 @@ where
     let p = PathBuf::from(pkg.as_ref());
     match p.file_name() {
         Some(f) => {
-            #[cfg(windows)]
-            let bin = gopath().join("bin").join(format!("{}.exe", f));
-            #[cfg(not(windows))]
-            let bin = gopath().join("bin").join(f);
+            let bin = gopath()
+                .join("bin")
+                .join(format!("{}{}", f.to_string_lossy(), EXE_SUFFIX));
 
             let src = gopath().join("src").join(&p);
             bin.is_file() && src.is_dir()
@@ -95,6 +93,8 @@ where
 
 #[cfg(test)]
 mod tests {
+    use std::env::consts::OS;
+
     use super::*;
 
     #[test]
@@ -115,10 +115,11 @@ mod tests {
             uninstall: vec![],
         };
 
-        #[cfg(windows)]
-        let bin = gopath().join("bin").join("goimports.exe");
-        #[cfg(not(windows))]
-        let bin = gopath().join("bin").join("goimports");
+        let bin = gopath().join("bin").join(if OS == "windows" {
+            "goimports.exe"
+        } else {
+            "goimports"
+        });
 
         let src = gopath().join("src").join(goimports_pkg.clone());
         assert_eq!(

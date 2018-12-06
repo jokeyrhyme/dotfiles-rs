@@ -1,4 +1,4 @@
-use std::{collections::HashMap, io, path::PathBuf, str};
+use std::{collections::HashMap, env::consts::OS, io, path::PathBuf, str};
 
 use regex;
 
@@ -82,12 +82,11 @@ where
 }
 
 fn cargo_exe() -> PathBuf {
-    #[cfg(windows)]
-    let pb = bin_dir().join("cargo.exe");
-    #[cfg(not(windows))]
-    let pb = bin_dir().join("cargo");
-
-    pb
+    bin_dir().join(if OS == "windows" {
+        "cargo.exe"
+    } else {
+        "cargo"
+    })
 }
 
 #[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]

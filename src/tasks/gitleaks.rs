@@ -1,9 +1,15 @@
-use crate::lib::{
-    ghrtask::GHRTask,
-    task::{self, Task},
+use std::env::consts::EXE_SUFFIX;
+
+use crate::{
+    lib::{
+        ghrtask::GHRTask,
+        task::{self, Task},
+    },
+    utils::{
+        github::Asset,
+        golang::{arch, os},
+    },
 };
-use crate::utils::github::Asset;
-use crate::utils::golang::{arch, os};
 
 pub fn task() -> Task {
     Task {
@@ -25,11 +31,7 @@ const GHR_TASK: GHRTask = GHRTask {
 };
 
 fn asset_filter(asset: &Asset) -> bool {
-    #[cfg(windows)]
-    let name = format!("gitleaks-{}-{}.exe", os(), arch());
-    #[cfg(not(windows))]
-    let name = format!("gitleaks-{}-{}", os(), arch());
-
+    let name = format!("gitleaks-{}-{}{}", os(), arch(), EXE_SUFFIX);
     asset.name == name
 }
 

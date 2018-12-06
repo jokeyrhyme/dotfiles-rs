@@ -34,7 +34,6 @@ mod tmux;
 mod vale;
 mod vim;
 mod vscode;
-#[cfg(windows)]
 mod windows;
 mod yq;
 mod zsh;
@@ -140,7 +139,6 @@ fn tasks() -> Vec<Task> {
         vscode::task(), // deps: config
         #[cfg(not(windows))]
         zsh::task(), // deps: config
-        #[cfg(windows)]
         windows::task(),
     ]
 }

@@ -1,4 +1,4 @@
-use std::{io, path::PathBuf};
+use std::{env::consts::OS, io, path::PathBuf};
 
 use crate::utils::{
     env::home_dir,
@@ -45,10 +45,9 @@ pub fn rustup_version() -> String {
 }
 
 fn rustup_exe() -> PathBuf {
-    #[cfg(windows)]
-    let pb = bin_dir().join("rustup.exe");
-    #[cfg(not(windows))]
-    let pb = bin_dir().join("rustup");
-
-    pb
+    bin_dir().join(if OS == "windows" {
+        "rustup.exe"
+    } else {
+        "rustup"
+    })
 }

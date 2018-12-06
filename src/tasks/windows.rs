@@ -1,5 +1,7 @@
-use lib::task::{self, Status, Task};
-use utils;
+use std::env::consts::OS;
+
+use crate::lib::task::{self, Status, Task};
+use crate::utils;
 
 pub fn task() -> Task {
     Task {
@@ -10,6 +12,10 @@ pub fn task() -> Task {
 }
 
 fn sync() -> task::Result {
+    if OS == "windows" {
+        return Ok(Status::Skipped);
+    }
+
     println!("windows: manually configure %PATH% to include:");
 
     let bin_path = utils::env::home_dir().join(".local").join("bin");
