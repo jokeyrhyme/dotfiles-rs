@@ -67,7 +67,7 @@ fn configure_npm() -> io::Result<()> {
     Ok(())
 }
 
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+#[allow(clippy::needless_pass_by_value)]
 fn is_global_package_bin_linked<S>(name: S) -> bool
 where
     S: Into<String> + AsRef<str>,
@@ -134,7 +134,7 @@ fn read_config() -> Config {
     }
 }
 
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+#[allow(clippy::needless_pass_by_value)]
 fn read_global_package<S>(name: S) -> io::Result<Package>
 where
     S: Into<String> + AsRef<str>,

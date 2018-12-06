@@ -80,7 +80,7 @@ impl Error for GitHubError {
     }
 }
 
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+#[allow(clippy::needless_pass_by_value)]
 pub fn download_release_asset<P>(asset: &Asset, bin_path: P)
 where
     P: Into<PathBuf> + AsRef<Path>,
@@ -102,7 +102,7 @@ where
     }
 }
 
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+#[allow(clippy::needless_pass_by_value)]
 fn create_request<S>(url: S) -> Request
 where
     S: Into<String> + AsRef<str>,
@@ -121,7 +121,7 @@ where
     utils::http::create_request(url.as_ref(), &headers_slice)
 }
 
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+#[allow(clippy::needless_pass_by_value)]
 fn fetch_releases<S>(owner: S, repo: S) -> io::Result<Vec<Release>>
 where
     S: Into<String> + AsRef<str>,
@@ -145,7 +145,7 @@ where
     Ok(releases)
 }
 
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+#[allow(clippy::needless_pass_by_value)]
 pub fn fetch_tags<S>(owner: S, repo: S) -> io::Result<Vec<Tag>>
 where
     S: Into<String> + AsRef<str>,
@@ -175,7 +175,7 @@ where
         .collect())
 }
 
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+#[allow(clippy::needless_pass_by_value)]
 pub fn latest_release<S>(owner: S, repo: S) -> Result<Release, GitHubError>
 where
     S: Into<String> + AsRef<str>,
@@ -197,7 +197,7 @@ where
     }
 }
 
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+#[allow(clippy::needless_pass_by_value)]
 pub fn release_versus_current<S>(current: S, owner: S, repo: S) -> Option<Release>
 where
     S: Into<String> + AsRef<str>,

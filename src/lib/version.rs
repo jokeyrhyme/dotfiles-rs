@@ -2,7 +2,7 @@ use regex;
 
 const UNSTABLE: &[&str] = &["alpha", "beta", "canary", "dev", "rc"];
 
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+#[allow(clippy::needless_pass_by_value)]
 pub fn is_stable<S>(version: S) -> bool
 where
     S: Into<String> + AsRef<str>,

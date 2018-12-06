@@ -28,7 +28,7 @@ pub fn task() -> Task {
     }
 }
 
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+#[allow(clippy::needless_pass_by_value)]
 fn install_nodejs<S>(version: S) -> io::Result<()>
 where
     S: Into<String> + AsRef<str>,

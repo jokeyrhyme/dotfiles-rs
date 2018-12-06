@@ -71,7 +71,7 @@ impl Favourites for GoGetFavourites {
     }
 }
 
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+#[allow(clippy::needless_pass_by_value)]
 fn pkg_found<S>(pkg: S) -> bool
 where
     S: Into<String> + AsRef<str>,

@@ -61,7 +61,7 @@ pub fn has_cargo() -> bool {
     }
 }
 
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+#[allow(clippy::needless_pass_by_value)]
 pub fn cargo<S>(args: &[S]) -> io::Result<()>
 where
     S: Into<String> + AsRef<str>,
@@ -69,7 +69,7 @@ where
     command_spawn_wait(cargo_exe(), args).map(|_| ())
 }
 
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+#[allow(clippy::needless_pass_by_value)]
 pub fn cargo_output<S>(args: &[S]) -> io::Result<String>
 where
     S: Into<String> + AsRef<str>,
@@ -91,7 +91,7 @@ fn cargo_exe() -> PathBuf {
     })
 }
 
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+#[allow(clippy::needless_pass_by_value)]
 fn parse_installed<S>(stdout: S) -> HashMap<String, String>
 where
     S: Into<String> + AsRef<str>,

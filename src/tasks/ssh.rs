@@ -13,7 +13,7 @@ pub fn task() -> Task {
     }
 }
 
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+#[allow(clippy::needless_pass_by_value)]
 fn is_blacklist_supported<S>(ssh_version: S) -> bool
 where
     S: Into<String> + AsRef<str>,
@@ -29,7 +29,7 @@ where
     true
 }
 
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+#[allow(clippy::needless_pass_by_value)]
 fn is_weak_cipher<S>(cipher: S) -> bool
 where
     S: Into<String> + AsRef<str>,
@@ -43,7 +43,7 @@ where
     cbc_re.is_match(cipher.as_ref()) || rc4_re.is_match(cipher.as_ref())
 }
 
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+#[allow(clippy::needless_pass_by_value)]
 fn is_weak_kex<S>(kex: S) -> bool
 where
     S: Into<String> + AsRef<str>,
@@ -54,7 +54,7 @@ where
     sha1_re.is_match(kex.as_ref())
 }
 
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+#[allow(clippy::needless_pass_by_value)]
 fn is_weak_mac<S>(mac: S) -> bool
 where
     S: Into<String> + AsRef<str>,

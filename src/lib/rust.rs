@@ -16,7 +16,7 @@ pub fn has_rustup() -> bool {
     }
 }
 
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+#[allow(clippy::needless_pass_by_value)]
 pub fn rustup<S>(args: &[S]) -> io::Result<()>
 where
     S: Into<String> + AsRef<str>,
@@ -24,7 +24,7 @@ where
     command_spawn_wait(rustup_exe(), args).map(|_| ())
 }
 
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+#[allow(clippy::needless_pass_by_value)]
 pub fn rustup_output<S>(args: &[S]) -> io::Result<String>
 where
     S: Into<String> + AsRef<str>,

@@ -8,7 +8,7 @@ use std::{
 
 use crate::tasks;
 
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+#[allow(clippy::needless_pass_by_value)]
 pub fn command_output<O, S>(cmd: O, args: &[S]) -> io::Result<Output>
 where
     O: Into<OsString> + AsRef<OsStr>,
@@ -26,7 +26,7 @@ where
     }
 }
 
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+#[allow(clippy::needless_pass_by_value)]
 pub fn command_spawn_wait<O, S>(cmd: O, args: &[S]) -> io::Result<ExitStatus>
 where
     O: Into<OsString> + AsRef<OsStr>,

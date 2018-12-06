@@ -24,7 +24,7 @@ impl<'a> HTTPCall<'a> {
 
 pub const EMPTY_HEADERS: &[&str] = &[];
 
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+#[allow(clippy::needless_pass_by_value)]
 pub fn create_request<S>(url: S, headers: &[&str]) -> Request
 where
     S: Into<String> + AsRef<str>,
@@ -37,7 +37,7 @@ where
         .unwrap()
 }
 
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+#[allow(clippy::needless_pass_by_value)]
 pub fn download<P, S>(url: S, dest: P) -> io::Result<()>
 where
     P: Into<PathBuf> + AsRef<Path>,
@@ -48,7 +48,7 @@ where
     download_request(&req, dest.as_ref())
 }
 
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+#[allow(clippy::needless_pass_by_value)]
 pub fn download_request<P>(req: &Request, dest: P) -> io::Result<()>
 where
     P: Into<PathBuf> + AsRef<Path>,

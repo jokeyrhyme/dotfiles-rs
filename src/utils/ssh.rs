@@ -113,7 +113,7 @@ impl Config {
 impl BitOr for Config {
     type Output = Self;
 
-    #[cfg_attr(feature = "cargo-clippy", allow(cyclomatic_complexity))]
+    #[allow(clippy::cyclomatic_complexity)]
     fn bitor(self, rhs: Self) -> Self {
         let mut result = self.clone();
 
@@ -815,7 +815,7 @@ pub fn has_ssh() -> bool {
     }
 }
 
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+#[allow(clippy::needless_pass_by_value)]
 fn parse_config_char<S>(text: S) -> Option<char>
 where
     S: Into<String> + AsRef<str>,
@@ -823,7 +823,7 @@ where
     Some(text.as_ref().chars().next().unwrap_or('~'))
 }
 
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+#[allow(clippy::needless_pass_by_value)]
 fn parse_config_number<S>(text: S) -> Option<i32>
 where
     S: Into<String> + AsRef<str>,
@@ -834,7 +834,7 @@ where
     }
 }
 
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+#[allow(clippy::needless_pass_by_value)]
 fn parse_config_pathbuf<S>(text: S) -> Option<PathBuf>
 where
     S: Into<String> + AsRef<str>,
@@ -842,7 +842,7 @@ where
     Some(PathBuf::new().join(text.as_ref()))
 }
 
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+#[allow(clippy::needless_pass_by_value)]
 fn parse_config_strings<S>(text: S) -> Option<Vec<String>>
 where
     S: Into<String> + AsRef<str>,
@@ -862,7 +862,7 @@ where
     )
 }
 
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+#[allow(clippy::needless_pass_by_value)]
 fn parse_config_yesnoask<S>(text: S) -> Option<YesNoAsk>
 where
     S: Into<String> + AsRef<str>,
@@ -870,7 +870,7 @@ where
     Some(YesNoAsk::from(text.as_ref()))
 }
 
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+#[allow(clippy::needless_pass_by_value)]
 fn parse_config_yesnoduration<S>(text: S) -> Option<YesNoDuration>
 where
     S: Into<String> + AsRef<str>,

@@ -38,7 +38,7 @@ fn sync() -> task::Result {
     GHR_TASK.sync()
 }
 
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+#[allow(clippy::needless_pass_by_value)]
 fn trim_version(stdout: String) -> String {
     let line = stdout.lines().next().unwrap_or_default();
     let parts: Vec<&str> = line.splitn(2, ':').collect();

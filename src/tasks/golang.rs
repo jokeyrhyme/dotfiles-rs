@@ -28,7 +28,7 @@ pub fn task() -> Task {
     }
 }
 
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+#[allow(clippy::needless_pass_by_value)]
 fn install_golang<S>(version: S) -> task::Result
 where
     S: Into<String> + AsRef<str>,
