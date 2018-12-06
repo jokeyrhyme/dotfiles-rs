@@ -4,11 +4,6 @@ use crate::lib::{
     task::{self, Status, Task},
 };
 
-#[derive(Debug, Deserialize)]
-struct Config {
-    install: Vec<String>,
-}
-
 pub fn env(mut exports: Exports) -> Exports {
     let dir = rust::bin_dir();
     if !exports.path.contains(&dir) {

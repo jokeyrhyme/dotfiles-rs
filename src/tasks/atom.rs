@@ -1,5 +1,6 @@
 use std::{fs, io, str};
 
+use serde_derive::Deserialize;
 use toml;
 
 use crate::lib::{

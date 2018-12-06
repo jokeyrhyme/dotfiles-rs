@@ -3,6 +3,7 @@ use std::env::consts::{ARCH, OS};
 use std::path::PathBuf;
 use std::string::String;
 
+use serde_derive::Deserialize;
 use serde_json;
 
 use crate::lib::version;

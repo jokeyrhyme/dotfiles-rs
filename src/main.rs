@@ -1,21 +1,3 @@
-extern crate cabot;
-extern crate clap;
-extern crate colored;
-extern crate dirs;
-extern crate inflector;
-extern crate libflate;
-extern crate mktemp;
-extern crate regex;
-extern crate serde;
-#[macro_use]
-extern crate serde_derive;
-extern crate serde_json;
-extern crate tar;
-extern crate textwrap;
-extern crate toml;
-extern crate which;
-extern crate zip;
-
 use std::env::var;
 
 use clap::{App, SubCommand};

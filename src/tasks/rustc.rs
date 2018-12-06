@@ -5,11 +5,6 @@ use crate::lib::{
     task::{self, Status, Task},
 };
 
-#[derive(Debug, Deserialize)]
-struct Config {
-    install: Vec<String>,
-}
-
 const TOOLCHAINS: &[&str] = &["stable", "nightly"];
 
 pub fn task() -> Task {

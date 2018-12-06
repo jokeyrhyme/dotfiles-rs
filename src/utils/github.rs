@@ -7,6 +7,7 @@ use std::{
 };
 
 use cabot::request::Request;
+use serde_derive::Deserialize;
 use serde_json;
 
 use crate::lib::version;

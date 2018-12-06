@@ -1,6 +1,7 @@
 use std::{collections::HashMap, env::consts::OS, io, path::PathBuf, str};
 
 use regex;
+use serde_derive::Deserialize;
 
 use crate::{
     lib::{favourites::Favourites, rust::bin_dir},
