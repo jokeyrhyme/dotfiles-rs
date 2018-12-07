@@ -57,7 +57,7 @@ fn sync() -> task::Result {
     GHR_TASK.sync()
 }
 
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+#[allow(clippy::needless_pass_by_value)]
 fn trim_version(stdout: String) -> String {
     String::from(stdout.trim())
 }

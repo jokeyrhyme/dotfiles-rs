@@ -13,7 +13,7 @@ use mktemp;
 
 use crate::lib::task::{self, Status};
 
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+#[allow(clippy::needless_pass_by_value)]
 pub fn delete_if_exists<P>(path: P)
 where
     P: Into<PathBuf> + AsRef<Path> + Debug,
@@ -60,7 +60,7 @@ where
 }
 
 #[cfg(unix)]
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+#[allow(clippy::needless_pass_by_value)]
 pub fn set_executable<P>(target: P) -> std::io::Result<()>
 where
     P: Into<PathBuf> + AsRef<Path>,
@@ -72,7 +72,7 @@ where
 }
 
 #[cfg(not(unix))]
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+#[allow(clippy::needless_pass_by_value)]
 pub fn set_executable<P>(_target: P) -> std::io::Result<()>
 where
     P: Into<PathBuf> + AsRef<Path> + PartialEq,
@@ -80,7 +80,7 @@ where
     Ok(())
 }
 
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+#[allow(clippy::needless_pass_by_value)]
 pub fn symbolic_link_if_exists<P>(src: P, dest: P) -> task::Result
 where
     P: Into<PathBuf> + AsRef<Path> + Debug,
@@ -128,7 +128,7 @@ where
 }
 
 #[cfg(not(windows))]
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+#[allow(clippy::needless_pass_by_value)]
 fn symbolic_link<P>(src: P, dest: P) -> io::Result<()>
 where
     P: Into<PathBuf> + AsRef<Path>,
@@ -137,7 +137,7 @@ where
 }
 
 #[cfg(windows)]
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+#[allow(clippy::needless_pass_by_value)]
 fn symbolic_link<P>(src: P, dest: P) -> io::Result<()>
 where
     P: Into<PathBuf> + AsRef<Path>,
@@ -160,7 +160,7 @@ pub fn mkdtemp() -> io::Result<PathBuf> {
     Ok(temp_path)
 }
 
-pub fn mktemp() -> io::Result<PathBuf> {
+pub fn mkftemp() -> io::Result<PathBuf> {
     let temp_path;
     {
         let mut temp = mktemp::Temp::new_file()?;

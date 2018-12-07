@@ -81,7 +81,7 @@ impl<'a> From<&'a str> for Shell {
     }
 }
 
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+#[allow(clippy::needless_pass_by_value)]
 fn export_bash<S>(key: S, value: S) -> String
 where
     S: Into<String> + AsRef<str> + Display,
@@ -89,7 +89,7 @@ where
     format!("export {}={}", key, value)
 }
 
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+#[allow(clippy::needless_pass_by_value)]
 fn export_fish<S>(key: S, value: S) -> String
 where
     S: Into<String> + AsRef<str> + Display,
@@ -97,7 +97,7 @@ where
     format!("set --export {} {}", key, value)
 }
 
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+#[allow(clippy::needless_pass_by_value)]
 fn export_shell<S>(shell: &Shell, key: S, value: S) -> String
 where
     S: Into<String> + AsRef<str> + Display,
@@ -109,7 +109,7 @@ where
     }
 }
 
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+#[allow(clippy::needless_pass_by_value)]
 fn export_zsh<S>(key: S, value: S) -> String
 where
     S: Into<String> + AsRef<str> + Display,

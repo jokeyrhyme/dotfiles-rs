@@ -1,6 +1,7 @@
 use std::{collections::HashMap, env::consts::OS, io, path::PathBuf, str};
 
 use regex;
+use serde_derive::Deserialize;
 
 use crate::{
     lib::{favourites::Favourites, rust::bin_dir},
@@ -60,7 +61,7 @@ pub fn has_cargo() -> bool {
     }
 }
 
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+#[allow(clippy::needless_pass_by_value)]
 pub fn cargo<S>(args: &[S]) -> io::Result<()>
 where
     S: Into<String> + AsRef<str>,
@@ -68,7 +69,7 @@ where
     command_spawn_wait(cargo_exe(), args).map(|_| ())
 }
 
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+#[allow(clippy::needless_pass_by_value)]
 pub fn cargo_output<S>(args: &[S]) -> io::Result<String>
 where
     S: Into<String> + AsRef<str>,
@@ -78,7 +79,8 @@ where
         "{}\n{}",
         String::from_utf8_lossy(&output.stdout).trim(),
         String::from_utf8_lossy(&output.stderr).trim(),
-    ).to_string())
+    )
+    .to_string())
 }
 
 fn cargo_exe() -> PathBuf {
@@ -89,7 +91,7 @@ fn cargo_exe() -> PathBuf {
     })
 }
 
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+#[allow(clippy::needless_pass_by_value)]
 fn parse_installed<S>(stdout: S) -> HashMap<String, String>
 where
     S: Into<String> + AsRef<str>,
@@ -128,9 +130,9 @@ rustsym v0.3.2:
             (String::from("rustfmt"), String::from("0.10.0")),
             (String::from("rustsym"), String::from("0.3.2")),
         ]
-            .iter()
-            .cloned()
-            .collect();
+        .iter()
+        .cloned()
+        .collect();
         assert_eq!(want, parse_installed(input));
     }
 }

@@ -2,6 +2,7 @@
 name = "jokeyrhyme-dotfiles"
 description = "read my dotfiles repository and do stuff"
 version = "0.25.0"
+edition = "2018"
 authors = ["Ron Waldon <jokeyrhyme@gmail.com>"]
 documentation = "https://github.com/jokeyrhyme/dotfiles-rs#readme"
 homepage = "https://github.com/jokeyrhyme/dotfiles-rs"

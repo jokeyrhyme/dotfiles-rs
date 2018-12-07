@@ -6,7 +6,7 @@ use crate::lib::{
 };
 use crate::utils::{
     self,
-    fs::mktemp,
+    fs::mkftemp,
     golang::{arch, bin_dir, os},
 };
 
@@ -28,7 +28,7 @@ pub fn task() -> Task {
     }
 }
 
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+#[allow(clippy::needless_pass_by_value)]
 fn install_golang<S>(version: S) -> task::Result
 where
     S: Into<String> + AsRef<str>,
@@ -39,7 +39,7 @@ where
         "absent".to_string()
     };
 
-    let temp_path = mktemp()?;
+    let temp_path = mkftemp()?;
 
     let remote_url = format!(
         "https://dl.google.com/go/{}.{}-{}.{}",

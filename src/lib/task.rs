@@ -39,9 +39,9 @@ pub enum Status {
     Changed(String, String), // finished, with details
     NoChange(String),        // finished, with details
 
-    // TODO: support async with below statuses
-    // InProgress,              // started, not finished yet
-    // Pending,                 // has not started yet
+                             // TODO: support async with below statuses
+                             // InProgress,              // started, not finished yet
+                             // Pending,                 // has not started yet
 }
 impl fmt::Display for Status {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {

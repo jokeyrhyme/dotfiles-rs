@@ -3,6 +3,7 @@ use std::env::consts::{ARCH, OS};
 use std::path::PathBuf;
 use std::string::String;
 
+use serde_derive::Deserialize;
 use serde_json;
 
 use crate::lib::version;
@@ -89,16 +90,17 @@ pub fn latest_version() -> String {
     let latest_release: &Release = releases
         .iter()
         .find(|r| {
-            version::is_stable(r.version.as_str()) && !r.files.is_empty() && r.files.iter().any(
-                |f| {
+            version::is_stable(r.version.as_str())
+                && !r.files.is_empty()
+                && r.files.iter().any(|f| {
                     f.starts_with(&format!(
                         "{}-{}",
                         utils::nodejs::release_os(),
                         utils::nodejs::arch()
                     ))
-                },
-            )
-        }).unwrap();
+                })
+        })
+        .unwrap();
 
     String::from(latest_release.version.as_str().trim())
 }

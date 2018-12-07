@@ -21,7 +21,7 @@ pub fn task() -> Task {
     }
 }
 
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+#[allow(clippy::needless_pass_by_value)]
 fn cargo_latest_version<S>(krate: S) -> Result<String, String>
 where
     S: Into<String> + AsRef<str>,
@@ -115,7 +115,8 @@ fn update() -> task::Result {
                 }
                 Err(_) => None,
             },
-        ).collect();
+        )
+        .collect();
 
     if outdated.is_empty() {
         return Ok(Status::Done);

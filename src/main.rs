@@ -1,21 +1,3 @@
-extern crate cabot;
-extern crate clap;
-extern crate colored;
-extern crate dirs;
-extern crate inflector;
-extern crate libflate;
-extern crate mktemp;
-extern crate regex;
-extern crate serde;
-#[macro_use]
-extern crate serde_derive;
-extern crate serde_json;
-extern crate tar;
-extern crate textwrap;
-extern crate toml;
-extern crate which;
-extern crate zip;
-
 use std::env::var;
 
 use clap::{App, SubCommand};
@@ -56,7 +38,8 @@ fn main() {
         .subcommand(
             SubCommand::with_name("all")
                 .about("sync / update my settings and packages on this computer"),
-        ).subcommand(SubCommand::with_name("env").about("export generated environment variables"))
+        )
+        .subcommand(SubCommand::with_name("env").about("export generated environment variables"))
         .get_matches();
 
     if let Some(_matches) = matches.subcommand_matches("all") {

@@ -12,7 +12,7 @@ pub fn task() -> Task {
 }
 
 fn sync() -> task::Result {
-    if OS == "windows" {
+    if OS != "windows" {
         return Ok(Status::Skipped);
     }
 

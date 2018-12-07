@@ -45,7 +45,8 @@ fn asset_filter(asset: &Asset) -> bool {
         } else {
             r"\.tar\.gz"
         }
-    )).unwrap();
+    ))
+    .unwrap();
 
     re.is_match(&asset.name)
 }
@@ -63,7 +64,7 @@ fn sync() -> task::Result {
     GHRA_TASK.sync()
 }
 
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+#[allow(clippy::needless_pass_by_value)]
 fn trim_version(stdout: String) -> String {
     String::from(stdout.trim())
 }

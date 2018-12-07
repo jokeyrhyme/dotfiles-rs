@@ -1,5 +1,7 @@
 use std::{env::consts::EXE_SUFFIX, io, path::PathBuf};
 
+use serde_derive::Deserialize;
+
 use crate::{
     lib::favourites::Favourites,
     utils::{fs::delete_if_exists, golang::gopath, process::command_spawn_wait},
@@ -28,15 +30,12 @@ impl Favourites for GoGetFavourites {
             delete_if_exists(src);
             // TODO: cleanup empty ancestor directories, too
 
-            match p.file_name() {
-                Some(f) => {
-                    let bin =
-                        gopath()
-                            .join("bin")
-                            .join(format!("{}{}", f.to_string_lossy(), EXE_SUFFIX));
-                    delete_if_exists(bin);
-                }
-                None => {}
+            if let Some(f) = p.file_name() {
+                let bin =
+                    gopath()
+                        .join("bin")
+                        .join(format!("{}{}", f.to_string_lossy(), EXE_SUFFIX));
+                delete_if_exists(bin);
             }
         }
         Ok(())
@@ -72,7 +71,7 @@ impl Favourites for GoGetFavourites {
     }
 }
 
-#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+#[allow(clippy::needless_pass_by_value)]
 fn pkg_found<S>(pkg: S) -> bool
 where
     S: Into<String> + AsRef<str>,
