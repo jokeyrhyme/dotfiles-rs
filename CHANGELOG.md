@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.26.0] - 2018-12-09
+
 ### Added
 
 - googlecloudsdk: keep [Google Cloud SDK](https://github.com/google-cloud-sdk/google-cloud-sdk) `sync`ed and `update`d (fixes #154)
