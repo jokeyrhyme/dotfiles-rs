@@ -14,6 +14,7 @@ mod gitleaks;
 mod gitsizer;
 mod goget;
 mod golang;
+mod googlecloudsdk;
 mod hadolint;
 mod hyper;
 mod jq;
@@ -41,6 +42,7 @@ mod zsh;
 pub fn env() -> Exports {
     let mut exports: Exports = Default::default();
     exports = golang::env(exports);
+    exports = googlecloudsdk::env(exports);
     exports = local::env(exports);
     exports = nodejs::env(exports);
     exports = rustup::env(exports);
@@ -128,7 +130,8 @@ fn tasks() -> Vec<Task> {
         atom::task(),
         #[cfg(not(windows))]
         bash::task(), // deps: config
-        git::task(),   // deps: nodejs/npm
+        git::task(), // deps: nodejs/npm
+        googlecloudsdk::task(),
         hyper::task(), // deps: config
         #[cfg(target_os = "macos")]
         macos::task(),
