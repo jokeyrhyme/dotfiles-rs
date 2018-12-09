@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- googlecloudsdk: keep [Google Cloud SDK](https://github.com/google-cloud-sdk/google-cloud-sdk) `sync`ed and `update`d (fixes #154)
+
 ### Changed
 
 - check OS at runtime rather than at compile time in more places
