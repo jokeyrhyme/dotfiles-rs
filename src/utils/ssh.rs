@@ -286,22 +286,22 @@ where
                 "CanonicalisePermittedCNAMEs" => {
                     target.CanonicalisePermittedCNAMEs = Some(YesNo::from(value))
                 }
-                "CertificateFile" => target.CertificateFile = parse_config_pathbuf(value),
+                "CertificateFile" => target.CertificateFile = parse_pathbuf(value),
                 "ChallengeResponseAuthentication" => {
                     target.ChallengeResponseAuthentication = Some(YesNo::from(value))
                 }
                 "CheckHostIP" => target.CheckHostIP = Some(YesNo::from(value)),
-                "Ciphers" => target.Ciphers = parse_config_strings(value),
+                "Ciphers" => target.Ciphers = parse_strings(value),
                 "ClearAllForwardings" => target.ClearAllForwardings = Some(YesNo::from(value)),
                 "Compression" => target.Compression = Some(YesNo::from(value)),
-                "ConnectionAttempts" => target.ConnectionAttempts = parse_config_number(value),
-                "ConnectTimeout" => target.ConnectTimeout = parse_config_number(value),
+                "ConnectionAttempts" => target.ConnectionAttempts = parse_number(value),
+                "ConnectTimeout" => target.ConnectTimeout = parse_number(value),
                 "ControlMaster" => target.ControlMaster = Some(YesNoAskAutoAutoAsk::from(value)),
-                "ControlPath" => target.ControlPath = parse_config_pathbuf(value),
+                "ControlPath" => target.ControlPath = parse_pathbuf(value),
                 "ControlPersist" => target.ControlPersist = Some(YesNoDuration::from(value)),
                 "DynamicForward" => target.DynamicForward = Some(value),
                 "EnableSSHKeysing" => target.EnableSSHKeysing = Some(YesNo::from(value)),
-                "EscapeChar" => target.EscapeChar = parse_config_char(value),
+                "EscapeChar" => target.EscapeChar = parse_char(value),
                 "ExitOnForwardFailure" => target.ExitOnForwardFailure = Some(YesNo::from(value)),
                 "FingerprintHash" => target.FingerprintHash = Some(value),
                 "ForwardAgent" => target.ForwardAgent = Some(YesNo::from(value)),
@@ -309,7 +309,7 @@ where
                 "ForwardX11Timeout" => target.ForwardX11Timeout = Some(Duration::from(value)),
                 "ForwardX11Trusted" => target.ForwardX11Trusted = Some(YesNo::from(value)),
                 "GatewayPorts" => target.GatewayPorts = Some(YesNo::from(value)),
-                "GlobalKnownHostsFile" => target.GlobalKnownHostsFile = parse_config_pathbuf(value),
+                "GlobalKnownHostsFile" => target.GlobalKnownHostsFile = parse_pathbuf(value),
                 "GSSAPIAuthentication" => target.GSSAPIAuthentication = Some(YesNo::from(value)),
                 "GSSAPIDelegateCredentials" => {
                     target.GSSAPIDelegateCredentials = Some(YesNo::from(value))
@@ -324,7 +324,7 @@ where
                 "Hostname" => target.Hostname = Some(value),
                 "IdentitiesOnly" => target.IdentitiesOnly = Some(YesNo::from(value)),
                 "IdentityAgent" => target.IdentityAgent = Some(value),
-                "IdentityFile" => target.IdentityFile = parse_config_pathbuf(value),
+                "IdentityFile" => target.IdentityFile = parse_pathbuf(value),
                 "IgnoreUnknown" => target.IgnoreUnknown = Some(value),
                 "Include" => target.Include = Some(value),
                 "IPQoS" => target.IPQoS = Some(value),
@@ -332,23 +332,21 @@ where
                     target.KbdInteractiveAuthentication = Some(YesNo::from(value))
                 }
                 "KbdInteractiveDevices" => target.KbdInteractiveDevices = Some(value),
-                "KexAlgorithms" => target.KexAlgorithms = parse_config_strings(value),
+                "KexAlgorithms" => target.KexAlgorithms = parse_strings(value),
                 "LocalCommand" => target.LocalCommand = Some(value),
                 "LocalForward" => target.LocalForward = Some(value),
                 "LogLevel" => target.LogLevel = Some(value),
-                "MACs" => target.MACs = parse_config_strings(value),
+                "MACs" => target.MACs = parse_strings(value),
                 "NoHostAuthenticationForLocalhost" => {
                     target.NoHostAuthenticationForLocalhost = Some(YesNo::from(value))
                 }
-                "NumberOfPasswordPrompts" => {
-                    target.NumberOfPasswordPrompts = parse_config_number(value)
-                }
+                "NumberOfPasswordPrompts" => target.NumberOfPasswordPrompts = parse_number(value),
                 "PasswordAuthentication" => {
                     target.PasswordAuthentication = Some(YesNo::from(value))
                 }
                 "PermitLocalCommand" => target.PermitLocalCommand = Some(YesNo::from(value)),
                 "PKCS11Provider" => target.PKCS11Provider = Some(value),
-                "Port" => target.Port = parse_config_number(value),
+                "Port" => target.Port = parse_number(value),
                 "PreferredAuthentications" => target.PreferredAuthentications = Some(value),
                 "ProxyCommand" => target.ProxyCommand = Some(value),
                 "ProxyJump" => target.ProxyJump = Some(value),
@@ -361,8 +359,8 @@ where
                 "RequestTTY" => target.RequestTTY = Some(value),
                 "RevokedHostKeys" => target.RevokedHostKeys = Some(value),
                 "SendEnv" => target.SendEnv = Some(value),
-                "ServerAliveCountMax" => target.ServerAliveCountMax = parse_config_number(value),
-                "ServerAliveInterval" => target.ServerAliveInterval = parse_config_number(value),
+                "ServerAliveCountMax" => target.ServerAliveCountMax = parse_number(value),
+                "ServerAliveInterval" => target.ServerAliveInterval = parse_number(value),
                 "StreamLocalBindMask" => target.StreamLocalBindMask = Some(value),
                 "StreamLocalBindUnlink" => target.StreamLocalBindUnlink = Some(YesNo::from(value)),
                 "StrictHostKeyChecking" => {
@@ -375,10 +373,10 @@ where
                 "UpdateHostKeys" => target.UpdateHostKeys = Some(YesNoAsk::from(value)),
                 "UsePrivilegedPort" => target.UsePrivilegedPort = Some(YesNo::from(value)),
                 "User" => target.User = Some(value),
-                "UserKnownHostsFile" => target.UserKnownHostsFile = parse_config_pathbuf(value),
+                "UserKnownHostsFile" => target.UserKnownHostsFile = parse_pathbuf(value),
                 "VerifyHostKeyDNS" => target.VerifyHostKeyDNS = Some(YesNoAsk::from(value)),
                 "VisualHostKey" => target.VisualHostKey = Some(YesNo::from(value)),
-                "XAuthLocation" => target.XAuthLocation = parse_config_pathbuf(value),
+                "XAuthLocation" => target.XAuthLocation = parse_pathbuf(value),
                 _ => {}
             }
         }
@@ -388,215 +386,120 @@ where
 }
 
 impl<'a> From<&'a Config> for String {
-    fn from(source: &Config) -> String {
-        let mut result = String::from("");
+    fn from(src: &Config) -> String {
+        let mut result: String = [
+            format("AddKeysToAgent", &src.AddKeysToAgent),
+            format("AddressFamily", &src.AddressFamily),
+            format("BatchMode", &src.BatchMode),
+            format("BindAddress", &src.BindAddress),
+            format("BindInterface", &src.BindInterface),
+            format("CanonicalDomains", &src.CanonicalDomains),
+            format("CanonicalizeFallbackLocal", &src.CanonicalizeFallbackLocal),
+            format("CanonicalizeHostname", &src.CanonicalizeHostname),
+            format("CanonicalizeMaxDots", &src.CanonicalizeMaxDots),
+            format(
+                "CanonicalisePermittedCNAMEs",
+                &src.CanonicalisePermittedCNAMEs,
+            ),
+            format_pathbuf(&"CertificateFile", &src.CertificateFile),
+            format(
+                "ChallengeResponseAuthentication",
+                &src.ChallengeResponseAuthentication,
+            ),
+            format("CheckHostIP", &src.CheckHostIP),
+            format_strings(&"Ciphers", &src.Ciphers),
+            format("ClearAllForwardings", &src.ClearAllForwardings),
+            format("Compression", &src.Compression),
+            format("ConnectionAttempts", &src.ConnectionAttempts),
+            format("ConnectTimeout", &src.ConnectTimeout),
+            format("ControlMaster", &src.ControlMaster),
+            format_pathbuf(&"ControlPath", &src.ControlPath),
+            format("ControlPersist", &src.ControlPersist),
+            format("DynamicForward", &src.DynamicForward),
+            format("EnableSSHKeysing", &src.EnableSSHKeysing),
+            format("EscapeChar", &src.EscapeChar),
+            format("ExitOnForwardFailure", &src.ExitOnForwardFailure),
+            format("FingerprintHash", &src.FingerprintHash),
+            format("ForwardAgent", &src.ForwardAgent),
+            format("ForwardX11", &src.ForwardX11),
+            format("ForwardX11Timeout", &src.ForwardX11Timeout),
+            format("ForwardX11Trusted", &src.ForwardX11Trusted),
+            format("GatewayPorts", &src.GatewayPorts),
+            format_pathbuf(&"GlobalKnownHostsFile", &src.GlobalKnownHostsFile),
+            format("GSSAPIAuthentication", &src.GSSAPIAuthentication),
+            format("GSSAPIDelegateCredentials", &src.GSSAPIDelegateCredentials),
+            format("HashKnownHosts", &src.HashKnownHosts),
+            format("HostbasedAuthentication", &src.HostbasedAuthentication),
+            format("HostbasedKeyTypes", &src.HostbasedKeyTypes),
+            format("HostKeyAlgorithms", &src.HostKeyAlgorithms),
+            format("HostKeyAlias", &src.HostKeyAlias),
+            format("Hostname", &src.Hostname),
+            format("IdentitiesOnly", &src.IdentitiesOnly),
+            format("IdentityAgent", &src.IdentityAgent),
+            format_pathbuf(&"IdentityFile", &src.IdentityFile),
+            format("IgnoreUnknown", &src.IgnoreUnknown),
+            format("Include", &src.Include),
+            format("IPQoS", &src.IPQoS),
+            format(
+                "KbdInteractiveAuthentication",
+                &src.KbdInteractiveAuthentication,
+            ),
+            format("KbdInteractiveDevices", &src.KbdInteractiveDevices),
+            format_strings(&"KexAlgorithms", &src.KexAlgorithms),
+            format("LocalCommand", &src.LocalCommand),
+            format("LocalForward", &src.LocalForward),
+            format("LogLevel", &src.LogLevel),
+            format_strings(&"MACs", &src.MACs),
+            format(
+                "NoHostAuthenticationForLocalhost",
+                &src.NoHostAuthenticationForLocalhost,
+            ),
+            format("NumberOfPasswordPrompts", &src.NumberOfPasswordPrompts),
+            format("PasswordAuthentication", &src.PasswordAuthentication),
+            format("PermitLocalCommand", &src.PermitLocalCommand),
+            format("PKCS11Provider", &src.PKCS11Provider),
+            format("Port", &src.Port),
+            format("PreferredAuthentications", &src.PreferredAuthentications),
+            format("ProxyCommand", &src.ProxyCommand),
+            format("ProxyJump", &src.ProxyJump),
+            format("ProxyUseFdpass", &src.ProxyUseFdpass),
+            format("PubkeyAcceptedKeyTypes", &src.PubkeyAcceptedKeyTypes),
+            format("PubkeyAuthentication", &src.PubkeyAuthentication),
+            format("RekeyLimit", &src.RekeyLimit),
+            format("RemoteCommand", &src.RemoteCommand),
+            format("RemoteForward", &src.RemoteForward),
+            format("RequestTTY", &src.RequestTTY),
+            format("RevokedHostKeys", &src.RevokedHostKeys),
+            format("SendEnv", &src.SendEnv),
+            format("ServerAliveCountMax", &src.ServerAliveCountMax),
+            format("ServerAliveInterval", &src.ServerAliveInterval),
+            format("StreamLocalBindMask", &src.StreamLocalBindMask),
+            format("StreamLocalBindUnlink", &src.StreamLocalBindUnlink),
+            format("StrictHostKeyChecking", &src.StrictHostKeyChecking),
+            format("SyslogFacility", &src.SyslogFacility),
+            format("TCPKeepAlive", &src.TCPKeepAlive),
+            format("Tunnel", &src.Tunnel),
+            format("TunnelDevice", &src.TunnelDevice),
+            format("UpdateHostKeys", &src.UpdateHostKeys),
+            format("UsePrivilegedPort", &src.UsePrivilegedPort),
+            format("User", &src.User),
+            format_pathbuf(&"UserKnownHostsFile", &src.UserKnownHostsFile),
+            format("VerifyHostKeyDNS", &src.VerifyHostKeyDNS),
+            format("VisualHostKey", &src.VisualHostKey),
+            format_pathbuf(&"XAuthLocation", &src.XAuthLocation),
+        ]
+        .join("");
 
-        result.push_str(&format_config("AddKeysToAgent", &source.AddKeysToAgent));
-        result.push_str(&format_config("AddressFamily", &source.AddressFamily));
-        result.push_str(&format_config("BatchMode", &source.BatchMode));
-        result.push_str(&format_config("BindAddress", &source.BindAddress));
-        result.push_str(&format_config("BindInterface", &source.BindInterface));
-        result.push_str(&format_config("CanonicalDomains", &source.CanonicalDomains));
-        result.push_str(&format_config(
-            "CanonicalizeFallbackLocal",
-            &source.CanonicalizeFallbackLocal,
-        ));
-        result.push_str(&format_config(
-            "CanonicalizeHostname",
-            &source.CanonicalizeHostname,
-        ));
-        result.push_str(&format_config(
-            "CanonicalizeMaxDots",
-            &source.CanonicalizeMaxDots,
-        ));
-        result.push_str(&format_config(
-            "CanonicalisePermittedCNAMEs",
-            &source.CanonicalisePermittedCNAMEs,
-        ));
-        result.push_str(&format_config_pathbuf(
-            &"CertificateFile",
-            &source.CertificateFile,
-        ));
-        result.push_str(&format_config(
-            "ChallengeResponseAuthentication",
-            &source.ChallengeResponseAuthentication,
-        ));
-        result.push_str(&format_config("CheckHostIP", &source.CheckHostIP));
-        result.push_str(&format_config_strings(&"Ciphers", &source.Ciphers));
-        result.push_str(&format_config(
-            "ClearAllForwardings",
-            &source.ClearAllForwardings,
-        ));
-        result.push_str(&format_config("Compression", &source.Compression));
-        result.push_str(&format_config(
-            "ConnectionAttempts",
-            &source.ConnectionAttempts,
-        ));
-        result.push_str(&format_config("ConnectTimeout", &source.ConnectTimeout));
-        result.push_str(&format_config("ControlMaster", &source.ControlMaster));
-        result.push_str(&format_config_pathbuf(&"ControlPath", &source.ControlPath));
-        result.push_str(&format_config("ControlPersist", &source.ControlPersist));
-        result.push_str(&format_config("DynamicForward", &source.DynamicForward));
-        result.push_str(&format_config("EnableSSHKeysing", &source.EnableSSHKeysing));
-        result.push_str(&format_config("EscapeChar", &source.EscapeChar));
-        result.push_str(&format_config(
-            "ExitOnForwardFailure",
-            &source.ExitOnForwardFailure,
-        ));
-        result.push_str(&format_config("FingerprintHash", &source.FingerprintHash));
-        result.push_str(&format_config("ForwardAgent", &source.ForwardAgent));
-        result.push_str(&format_config("ForwardX11", &source.ForwardX11));
-        result.push_str(&format_config(
-            "ForwardX11Timeout",
-            &source.ForwardX11Timeout,
-        ));
-        result.push_str(&format_config(
-            "ForwardX11Trusted",
-            &source.ForwardX11Trusted,
-        ));
-        result.push_str(&format_config("GatewayPorts", &source.GatewayPorts));
-        result.push_str(&format_config_pathbuf(
-            &"GlobalKnownHostsFile",
-            &source.GlobalKnownHostsFile,
-        ));
-        result.push_str(&format_config(
-            "GSSAPIAuthentication",
-            &source.GSSAPIAuthentication,
-        ));
-        result.push_str(&format_config(
-            "GSSAPIDelegateCredentials",
-            &source.GSSAPIDelegateCredentials,
-        ));
-        result.push_str(&format_config("HashKnownHosts", &source.HashKnownHosts));
-        result.push_str(&format_config(
-            "HostbasedAuthentication",
-            &source.HostbasedAuthentication,
-        ));
-        result.push_str(&format_config(
-            "HostbasedKeyTypes",
-            &source.HostbasedKeyTypes,
-        ));
-        result.push_str(&format_config(
-            "HostKeyAlgorithms",
-            &source.HostKeyAlgorithms,
-        ));
-        result.push_str(&format_config("HostKeyAlias", &source.HostKeyAlias));
-        result.push_str(&format_config("Hostname", &source.Hostname));
-        result.push_str(&format_config("IdentitiesOnly", &source.IdentitiesOnly));
-        result.push_str(&format_config("IdentityAgent", &source.IdentityAgent));
-        result.push_str(&format_config_pathbuf(
-            &"IdentityFile",
-            &source.IdentityFile,
-        ));
-        result.push_str(&format_config("IgnoreUnknown", &source.IgnoreUnknown));
-        result.push_str(&format_config("Include", &source.Include));
-        result.push_str(&format_config("IPQoS", &source.IPQoS));
-        result.push_str(&format_config(
-            "KbdInteractiveAuthentication",
-            &source.KbdInteractiveAuthentication,
-        ));
-        result.push_str(&format_config(
-            "KbdInteractiveDevices",
-            &source.KbdInteractiveDevices,
-        ));
-        result.push_str(&format_config_strings(
-            &"KexAlgorithms",
-            &source.KexAlgorithms,
-        ));
-        result.push_str(&format_config("LocalCommand", &source.LocalCommand));
-        result.push_str(&format_config("LocalForward", &source.LocalForward));
-        result.push_str(&format_config("LogLevel", &source.LogLevel));
-        result.push_str(&format_config_strings(&"MACs", &source.MACs));
-        result.push_str(&format_config(
-            "NoHostAuthenticationForLocalhost",
-            &source.NoHostAuthenticationForLocalhost,
-        ));
-        result.push_str(&format_config(
-            "NumberOfPasswordPrompts",
-            &source.NumberOfPasswordPrompts,
-        ));
-        result.push_str(&format_config(
-            "PasswordAuthentication",
-            &source.PasswordAuthentication,
-        ));
-        result.push_str(&format_config(
-            "PermitLocalCommand",
-            &source.PermitLocalCommand,
-        ));
-        result.push_str(&format_config("PKCS11Provider", &source.PKCS11Provider));
-        result.push_str(&format_config("Port", &source.Port));
-        result.push_str(&format_config(
-            "PreferredAuthentications",
-            &source.PreferredAuthentications,
-        ));
-        result.push_str(&format_config("ProxyCommand", &source.ProxyCommand));
-        result.push_str(&format_config("ProxyJump", &source.ProxyJump));
-        result.push_str(&format_config("ProxyUseFdpass", &source.ProxyUseFdpass));
-        result.push_str(&format_config(
-            "PubkeyAcceptedKeyTypes",
-            &source.PubkeyAcceptedKeyTypes,
-        ));
-        result.push_str(&format_config(
-            "PubkeyAuthentication",
-            &source.PubkeyAuthentication,
-        ));
-        result.push_str(&format_config("RekeyLimit", &source.RekeyLimit));
-        result.push_str(&format_config("RemoteCommand", &source.RemoteCommand));
-        result.push_str(&format_config("RemoteForward", &source.RemoteForward));
-        result.push_str(&format_config("RequestTTY", &source.RequestTTY));
-        result.push_str(&format_config("RevokedHostKeys", &source.RevokedHostKeys));
-        result.push_str(&format_config("SendEnv", &source.SendEnv));
-        result.push_str(&format_config(
-            "ServerAliveCountMax",
-            &source.ServerAliveCountMax,
-        ));
-        result.push_str(&format_config(
-            "ServerAliveInterval",
-            &source.ServerAliveInterval,
-        ));
-        result.push_str(&format_config(
-            "StreamLocalBindMask",
-            &source.StreamLocalBindMask,
-        ));
-        result.push_str(&format_config(
-            "StreamLocalBindUnlink",
-            &source.StreamLocalBindUnlink,
-        ));
-        result.push_str(&format_config(
-            "StrictHostKeyChecking",
-            &source.StrictHostKeyChecking,
-        ));
-        result.push_str(&format_config("SyslogFacility", &source.SyslogFacility));
-        result.push_str(&format_config("TCPKeepAlive", &source.TCPKeepAlive));
-        result.push_str(&format_config("Tunnel", &source.Tunnel));
-        result.push_str(&format_config("TunnelDevice", &source.TunnelDevice));
-        result.push_str(&format_config("UpdateHostKeys", &source.UpdateHostKeys));
-        result.push_str(&format_config(
-            "UsePrivilegedPort",
-            &source.UsePrivilegedPort,
-        ));
-        result.push_str(&format_config("User", &source.User));
-        result.push_str(&format_config_pathbuf(
-            &"UserKnownHostsFile",
-            &source.UserKnownHostsFile,
-        ));
-        result.push_str(&format_config("VerifyHostKeyDNS", &source.VerifyHostKeyDNS));
-        result.push_str(&format_config("VisualHostKey", &source.VisualHostKey));
-        result.push_str(&format_config_pathbuf(
-            &"XAuthLocation",
-            &source.XAuthLocation,
-        ));
-
-        let host_keys = source.Hosts.keys();
+        let host_keys = src.Hosts.keys();
         let mut sorted_host_keys: Vec<&String> = host_keys.collect();
         sorted_host_keys.sort();
         for h in sorted_host_keys {
-            let h_config = &source.Hosts[h];
+            let h_config = &src.Hosts[h];
             result.push_str(&format!("\nHost {}\n", h));
             result.push_str(textwrap::indent(String::from(h_config).as_str(), &"  ").as_str());
         }
 
-        for (m, m_config) in &source.Matches {
+        for (m, m_config) in &src.Matches {
             result.push_str(&format!("\nMatch {}\n", m));
             result.push_str(textwrap::indent(String::from(m_config).as_str(), &"  ").as_str());
         }
@@ -612,7 +515,7 @@ enum Section {
     Match,
 }
 
-fn format_config<D, S>(key: S, value: &Option<D>) -> String
+fn format<D, S>(key: S, value: &Option<D>) -> String
 where
     D: Display,
     S: Into<String> + AsRef<str>,
@@ -623,14 +526,14 @@ where
     }
 }
 
-fn format_config_pathbuf(key: &str, value: &Option<PathBuf>) -> String {
+fn format_pathbuf(key: &str, value: &Option<PathBuf>) -> String {
     match value {
         Some(v) => format!("{} {}\n", key, v.display()),
         None => String::from(""),
     }
 }
 
-fn format_config_strings(key: &str, value: &Option<Vec<String>>) -> String {
+fn format_strings(key: &str, value: &Option<Vec<String>>) -> String {
     match value {
         Some(v) => format!("{} {}\n", key, v.join(",")),
         None => String::from(""),
@@ -642,7 +545,7 @@ pub fn has_ssh() -> bool {
 }
 
 #[allow(clippy::needless_pass_by_value)]
-fn parse_config_char<S>(text: S) -> Option<char>
+fn parse_char<S>(text: S) -> Option<char>
 where
     S: Into<String> + AsRef<str>,
 {
@@ -650,7 +553,7 @@ where
 }
 
 #[allow(clippy::needless_pass_by_value)]
-fn parse_config_number<S>(text: S) -> Option<i32>
+fn parse_number<S>(text: S) -> Option<i32>
 where
     S: Into<String> + AsRef<str>,
 {
@@ -661,7 +564,7 @@ where
 }
 
 #[allow(clippy::needless_pass_by_value)]
-fn parse_config_pathbuf<S>(text: S) -> Option<PathBuf>
+fn parse_pathbuf<S>(text: S) -> Option<PathBuf>
 where
     S: Into<String> + AsRef<str>,
 {
@@ -669,7 +572,7 @@ where
 }
 
 #[allow(clippy::needless_pass_by_value)]
-fn parse_config_strings<S>(text: S) -> Option<Vec<String>>
+fn parse_strings<S>(text: S) -> Option<Vec<String>>
 where
     S: Into<String> + AsRef<str>,
 {
