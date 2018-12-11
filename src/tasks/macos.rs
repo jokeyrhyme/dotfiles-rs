@@ -1,5 +1,9 @@
-use lib::task::{self, Status, Task};
-use utils;
+use std::env::consts::OS;
+
+use crate::{
+    lib::task::{self, Status, Task},
+    utils,
+};
 
 pub fn task() -> Task {
     Task {
@@ -10,13 +14,13 @@ pub fn task() -> Task {
 }
 
 fn sync() -> task::Result {
-    match utils::process::command_spawn_wait("qlmanage", &["-d", "1", "-r", "cache"]) {
-        Ok(_) => Ok(Status::Done),
-        Err(error) => Err(task::Error::IOError(
-            "unable to wipe Quick Look cache".to_string(),
-            error,
-        )),
+    if OS != "macos" {
+        return Ok(Status::Skipped);
     }
+
+    utils::process::command_spawn_wait("qlmanage", &["-d", "1", "-r", "cache"])?;
+
+    Ok(Status::Done)
 }
 
 fn update() -> task::Result {

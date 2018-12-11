@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+- macOS: builds again (probably), yay (fixes #159)
+
 ## [0.26.0] - 2018-12-09
 
 ### Added

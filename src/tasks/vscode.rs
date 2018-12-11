@@ -42,7 +42,6 @@ fn exts_installed() -> Vec<String> {
 
 // fix self-update on macOS
 // https://github.com/Microsoft/vscode/issues/7426#issuecomment-277737150
-#[cfg(target_os = "macos")]
 fn fix_macos() {
     let app_dir = Path::new("/Applications/Visual Studio Code.app");
     if app_dir.is_dir() {
@@ -110,8 +109,9 @@ fn sync() -> task::Result {
         }
     }
 
-    #[cfg(target_os = "macos")]
-    fix_macos();
+    if OS == "macos" {
+        fix_macos();
+    }
 
     Ok(Status::Done)
 }
