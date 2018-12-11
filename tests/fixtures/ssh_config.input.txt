@@ -5,6 +5,8 @@ VisualHostKey yes
 
 # comment
 Host foo
+  ControlMaster auto
+  ControlPersist 30s
   Hostname foo.example
   Ciphers aes128-ctr,aes192-ctr,aes256-ctr
 

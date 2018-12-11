@@ -8,6 +8,8 @@ Host bar
 
 Host foo
   Ciphers aes128-ctr,aes192-ctr,aes256-ctr
+  ControlMaster auto
+  ControlPersist 30s
   Hostname foo.example
 
 Match exec true
