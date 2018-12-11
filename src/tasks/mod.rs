@@ -19,7 +19,6 @@ mod hadolint;
 mod hyper;
 mod jq;
 mod local;
-#[cfg(target_os = "macos")]
 mod macos;
 mod minikube;
 mod nodejs;
@@ -128,20 +127,17 @@ fn tasks() -> Vec<Task> {
     vec![
         alacritty::task(), // deps: config
         atom::task(),
-        #[cfg(not(windows))]
         bash::task(), // deps: config
-        git::task(), // deps: nodejs/npm
+        git::task(),  // deps: nodejs/npm
         googlecloudsdk::task(),
         hyper::task(), // deps: config
-        #[cfg(target_os = "macos")]
         macos::task(),
         psql::task(),   // deps: config
         ssh::task(),    // deps: config
         tmux::task(),   // deps: config
         vim::task(),    // deps: config; takes over the terminal
         vscode::task(), // deps: config
-        #[cfg(not(windows))]
-        zsh::task(), // deps: config
+        zsh::task(),    // deps: config
         windows::task(),
     ]
 }

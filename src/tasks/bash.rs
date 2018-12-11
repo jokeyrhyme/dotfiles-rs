@@ -1,5 +1,9 @@
-use crate::lib::task::{self, Status, Task};
-use crate::utils;
+use std::env::consts::OS;
+
+use crate::{
+    lib::task::{self, Status, Task},
+    utils,
+};
 
 pub fn task() -> Task {
     Task {
@@ -19,7 +23,7 @@ fn has_bash() -> bool {
 }
 
 fn sync() -> task::Result {
-    if !has_bash() {
+    if OS == "windows" || !has_bash() {
         return Ok(Status::Skipped);
     }
 
@@ -65,7 +69,7 @@ fn sync() -> task::Result {
 }
 
 fn update() -> task::Result {
-    if !has_bash() {
+    if OS == "windows" || !has_bash() {
         return Ok(Status::Skipped);
     }
 
