@@ -1,3 +1,6 @@
+pub const HOST: &str = "Host";
+pub const MATCH: &str = "Match";
+
 pub const ADDKEYSTOAGENT: &str = "AddKeysToAgent";
 pub const ADDRESSFAMILY: &str = "AddressFamily";
 pub const BATCHMODE: &str = "BatchMode";
@@ -7,7 +10,7 @@ pub const CANONICALDOMAINS: &str = "CanonicalDomains";
 pub const CANONICALIZEFALLBACKLOCAL: &str = "CanonicalizeFallbackLocal";
 pub const CANONICALIZEHOSTNAME: &str = "CanonicalizeHostname";
 pub const CANONICALIZEMAXDOTS: &str = "CanonicalizeMaxDots";
-pub const CANONICALISEPERMITTEDCNAMES: &str = "CanonicalisePermittedCNAMEs";
+pub const CANONICALIZEPERMITTEDCNAMES: &str = "CanonicalizePermittedCNAMEs";
 pub const CERTIFICATEFILE: &str = "CertificateFile";
 pub const CHALLENGERESPONSEAUTHENTICATION: &str = "ChallengeResponseAuthentication";
 pub const CHECKHOSTIP: &str = "CheckHostIP";
@@ -20,7 +23,7 @@ pub const CONTROLMASTER: &str = "ControlMaster";
 pub const CONTROLPATH: &str = "ControlPath";
 pub const CONTROLPERSIST: &str = "ControlPersist";
 pub const DYNAMICFORWARD: &str = "DynamicForward";
-pub const ENABLESSHKEYSING: &str = "EnableSSHKeysing";
+pub const ENABLESSHKEYSIGN: &str = "EnableSSHKeysign";
 pub const ESCAPECHAR: &str = "EscapeChar";
 pub const EXITONFORWARDFAILURE: &str = "ExitOnForwardFailure";
 pub const FINGERPRINTHASH: &str = "FingerprintHash";
