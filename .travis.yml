@@ -19,10 +19,15 @@ stages:
 
 jobs:
   include:
-    - stage: test
+    - name: build
+      stage: test
       script: cargo build --verbose
-    - script: make lint test
-    - stage: deploy
+    - name: lint
+      script: make lint
+    - name: test
+      script: make test
+    - name: deploy to crates.io
+      stage: deploy
       script: false
       deploy:
         on:
