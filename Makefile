@@ -17,5 +17,5 @@ lint:
 
 .NOCACHE: test
 test:
-	cargo test
+	RUST_BACKTRACE=1 cargo test
 
