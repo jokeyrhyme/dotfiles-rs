@@ -2,6 +2,11 @@ language: rust
 rust:
   - stable
 
+# cache trick from https://github.com/japaric/trust
+before_cache:
+  - chmod -R a+r $HOME/.cargo
+cache: cargo
+
 env:
   global:
     - secure: GxL8AeWbzT2fTwWZ/RhFl3HMCGeHc5LHK+SYSdf3S0WfxIyg+1LsekNx+QNqqA1iJjLrmWoyDfGoRkS7/46hkRKZ+kci61xDIU4JcpW8hwo5ANjJzGq0x+LCekkGjwQeaG92D2rRFOX+IOEkSZKWCWHj/xkLCydLGBHcICFenC+jWRjifbwVj2b38tWxhKFIMaKuATtHRIU1FwzqVW8kE3ROiuSpEK6Guo7QNNqh0Fj+z/cYzBmiE8i7nFC19yAUyfs2Zjv2hUntQlORQhO7cIE2dUXSr/5B6zvy/1e6uBAPDO+hWn6mbSBHRIAs6GzPQV4kb6taNpih30g7g51OSW6TQxIcMZzmhsJDh48cTTqN9TKaF8hNsVxgOIk7zs+MurustCWXFZwpC+us2fTd9mYNloW/u+wrRAlXTzKQtbQn7CDnjX+C9bLtWrr6RnP2V8cdfLEI0+V9LN4uCP4xEpyQkyXX6kFZXcAoe4LFrezUkNyDKvarR59qRHCIfWCeOde+Icoh/fAHgtUawqDrTHWTy4GcGaaFzVwSBA36+IjH5lMoR2lCdwxTjk/wVFBGBKjwzqfxZSSwwx48sNQSt8H7QSvKMdqb98X2E4ZTrQnplT7tLMsdy8iF9VCbg4TqcDXeLcn5DE30yZIpTzrRPGlwHlBiKLdnUvJHrwe6wKY=
