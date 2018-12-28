@@ -20,7 +20,7 @@ install:
 stages:
   - name: test
   - name: deploy
-    if: tag IS present AND branch = master AND fork = false
+    if: tag IS present AND fork = false
 
 jobs:
   include:
@@ -36,7 +36,6 @@ jobs:
       script: false
       deploy:
         on:
-          branch: master
           tags: true
         provider: cargo
         token: $CARGO_TOKEN
