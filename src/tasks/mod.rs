@@ -29,7 +29,7 @@ mod rustc;
 mod rustup;
 mod shfmt;
 mod skaffold;
-mod ssh;
+//mod ssh;
 mod tmux;
 mod vale;
 mod vim;
@@ -132,8 +132,8 @@ fn tasks() -> Vec<Task> {
         googlecloudsdk::task(),
         hyper::task(), // deps: config
         macos::task(),
-        psql::task(),   // deps: config
-        ssh::task(),    // deps: config
+        psql::task(), // deps: config
+        //       ssh::task(),    // deps: config
         tmux::task(),   // deps: config
         vim::task(),    // deps: config; takes over the terminal
         vscode::task(), // deps: config
