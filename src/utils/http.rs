@@ -59,13 +59,7 @@ where
         create_dir_all(&parent)?;
     };
 
-    let mut file = match File::create(dest) {
-        Ok(f) => f,
-        Err(error) => {
-            println!("download_request: error creating file");
-            return Err(error);
-        }
-    };
+    let mut file = File::create(dest)?;
     file.write_all(res.body().unwrap_or_default())?;
 
     Ok(())
@@ -80,8 +74,6 @@ pub fn fetch_request(req: &Request) -> io::Result<Response> {
         }
     };
 
-    println!("{}", HTTPCall(&req, &res).display());
-
     match res.status_code() {
         200 => Ok(res),
         301 | 302 => {
@@ -92,6 +84,7 @@ pub fn fetch_request(req: &Request) -> io::Result<Response> {
             fetch_request(&next_request)
         }
         _ => {
+            println!("{}", HTTPCall(&req, &res).display());
             println!("headers: {:?}", parse_headers(res.headers()));
             println!("{}", res.body_as_string().unwrap_or_default());
             let result = io::Error::new(ErrorKind::Other, "non-success");

@@ -65,14 +65,12 @@ pub struct Task {
 }
 impl Task {
     pub fn sync_then_update(&self) {
-        println!("{}: sync: ...", self.name);
         match (self.sync)() {
             Ok(status) => println!("{}: sync: {}", self.name, status),
             Err(error) => println!("{}: sync error: {:?}", self.name, error),
         }
         // TODO: ensure we can trust the accuracy of `sync()` results
         // TODO: only call `update()` when `sync()` result suggests it is needed
-        println!("{}: update: ...", self.name);
         match (self.update)() {
             Ok(status) => println!("{}: update: {}", self.name, status),
             Err(error) => println!("{}: update error: {:?}", self.name, error),

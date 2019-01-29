@@ -72,7 +72,6 @@ impl<'a> GHRATask<'a> {
                 return Ok(());
             }
         };
-        println!("{}: installing...", &self.command);
 
         let bin_path = utils::env::home_dir()
             .join(".local")
@@ -82,7 +81,6 @@ impl<'a> GHRATask<'a> {
         let archive_path = mkftemp()?;
         github::download_release_asset(&asset, &archive_path);
 
-        println!("{}: extracting...", &self.command);
         let extract_path = mkdtemp()?;
         if asset.name.ends_with(".tar.gz") {
             extract_tar_gz(&archive_path, &extract_path)?;
@@ -94,16 +92,8 @@ impl<'a> GHRATask<'a> {
         }
 
         fs::remove_file(&archive_path)?;
-
-        println!(
-            "{}: copying: {} -> {}",
-            &self.command,
-            &extract_path.join(&self.command).display(),
-            &bin_path.display(),
-        );
         fs::copy(&extract_path.join(&self.command), &bin_path)?;
         set_executable(&bin_path)?;
-
         fs::remove_dir_all(&extract_path)?;
 
         Ok(())

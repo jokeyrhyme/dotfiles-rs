@@ -34,11 +34,12 @@ pub fn pull<P>(path: P)
 where
     P: Into<PathBuf> + AsRef<Path>,
 {
-    println!("`git pull`ing in {} ...", path.as_ref().display());
-    if let Ok(_status) =
-        utils::process::command_spawn_wait("git", &["-C", path.as_ref().to_str().unwrap(), "pull"])
-    {
-        println!("`git pull` done!");
+    match utils::process::command_spawn_wait(
+        "git",
+        &["-C", path.as_ref().to_str().unwrap(), "pull"],
+    ) {
+        Ok(_) => {}
+        Err(error) => println!("`git pull` failed: {}", error),
     }
 }
 

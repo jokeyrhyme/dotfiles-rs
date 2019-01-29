@@ -95,7 +95,6 @@ impl<'a> GHRTask<'a> {
                 return Ok(());
             }
         };
-        println!("{}: installing...", &self.command);
 
         let bin_path = utils::env::home_dir()
             .join(".local")
