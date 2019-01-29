@@ -10,12 +10,13 @@ use zip;
 use crate::utils::{self, fs::mkftemp};
 
 pub fn extract_gz(source: &Path, target: &Path) -> io::Result<()> {
-    println!("extract_gz: {} -> {}", source.display(), target.display());
-
     let source_file = match File::open(&source) {
         Ok(f) => f,
         Err(error) => {
-            println!("extract_gz: unable to open source file");
+            println!(
+                "extract_gz: unable to open source file: {}",
+                source.display()
+            );
             return Err(error);
         }
     };
@@ -24,7 +25,10 @@ pub fn extract_gz(source: &Path, target: &Path) -> io::Result<()> {
     let target_file = match File::create(&target) {
         Ok(f) => f,
         Err(error) => {
-            println!("extract_gz: unable to open target file");
+            println!(
+                "extract_gz: unable to open target file: {}",
+                target.display()
+            );
             return Err(error);
         }
     };
@@ -36,12 +40,13 @@ pub fn extract_gz(source: &Path, target: &Path) -> io::Result<()> {
 }
 
 pub fn extract_tar(source: &Path, target: &Path) -> io::Result<()> {
-    println!("extract_tar: {} -> {}", source.display(), target.display());
-
     let file = match File::open(&source) {
         Ok(f) => f,
         Err(error) => {
-            println!("extract_tar: unable to open source file");
+            println!(
+                "extract_tar: unable to open source file: {}",
+                source.display()
+            );
             return Err(error);
         }
     };
@@ -63,12 +68,6 @@ pub fn extract_tar(source: &Path, target: &Path) -> io::Result<()> {
 }
 
 pub fn extract_tar_gz(source: &Path, target: &Path) -> io::Result<()> {
-    println!(
-        "extract_tar_gz: {} -> {}",
-        source.display(),
-        target.display()
-    );
-
     let temp_path = mkftemp()?;
     extract_gz(&source, &temp_path)?;
     extract_tar(&temp_path, &target)?;
@@ -78,12 +77,13 @@ pub fn extract_tar_gz(source: &Path, target: &Path) -> io::Result<()> {
 }
 
 pub fn extract_zip(source: &Path, target: &Path) -> io::Result<()> {
-    println!("extract_zip: {} -> {}", source.display(), target.display());
-
     let zip_file = match File::open(&source) {
         Ok(f) => f,
         Err(error) => {
-            println!("extract_zip: unable to open source file");
+            println!(
+                "extract_zip: unable to open source file: {}",
+                source.display()
+            );
             return Err(error);
         }
     };
@@ -100,7 +100,7 @@ pub fn extract_zip(source: &Path, target: &Path) -> io::Result<()> {
         let output_path = target.join(entry_path);
         std::fs::create_dir_all(&output_path.parent().unwrap_or(&output_path))?;
 
-        let mut output_file = File::create(&output_path).expect("unable to open destination file");
+        let mut output_file = File::create(&output_path)?;
         std::io::copy(&mut entry, &mut output_file)?;
     }
 

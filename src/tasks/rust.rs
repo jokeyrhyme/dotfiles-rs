@@ -87,7 +87,6 @@ fn sync() -> task::Result {
     Favourites::fill_and_status(&mut favs)?;
     Favourites::cull_and_status(&mut favs)?;
 
-    println!("rust: ensuring `cargo fmt` works ...");
     match fix_cargo_fmt() {
         Ok(()) => {}
         Err(error) => println!("error: rust: unable to fix `cargo fmt`: {:?}", error),

@@ -217,8 +217,6 @@ where
     let tag_name = release.tag_name.clone();
     let latest = tag_name.trim_left_matches(|c: char| !c.is_digit(10)).trim();
 
-    println!("current={} latest={}", &installed, &latest);
-
     if installed == latest {
         None
     } else {

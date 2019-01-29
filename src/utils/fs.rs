@@ -28,34 +28,23 @@ where
 
     if attr.is_dir() {
         match std::fs::remove_dir_all(path.as_ref()) {
-            Ok(_removed) => {
-                println!("deleted {}", path.as_ref().display());
-                return;
-            }
-            Err(error) => {
-                println!(
-                    "unable to recursively delete directory {}: {:?}",
-                    path.as_ref().display(),
-                    error
-                );
-                return;
-            }
-        }
+            Ok(_removed) => {}
+            Err(error) => println!(
+                "unable to recursively delete directory {}: {:?}",
+                path.as_ref().display(),
+                error
+            ),
+        };
+        return;
     }
 
     match std::fs::remove_file(path.as_ref()) {
-        Ok(_removed) => {
-            println!("deleted {:?}", path.as_ref());
-            return;
-        }
-        Err(error) => {
-            println!(
-                "unable to delete file {}: {:?}",
-                path.as_ref().display(),
-                error
-            );
-            return;
-        }
+        Ok(_removed) => {}
+        Err(error) => println!(
+            "unable to delete file {}: {:?}",
+            path.as_ref().display(),
+            error
+        ),
     }
 }
 
