@@ -7,6 +7,7 @@ mod atlantis;
 mod atom;
 mod bash;
 mod bazel;
+mod brew;
 mod dep;
 mod dotfiles;
 mod git;
@@ -40,6 +41,7 @@ mod zsh;
 
 pub fn env() -> Exports {
     let mut exports: Exports = Default::default();
+    exports = brew::env(exports);
     exports = golang::env(exports);
     exports = googlecloudsdk::env(exports);
     exports = local::env(exports);

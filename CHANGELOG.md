@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- brew: `env` exports PATH including [Homebrew](https://brew.sh) if found
+
 ### Changed
 
 - less output when there aren't any errors
