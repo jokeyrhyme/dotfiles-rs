@@ -17,7 +17,7 @@ license = "MIT"
 
 [dependencies]
 cabot = "0.2.0"
-colored = "1.6"
+colored = "1.7"
 clap = "2.32"
 dirs = "1.0"
 Inflector = "0.11.4"
