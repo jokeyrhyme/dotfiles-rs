@@ -1,8 +1,4 @@
-use std::{
-    env, io,
-    path::PathBuf,
-    str,
-};
+use std::{env, io, path::PathBuf, str};
 
 use dirs;
 use which::{self, which_in};
@@ -32,29 +28,6 @@ where
     }
 }
 
-pub fn brew_exe() -> Option<PathBuf> {
-    let home_dir = dirs::home_dir().expect("brew: no $HOME");
-    let bin_dirs: Vec<PathBuf> = INSTALL_DIRS
-        .iter()
-        .map(|dir| {
-            PathBuf::from(if dir.starts_with("~/") {
-                dir.replace("~", &home_dir.to_string_lossy())
-            } else {
-                dir.to_string()
-            })
-            .join("bin")
-        })
-        .collect();
-    match which_in(
-        "brew",
-        Some(env::join_paths(bin_dirs).expect("brew: bad INSTALL_DIRS")),
-        env::current_dir().expect("brew: no $PWD"),
-    ) {
-        Ok(p) => Some(p),
-        Err(_) => None,
-    }
-}
-
 #[allow(clippy::needless_pass_by_value)]
 pub fn brew_output<S>(args: &[S]) -> io::Result<String>
 where
@@ -71,6 +44,35 @@ where
             .to_string())
         }
         None => Err(io::Error::new(io::ErrorKind::NotFound, "brew")),
+    }
+}
+
+pub fn brew_prefix() -> Option<PathBuf> {
+    let home_dir = dirs::home_dir().expect("brew: no $HOME");
+    for prefix in INSTALL_DIRS {
+        let dir = PathBuf::from(if prefix.starts_with("~/") {
+            prefix.replace("~", &home_dir.to_string_lossy())
+        } else {
+            prefix.to_string()
+        });
+        match which_in(
+            "brew",
+            Some(dir.join("bin")),
+            env::current_dir().expect("brew: no $PWD"),
+        ) {
+            Ok(_) => {
+                return Some(dir);
+            }
+            Err(_) => {}
+        }
+    }
+    None
+}
+
+fn brew_exe() -> Option<PathBuf> {
+    match brew_prefix() {
+        Some(p) => Some(p.join("bin").join("brew")),
+        None => None,
     }
 }
 
