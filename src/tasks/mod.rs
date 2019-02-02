@@ -7,6 +7,7 @@ mod atlantis;
 mod atom;
 mod bash;
 mod bazel;
+mod brew;
 mod dep;
 mod dotfiles;
 mod git;
@@ -40,6 +41,7 @@ mod zsh;
 
 pub fn env() -> Exports {
     let mut exports: Exports = Default::default();
+    exports = brew::env(exports);
     exports = golang::env(exports);
     exports = googlecloudsdk::env(exports);
     exports = local::env(exports);
@@ -50,13 +52,17 @@ pub fn env() -> Exports {
 }
 
 pub fn all() {
+    // resource utilisation goals:
+    // - distinguish CPU-heavy from I/O-heavy tasks
+    // - run a CPU-heavy task concurrently with an I/O-heavy task
+    // - serialise tasks of the same type to avoid clogging pipes
+    // TODO: realise these goals :)
+    // TODO: maybe queue I/O within GitHub and HTTP helpers
+
     dotfiles::task().sync_then_update(); // provides: config; must be first
 
-    let ghr_handle = thread::spawn(|| {
-        for t in ghr_tasks() {
-            t.sync_then_update();
-        }
-    });
+    // split out tasks that may involve compilation,
+    // so we might be able to download at the same time
 
     let golang_handle = thread::spawn(|| {
         for t in golang_tasks() {
@@ -76,7 +82,6 @@ pub fn all() {
         }
     });
 
-    ghr_handle.join().unwrap();
     golang_handle.join().unwrap();
     nodejs_handle.join().unwrap();
     rust_handle.join().unwrap();
@@ -86,23 +91,6 @@ pub fn all() {
     for t in tasks() {
         t.sync_then_update();
     }
-}
-
-fn ghr_tasks() -> Vec<Task> {
-    vec![
-        atlantis::task(),
-        bazel::task(),
-        dep::task(),
-        gitleaks::task(),
-        gitsizer::task(),
-        hadolint::task(),
-        jq::task(),
-        minikube::task(),
-        shfmt::task(),
-        skaffold::task(),
-        vale::task(),
-        yq::task(),
-    ]
 }
 
 fn golang_tasks() -> Vec<Task> {
@@ -120,15 +108,35 @@ fn nodejs_tasks() -> Vec<Task> {
 }
 
 fn rust_tasks() -> Vec<Task> {
-    vec![rustup::task(), rustc::task(), rust::task()]
+    vec![
+        rustup::task(),
+        rustc::task(), // deps: rustup
+        rust::task(),  // deps: rustc
+    ]
 }
 
 fn tasks() -> Vec<Task> {
     vec![
+        // these are GitHub Release tasks,
+        // that are mostly I/O-heavy,
+        // and serialising such things avoids clogging our pipes
+        atlantis::task(),
+        bazel::task(),
+        dep::task(),
+        gitleaks::task(),
+        gitsizer::task(),
+        hadolint::task(),
+        jq::task(),
+        minikube::task(),
+        shfmt::task(),
+        skaffold::task(),
+        vale::task(),
+        yq::task(),
         alacritty::task(), // deps: config
         atom::task(),
         bash::task(), // deps: config
-        git::task(),  // deps: nodejs/npm
+        brew::task(),
+        git::task(), // deps: nodejs/npm
         googlecloudsdk::task(),
         hyper::task(), // deps: config
         macos::task(),
