@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - brew: `env` exports PATH including [Homebrew](https://brew.sh) if found
 
+- brew: keep [Homebrew](https://brew.sh) `sync`ed and `update`d (does not automatically install Homebrew yet)
+
 ### Changed
 
 - less output when there aren't any errors

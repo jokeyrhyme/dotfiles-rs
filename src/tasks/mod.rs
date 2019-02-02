@@ -122,7 +122,11 @@ fn nodejs_tasks() -> Vec<Task> {
 }
 
 fn rust_tasks() -> Vec<Task> {
-    vec![rustup::task(), rustc::task(), rust::task()]
+    vec![
+        rustup::task(),
+        rustc::task(), // deps: rustup
+        rust::task(),  // deps: rustc
+    ]
 }
 
 fn tasks() -> Vec<Task> {
@@ -130,7 +134,8 @@ fn tasks() -> Vec<Task> {
         alacritty::task(), // deps: config
         atom::task(),
         bash::task(), // deps: config
-        git::task(),  // deps: nodejs/npm
+        brew::task(),
+        git::task(), // deps: nodejs/npm
         googlecloudsdk::task(),
         hyper::task(), // deps: config
         macos::task(),
