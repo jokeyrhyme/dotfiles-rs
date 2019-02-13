@@ -5,11 +5,15 @@ use std::{
 };
 
 pub const EDITOR: &str = "EDITOR";
+pub const GOPATH: &str = "GOPATH";
+pub const GOROOT: &str = "GOROOT";
 pub const PATH: &str = "PATH";
 
 #[derive(Debug)]
 pub struct Exports {
     pub editor: PathBuf,
+    pub gopath: PathBuf,
+    pub goroot: PathBuf,
     pub path: Vec<PathBuf>,
 }
 
@@ -17,6 +21,8 @@ impl Exports {
     pub fn new() -> Exports {
         Exports {
             editor: PathBuf::new(),
+            gopath: PathBuf::new(),
+            goroot: PathBuf::new(),
             path: Vec::<PathBuf>::new(),
         }
     }
@@ -25,11 +31,19 @@ impl Exports {
         let editor_line = export_shell(
             &shell,
             EDITOR,
-            self.editor
-                .as_path()
-                .to_string_lossy()
-                .into_owned()
-                .as_str(),
+            &self.editor.as_path().to_string_lossy().into_owned(),
+        );
+
+        let gopath_line = export_shell(
+            &shell,
+            GOPATH,
+            &self.gopath.as_path().to_string_lossy().into_owned(),
+        );
+
+        let goroot_line = export_shell(
+            &shell,
+            GOROOT,
+            &self.goroot.as_path().to_string_lossy().into_owned(),
         );
 
         let path_strings: Vec<String> = self
@@ -41,12 +55,10 @@ impl Exports {
         let path_line = export_shell(
             &shell,
             PATH,
-            path_strings
-                .join(if OS == "windows" { ";" } else { ":" })
-                .as_str(),
+            &path_strings.join(if OS == "windows" { ";" } else { ":" }),
         );
 
-        let lines: &[String] = &[editor_line, path_line];
+        let lines: &[String] = &[editor_line, gopath_line, goroot_line, path_line];
         lines.join("\n")
     }
 }
@@ -102,6 +114,9 @@ fn export_shell<S>(shell: &Shell, key: S, value: S) -> String
 where
     S: Into<String> + AsRef<str> + Display,
 {
+    if value.as_ref().trim().is_empty() {
+        return String::new();
+    }
     match shell {
         Shell::Bash => export_bash(key, value),
         Shell::Fish => export_fish(key, value),
@@ -125,10 +140,12 @@ mod tests {
     fn to_bash() {
         let exports = Exports {
             editor: PathBuf::from("/usr/bin/vim"),
+            gopath: PathBuf::new(),
+            goroot: PathBuf::new(),
             path: vec![PathBuf::from("/usr/bin"), PathBuf::from("/bin")],
         };
         let got = exports.to_shell(Shell::Bash);
-        let want = "export EDITOR=/usr/bin/vim\nexport PATH=/usr/bin:/bin";
+        let want = "export EDITOR=/usr/bin/vim\n\n\nexport PATH=/usr/bin:/bin";
         assert_eq!(got, want);
     }
 
@@ -136,10 +153,12 @@ mod tests {
     fn to_fish() {
         let exports = Exports {
             editor: PathBuf::from("/usr/bin/vim"),
+            gopath: PathBuf::new(),
+            goroot: PathBuf::new(),
             path: vec![PathBuf::from("/usr/bin"), PathBuf::from("/bin")],
         };
         let got = exports.to_shell(Shell::Fish);
-        let want = "set --export EDITOR /usr/bin/vim\nset --export PATH /usr/bin:/bin";
+        let want = "set --export EDITOR /usr/bin/vim\n\n\nset --export PATH /usr/bin:/bin";
         assert_eq!(got, want);
     }
 
@@ -147,10 +166,12 @@ mod tests {
     fn to_zsh() {
         let exports = Exports {
             editor: PathBuf::from("/usr/bin/vim"),
+            gopath: PathBuf::new(),
+            goroot: PathBuf::new(),
             path: vec![PathBuf::from("/usr/bin"), PathBuf::from("/bin")],
         };
         let got = exports.to_shell(Shell::Zsh);
-        let want = "export EDITOR=/usr/bin/vim\nexport PATH=/usr/bin:/bin";
+        let want = "export EDITOR=/usr/bin/vim\n\n\nexport PATH=/usr/bin:/bin";
         assert_eq!(got, want);
     }
 }
