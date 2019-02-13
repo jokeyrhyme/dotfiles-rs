@@ -7,10 +7,20 @@ use crate::lib::{
 use crate::utils::{
     self,
     fs::mkftemp,
-    golang::{arch, bin_dir, os},
+    golang::{arch, bin_dir, gopath, goroot, os},
 };
 
 pub fn env(mut exports: Exports) -> Exports {
+    let gp = gopath();
+    if gp.is_dir() {
+        exports.gopath = gp;
+    }
+
+    let gr = goroot();
+    if gr.is_dir() {
+        exports.goroot = gr;
+    }
+
     let dir = bin_dir();
     if !exports.path.contains(&dir) {
         let mut paths = vec![dir];
