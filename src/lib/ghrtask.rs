@@ -1,4 +1,4 @@
-use std::io;
+use std::{env::consts::EXE_SUFFIX, io};
 
 use crate::lib::{
     task::{self, Status},
@@ -99,7 +99,7 @@ impl<'a> GHRTask<'a> {
         let bin_path = utils::env::home_dir()
             .join(".local")
             .join("bin")
-            .join(&self.command);
+            .join(format!("{}{}", &self.command, EXE_SUFFIX));
         github::download_release_asset(&asset, &bin_path);
 
         Ok(())

@@ -21,9 +21,6 @@ pub fn task() -> Task {
 
 const GHR_TASK: GHRTask = GHRTask {
     asset_filter,
-    #[cfg(windows)]
-    command: "skaffold.exe",
-    #[cfg(not(windows))]
     command: "skaffold",
     repo: ("GoogleCloudPlatform", "skaffold"),
     trim_version,

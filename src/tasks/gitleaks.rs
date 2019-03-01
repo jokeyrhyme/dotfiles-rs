@@ -21,9 +21,6 @@ pub fn task() -> Task {
 
 const GHR_TASK: GHRTask = GHRTask {
     asset_filter,
-    #[cfg(windows)]
-    command: "gitleaks.exe",
-    #[cfg(not(windows))]
     command: "gitleaks",
     repo: ("zricethezav", "gitleaks"),
     trim_version,

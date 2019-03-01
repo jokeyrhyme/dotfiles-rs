@@ -18,9 +18,6 @@ pub fn task() -> Task {
 
 const GHRA_TASK: GHRATask = GHRATask {
     asset_filter,
-    #[cfg(windows)]
-    command: "vale.exe",
-    #[cfg(not(windows))]
     command: "vale",
     repo: ("errata-ai", "vale"),
     trim_version,

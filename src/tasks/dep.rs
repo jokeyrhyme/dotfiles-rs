@@ -17,9 +17,6 @@ pub fn task() -> Task {
 
 const GHR_TASK: GHRTask = GHRTask {
     asset_filter,
-    #[cfg(windows)]
-    command: "dep.exe",
-    #[cfg(not(windows))]
     command: "dep",
     repo: ("golang", "dep"),
     trim_version,

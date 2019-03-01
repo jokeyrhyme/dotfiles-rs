@@ -19,9 +19,6 @@ pub fn task() -> Task {
 
 const GHRA_TASK: GHRATask = GHRATask {
     asset_filter,
-    #[cfg(windows)]
-    command: "git-sizer.exe",
-    #[cfg(not(windows))]
     command: "git-sizer",
     repo: ("github", "git-sizer"),
     trim_version,

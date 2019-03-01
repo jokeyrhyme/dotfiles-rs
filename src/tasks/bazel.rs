@@ -19,9 +19,6 @@ pub fn task() -> Task {
 
 const GHR_TASK: GHRTask = GHRTask {
     asset_filter,
-    #[cfg(windows)]
-    command: "bazel.exe",
-    #[cfg(not(windows))]
     command: "bazel",
     repo: ("bazelbuild", "bazel"),
     trim_version,

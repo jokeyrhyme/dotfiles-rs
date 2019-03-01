@@ -19,9 +19,6 @@ pub fn task() -> Task {
 
 const GHRA_TASK: GHRATask = GHRATask {
     asset_filter,
-    #[cfg(windows)]
-    command: "atlantis.exe",
-    #[cfg(not(windows))]
     command: "atlantis",
     repo: ("runatlantis", "atlantis"),
     trim_version,

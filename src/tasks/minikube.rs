@@ -19,9 +19,6 @@ pub fn task() -> Task {
 
 const GHR_TASK: GHRTask = GHRTask {
     asset_filter,
-    #[cfg(windows)]
-    command: "minikube.exe",
-    #[cfg(not(windows))]
     command: "minikube",
     repo: ("kubernetes", "minikube"),
     trim_version,
