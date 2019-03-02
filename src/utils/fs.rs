@@ -107,7 +107,7 @@ where
     symbolic_link(src.as_ref(), dest.as_ref())?;
 
     Ok(Status::Changed(
-        "previous symlink".to_string(),
+        String::from("previous symlink"),
         format!(
             "symlinked: {} -> {}",
             dest.as_ref().display(),

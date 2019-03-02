@@ -2,12 +2,12 @@ use std::{fmt, io, result};
 
 use colored::*;
 
-use crate::utils::github::GitHubError;
+use crate::utils::github;
 
 #[derive(Debug)]
 pub enum Error {
-    GitHubError(String, GitHubError),
-    IOError(String, io::Error),
+    GitHubError(String, github::GitHubError),
+    IoError(String, io::Error),
     NoTagsError,
 }
 impl std::error::Error for Error {}
@@ -17,14 +17,19 @@ impl fmt::Display for Error {
             Error::GitHubError(msg, cause) => {
                 write!(f, "{}", format!("{}: {:?}", msg, cause).red())
             }
-            Error::IOError(msg, cause) => write!(f, "{}", format!("{}: {:?}", msg, cause).red()),
+            Error::IoError(msg, cause) => write!(f, "{}", format!("{}: {:?}", msg, cause).red()),
             Error::NoTagsError => write!(f, "{}", "NoTagsError".red()),
         }
     }
 }
+impl From<github::GitHubError> for Error {
+    fn from(cause: github::GitHubError) -> Error {
+        Error::GitHubError(String::new(), cause)
+    }
+}
 impl From<io::Error> for Error {
     fn from(cause: io::Error) -> Error {
-        Error::IOError("".to_string(), cause)
+        Error::IoError(String::new(), cause)
     }
 }
 

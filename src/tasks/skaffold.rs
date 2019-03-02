@@ -13,7 +13,7 @@ use crate::{
 
 pub fn task() -> Task {
     Task {
-        name: "skaffold".to_string(),
+        name: String::from("skaffold"),
         sync,
         update,
     }

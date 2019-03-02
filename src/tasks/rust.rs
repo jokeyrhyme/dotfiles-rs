@@ -15,7 +15,7 @@ use crate::{
 
 pub fn task() -> Task {
     Task {
-        name: "rust".to_string(),
+        name: String::from("rust"),
         sync,
         update,
     }
@@ -79,7 +79,7 @@ fn sync() -> task::Result {
     let contents = match fs::read_to_string(&cfg_path) {
         Ok(s) => s,
         Err(error) => {
-            return Err(task::Error::IOError("ignoring config".to_string(), error));
+            return Err(task::Error::IoError(String::from("ignoring config"), error));
         }
     };
 

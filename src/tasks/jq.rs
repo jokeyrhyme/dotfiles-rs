@@ -10,7 +10,7 @@ use crate::{
 
 pub fn task() -> Task {
     Task {
-        name: "jq".to_string(),
+        name: String::from("jq"),
         sync,
         update,
     }

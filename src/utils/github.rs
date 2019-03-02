@@ -1,5 +1,6 @@
 use std::{
     self,
+    env::consts::{ARCH, OS},
     error::Error,
     fmt, io,
     path::{Path, PathBuf},
@@ -45,61 +46,65 @@ pub struct Tag {
 
 #[derive(Debug)]
 pub enum GitHubError {
-    EmptyReleasesError,
-    IoError(io::Error),
-    ValidReleaseNotFoundError,
+    CompatibleAssetNotFound,
+    EmptyReleases,
+    IoError(String, io::Error),
+    ValidReleaseNotFound,
+    WrongAssetType,
 }
-
 impl fmt::Display for GitHubError {
     fn fmt(&self, f: &mut fmt::Formatter) -> std::fmt::Result {
         match *self {
-            GitHubError::EmptyReleasesError => fmt::Display::fmt(&"EmptyReleasesError", f),
-            GitHubError::IoError(ref err) => fmt::Display::fmt(err, f),
-            GitHubError::ValidReleaseNotFoundError => {
-                fmt::Display::fmt(&"ValidReleaseNotFoundError", f)
+            GitHubError::CompatibleAssetNotFound => {
+                write!(f, "No asset compatible with {} {}", OS, ARCH)
             }
+            GitHubError::EmptyReleases => write!(f, "EmptyReleases"),
+            GitHubError::IoError(ref msg, ref err) => write!(f, "{} {:?}", msg, err),
+            GitHubError::ValidReleaseNotFound => write!(f, "ValidReleaseNotFound"),
+            GitHubError::WrongAssetType => write!(f, "WrongAssetType"),
         }
     }
 }
-
 impl Error for GitHubError {
     fn cause(&self) -> Option<&Error> {
         match *self {
-            GitHubError::EmptyReleasesError => None,
-            GitHubError::IoError(ref err) => Some(err as &Error),
-            GitHubError::ValidReleaseNotFoundError => None,
+            GitHubError::CompatibleAssetNotFound => None,
+            GitHubError::EmptyReleases => None,
+            GitHubError::IoError(_, ref err) => Some(err as &Error),
+            GitHubError::ValidReleaseNotFound => None,
+            GitHubError::WrongAssetType => None,
         }
     }
+}
+impl From<io::Error> for GitHubError {
+    fn from(cause: io::Error) -> Self {
+        GitHubError::IoError(String::new(), cause)
+    }
+}
 
-    fn description(&self) -> &str {
-        match *self {
-            GitHubError::EmptyReleasesError => &"EmptyReleasesError",
-            GitHubError::IoError(ref err) => err.description(),
-            GitHubError::ValidReleaseNotFoundError => &"ValidReleaseNotFoundError",
-        }
+pub type Result<T> = std::result::Result<T, GitHubError>;
+
+pub fn compatible_asset(release: &Release, filter: &Fn(&Asset) -> bool) -> Result<Asset> {
+    match release
+        .assets
+        .to_vec()
+        .into_iter()
+        .find(|a| filter(a) && version::is_stable(a.name.as_str()))
+    {
+        Some(a) => Ok(a),
+        None => Err(GitHubError::CompatibleAssetNotFound {}),
     }
 }
 
 #[allow(clippy::needless_pass_by_value)]
-pub fn download_release_asset<P>(asset: &Asset, bin_path: P)
+pub fn download_release_asset<P>(asset: &Asset, bin_path: P) -> Result<()>
 where
     P: Into<PathBuf> + AsRef<Path>,
 {
     let req = create_request(asset.browser_download_url.clone());
-    match utils::http::download_request(&req, bin_path.as_ref()) {
-        Ok(()) => {}
-        Err(error) => {
-            println!("error: cannot download: {}", error);
-            return;
-        }
-    };
-    match utils::fs::set_executable(bin_path.as_ref()) {
-        Ok(()) => {}
-        Err(error) => {
-            println!("error: cannot chmod a+rx: {}", error);
-            return;
-        }
-    }
+    utils::http::download_request(&req, bin_path.as_ref())?;
+    utils::fs::set_executable(bin_path.as_ref())?;
+    Ok(())
 }
 
 #[allow(clippy::needless_pass_by_value)]
@@ -122,7 +127,7 @@ where
 }
 
 #[allow(clippy::needless_pass_by_value)]
-fn fetch_releases<S>(owner: S, repo: S) -> io::Result<Vec<Release>>
+fn fetch_releases<S>(owner: S, repo: S) -> Result<Vec<Release>>
 where
     S: Into<String> + AsRef<str>,
 {
@@ -146,7 +151,7 @@ where
 }
 
 #[allow(clippy::needless_pass_by_value)]
-pub fn fetch_tags<S>(owner: S, repo: S) -> io::Result<Vec<Tag>>
+pub fn fetch_tags<S>(owner: S, repo: S) -> Result<Vec<Tag>>
 where
     S: Into<String> + AsRef<str>,
 {
@@ -176,24 +181,19 @@ where
 }
 
 #[allow(clippy::needless_pass_by_value)]
-pub fn latest_release<S>(owner: S, repo: S) -> Result<Release, GitHubError>
+pub fn latest_release<S>(owner: S, repo: S) -> Result<Release>
 where
     S: Into<String> + AsRef<str>,
 {
-    let releases = match fetch_releases(owner, repo) {
-        Ok(r) => r,
-        Err(error) => {
-            return Err(GitHubError::IoError(error));
-        }
-    };
+    let releases = fetch_releases(owner, repo)?;
     if releases.is_empty() {
-        return Err(GitHubError::EmptyReleasesError {});
+        return Err(GitHubError::EmptyReleases {});
     }
     match releases.into_iter().find(|r| {
         !r.draft && !r.prelease && !r.assets.is_empty() && version::is_stable(r.name.as_str())
     }) {
         Some(latest) => Ok(latest),
-        None => Err(GitHubError::ValidReleaseNotFoundError {}),
+        None => Err(GitHubError::ValidReleaseNotFound {}),
     }
 }
 

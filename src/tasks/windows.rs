@@ -5,7 +5,7 @@ use crate::utils;
 
 pub fn task() -> Task {
     Task {
-        name: "windows".to_string(),
+        name: String::from("windows"),
         sync,
         update,
     }

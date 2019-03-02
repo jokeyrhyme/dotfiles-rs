@@ -5,7 +5,7 @@ const ERROR_MSG: &str = "error: git";
 
 pub fn task() -> Task {
     Task {
-        name: "git".to_string(),
+        name: String::from("git"),
         sync,
         update,
     }

@@ -1,9 +1,6 @@
-use std::{env::consts::EXE_SUFFIX, io};
+use std::env::consts::EXE_SUFFIX;
 
-use crate::lib::{
-    task::{self, Status},
-    version,
-};
+use crate::lib::task::{self, Status};
 use crate::utils::{
     self,
     github::{self, Asset, Release},
@@ -64,7 +61,7 @@ impl<'a> GHRTask<'a> {
             }
         };
         self.install_release(&release)?;
-        Ok(Status::Changed("absent".to_string(), release.tag_name))
+        Ok(Status::Changed(String::from("absent"), release.tag_name))
     }
 
     pub fn update(&self) -> task::Result {
@@ -81,26 +78,14 @@ impl<'a> GHRTask<'a> {
         Ok(Status::NoChange(current))
     }
 
-    fn install_release(&self, release: &Release) -> io::Result<()> {
-        let asset_filter = &self.asset_filter;
-        let asset = match release
-            .assets
-            .to_vec()
-            .into_iter()
-            .find(|a| asset_filter(a) && version::is_stable(a.name.as_str()))
-        {
-            Some(a) => a,
-            None => {
-                println!("warning: {}: no asset matches OS and ARCH", &self.command);
-                return Ok(());
-            }
-        };
+    fn install_release(&self, release: &Release) -> github::Result<()> {
+        let asset = github::compatible_asset(&release, &self.asset_filter)?;
 
         let bin_path = utils::env::home_dir()
             .join(".local")
             .join("bin")
             .join(format!("{}{}", &self.command, EXE_SUFFIX));
-        github::download_release_asset(&asset, &bin_path);
+        github::download_release_asset(&asset, &bin_path)?;
 
         Ok(())
     }

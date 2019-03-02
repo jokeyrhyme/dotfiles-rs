@@ -9,7 +9,7 @@ use crate::utils::golang::{arch, os};
 
 pub fn task() -> Task {
     Task {
-        name: "shfmt".to_string(),
+        name: String::from("shfmt"),
         sync,
         update,
     }

@@ -1,9 +1,8 @@
-use std::{env::consts::EXE_SUFFIX, fs, io};
+use std::{env::consts::EXE_SUFFIX, fs};
 
 use crate::lib::{
     ghrtask::GHRTask,
     task::{self, Status},
-    version,
 };
 use crate::utils::{
     self,
@@ -37,7 +36,7 @@ impl<'a> GHRATask<'a> {
             }
         };
         self.install_release(&release)?;
-        Ok(Status::Changed("absent".to_string(), release.tag_name))
+        Ok(Status::Changed(String::from("absent"), release.tag_name))
     }
 
     pub fn update(&mut self) -> task::Result {
@@ -58,20 +57,8 @@ impl<'a> GHRATask<'a> {
         self.as_ghrtask().exists()
     }
 
-    fn install_release(&self, release: &Release) -> io::Result<()> {
-        let asset_filter = &self.asset_filter;
-        let asset = match release
-            .assets
-            .to_vec()
-            .into_iter()
-            .find(|a| asset_filter(a) && version::is_stable(a.name.as_str()))
-        {
-            Some(a) => a,
-            None => {
-                println!("warning: {}: no asset matches OS and ARCH", &self.command);
-                return Ok(());
-            }
-        };
+    fn install_release(&self, release: &Release) -> github::Result<()> {
+        let asset = github::compatible_asset(&release, &self.asset_filter)?;
 
         let bin_path = utils::env::home_dir()
             .join(".local")
@@ -79,7 +66,7 @@ impl<'a> GHRATask<'a> {
             .join(format!("{}{}", &self.command, EXE_SUFFIX));
 
         let archive_path = mkftemp()?;
-        github::download_release_asset(&asset, &archive_path);
+        github::download_release_asset(&asset, &archive_path)?;
 
         let extract_path = mkdtemp()?;
         if asset.name.ends_with(".tar.gz") {
@@ -87,8 +74,7 @@ impl<'a> GHRATask<'a> {
         } else if asset.name.ends_with(".zip") {
             extract_zip(&archive_path, &extract_path)?;
         } else {
-            let msg = format!("unexpected archive file type: {}", &asset.name);
-            return Err(io::Error::new(io::ErrorKind::Other, msg));
+            return Err(github::GitHubError::WrongAssetType {});
         }
 
         fs::remove_file(&archive_path)?;

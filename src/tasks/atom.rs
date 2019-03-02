@@ -22,7 +22,7 @@ struct Config {
 
 pub fn task() -> Task {
     Task {
-        name: "atom".to_string(),
+        name: String::from("atom"),
         sync,
         update,
     }

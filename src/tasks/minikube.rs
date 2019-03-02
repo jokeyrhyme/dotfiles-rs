@@ -11,7 +11,7 @@ use crate::{
 
 pub fn task() -> Task {
     Task {
-        name: "minikube".to_string(),
+        name: String::from("minikube"),
         sync,
         update,
     }

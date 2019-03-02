@@ -13,7 +13,7 @@ use crate::{
 
 pub fn task() -> Task {
     Task {
-        name: "goget".to_string(),
+        name: String::from("goget"),
         sync,
         update,
     }
@@ -68,7 +68,7 @@ fn update() -> task::Result {
     utils::process::command_spawn_wait("go", &install_args)?;
 
     Ok(Status::Changed(
-        "unknown".to_string(),
-        "unknown".to_string(),
+        String::from("unknown"),
+        String::from("unknown"),
     ))
 }

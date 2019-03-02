@@ -22,7 +22,7 @@ pub fn env(mut exports: Exports) -> Exports {
 
 pub fn task() -> Task {
     Task {
-        name: "nodejs".to_string(),
+        name: String::from("nodejs"),
         sync,
         update,
     }
@@ -80,9 +80,9 @@ fn sync() -> task::Result {
 
     let latest = utils::nodejs::latest_version();
     match install_nodejs(latest.clone()) {
-        Ok(()) => Ok(Status::Changed("unknown".to_string(), latest)),
-        Err(error) => Err(task::Error::IOError(
-            "unable to install Node.js".to_string(),
+        Ok(()) => Ok(Status::Changed(String::from("unknown"), latest)),
+        Err(error) => Err(task::Error::IoError(
+            String::from("unable to install Node.js"),
             error,
         )),
     }
@@ -101,8 +101,8 @@ fn update() -> task::Result {
     } else {
         match install_nodejs(latest.clone()) {
             Ok(()) => Ok(Status::Changed(current, latest)),
-            Err(error) => Err(task::Error::IOError(
-                "unable to install Node.js".to_string(),
+            Err(error) => Err(task::Error::IoError(
+                String::from("unable to install Node.js"),
                 error,
             )),
         }

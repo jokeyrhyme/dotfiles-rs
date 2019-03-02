@@ -7,7 +7,7 @@ use crate::utils::{self, ssh::Config};
 
 pub fn task() -> Task {
     Task {
-        name: "ssh".to_string(),
+        name: String::from("ssh"),
         sync,
         update,
     }

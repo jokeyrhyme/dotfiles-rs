@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - golang: `env` exports GOROOT and GOPATH when found
 
+### Fixed
+
+- golang: Windows: maybe fix bad download URL (#190)
+
+- better error handling in GitHub Release tasks (#191)
+
 ## [0.27.0] - 2019-02-02
 
 ### Added

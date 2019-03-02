@@ -7,7 +7,7 @@ use crate::{
 
 pub fn task() -> Task {
     Task {
-        name: "macos".to_string(),
+        name: String::from("macos"),
         sync,
         update,
     }

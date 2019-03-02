@@ -3,7 +3,7 @@ use crate::utils;
 
 pub fn task() -> Task {
     Task {
-        name: "dotfiles".to_string(),
+        name: String::from("dotfiles"),
         sync,
         update,
     }

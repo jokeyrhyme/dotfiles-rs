@@ -9,7 +9,7 @@ const TOOLCHAINS: &[&str] = &["stable", "nightly"];
 
 pub fn task() -> Task {
     Task {
-        name: "rustc".to_string(),
+        name: String::from("rustc"),
         sync,
         update,
     }

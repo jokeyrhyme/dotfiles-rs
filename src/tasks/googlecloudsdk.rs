@@ -21,7 +21,7 @@ pub fn env(mut exports: Exports) -> Exports {
 
 pub fn task() -> Task {
     Task {
-        name: "googlecloudsdk".to_string(),
+        name: String::from("googlecloudsdk"),
         sync,
         update,
     }

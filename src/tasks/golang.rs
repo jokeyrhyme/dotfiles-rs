@@ -32,7 +32,7 @@ pub fn env(mut exports: Exports) -> Exports {
 
 pub fn task() -> Task {
     Task {
-        name: "golang".to_string(),
+        name: String::from("golang"),
         sync,
         update,
     }
@@ -46,7 +46,7 @@ where
     let current = if utils::golang::is_installed() {
         utils::golang::current_version()
     } else {
-        "absent".to_string()
+        String::from("absent")
     };
 
     let temp_path = mkftemp()?;
@@ -56,7 +56,7 @@ where
         version.as_ref(),
         os(),
         arch(),
-        if OS == "windows" { "exe" } else { "tar.gz" },
+        if OS == "windows" { "zip" } else { "tar.gz" },
     );
     utils::http::download(remote_url, &temp_path)?;
 
@@ -77,7 +77,7 @@ where
 
 fn sync() -> task::Result {
     if utils::golang::is_installed() {
-        Ok(Status::NoChange("present".to_string()))
+        Ok(Status::NoChange(String::from("present")))
     } else {
         let latest_version = match utils::golang::latest_version() {
             Ok(v) => v,
