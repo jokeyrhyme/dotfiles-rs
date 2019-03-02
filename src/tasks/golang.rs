@@ -56,7 +56,7 @@ where
         version.as_ref(),
         os(),
         arch(),
-        if OS == "windows" { "exe" } else { "tar.gz" },
+        if OS == "windows" { "zip" } else { "tar.gz" },
     );
     utils::http::download(remote_url, &temp_path)?;
 
