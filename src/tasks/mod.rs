@@ -19,6 +19,7 @@ mod goget;
 mod golang;
 mod googlecloudsdk;
 mod hadolint;
+mod hasklig;
 mod hyper;
 mod inter;
 mod jq;
@@ -122,6 +123,7 @@ fn tasks() -> Vec<Task> {
     vec![
         // fonts
         firacode::task(),
+        hasklig::task(),
         inter::task(),
         fccache::task(), // deps: all other font tasks
         // these are GitHub Release tasks,
