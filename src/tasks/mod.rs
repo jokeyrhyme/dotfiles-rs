@@ -10,6 +10,7 @@ mod bazel;
 mod brew;
 mod dep;
 mod dotfiles;
+mod fccache;
 mod git;
 mod gitleaks;
 mod gitsizer;
@@ -18,6 +19,7 @@ mod golang;
 mod googlecloudsdk;
 mod hadolint;
 mod hyper;
+mod inter;
 mod jq;
 mod local;
 mod macos;
@@ -117,6 +119,9 @@ fn rust_tasks() -> Vec<Task> {
 
 fn tasks() -> Vec<Task> {
     vec![
+        // fonts
+        inter::task(),
+        fccache::task(), // deps: all other font tasks
         // these are GitHub Release tasks,
         // that are mostly I/O-heavy,
         // and serialising such things avoids clogging our pipes
