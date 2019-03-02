@@ -13,6 +13,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - fccache: `update` (rebuild) font cache
 
+- firacode: keep [FiraCode (font)](https://github.com/tonsky/FiraCode) `sync`ed and `update`d
+
+- hack: keep [Hack (font)](https://github.com/source-foundry/Hack) `sync`ed and `update`d
+
+- hasklig: keep [Hasklig (font)](https://github.com/i-tu/Hasklig) `sync`ed and `update`d
+
 - inter: keep [inter (font)](https://github.com/rsms/inter) `sync`ed and `update`d
 
 ### Fixed

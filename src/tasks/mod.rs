@@ -11,13 +11,16 @@ mod brew;
 mod dep;
 mod dotfiles;
 mod fccache;
+mod firacode;
 mod git;
 mod gitleaks;
 mod gitsizer;
 mod goget;
 mod golang;
 mod googlecloudsdk;
+mod hack;
 mod hadolint;
+mod hasklig;
 mod hyper;
 mod inter;
 mod jq;
@@ -120,6 +123,9 @@ fn rust_tasks() -> Vec<Task> {
 fn tasks() -> Vec<Task> {
     vec![
         // fonts
+        firacode::task(),
+        hack::task(),
+        hasklig::task(),
         inter::task(),
         fccache::task(), // deps: all other font tasks
         // these are GitHub Release tasks,
