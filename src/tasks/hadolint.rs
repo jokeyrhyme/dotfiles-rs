@@ -21,9 +21,6 @@ pub fn task() -> Task {
 
 const GHR_TASK: GHRTask = GHRTask {
     asset_filter,
-    #[cfg(windows)]
-    command: "hadolint.exe",
-    #[cfg(not(windows))]
     command: "hadolint",
     repo: ("hadolint", "hadolint"),
     trim_version,

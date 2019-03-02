@@ -18,9 +18,6 @@ pub fn task() -> Task {
 
 const GHR_TASK: GHRTask = GHRTask {
     asset_filter,
-    #[cfg(windows)]
-    command: "jq.exe",
-    #[cfg(not(windows))]
     command: "jq",
     repo: ("stedolan", "jq"),
     trim_version,

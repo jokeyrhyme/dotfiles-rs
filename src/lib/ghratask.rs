@@ -1,4 +1,4 @@
-use std::{fs, io};
+use std::{env::consts::EXE_SUFFIX, fs, io};
 
 use crate::lib::{
     ghrtask::GHRTask,
@@ -76,7 +76,7 @@ impl<'a> GHRATask<'a> {
         let bin_path = utils::env::home_dir()
             .join(".local")
             .join("bin")
-            .join(&self.command);
+            .join(format!("{}{}", &self.command, EXE_SUFFIX));
 
         let archive_path = mkftemp()?;
         github::download_release_asset(&asset, &archive_path);
@@ -92,7 +92,10 @@ impl<'a> GHRATask<'a> {
         }
 
         fs::remove_file(&archive_path)?;
-        fs::copy(&extract_path.join(&self.command), &bin_path)?;
+        fs::copy(
+            &extract_path.join(format!("{}{}", &self.command, EXE_SUFFIX)),
+            &bin_path,
+        )?;
         set_executable(&bin_path)?;
         fs::remove_dir_all(&extract_path)?;
 

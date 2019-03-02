@@ -17,9 +17,6 @@ pub fn task() -> Task {
 
 const GHR_TASK: GHRTask = GHRTask {
     asset_filter,
-    #[cfg(windows)]
-    command: "shfmt.exe",
-    #[cfg(not(windows))]
     command: "shfmt",
     repo: ("mvdan", "sh"),
     trim_version,

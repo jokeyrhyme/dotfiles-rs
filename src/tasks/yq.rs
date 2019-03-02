@@ -21,9 +21,6 @@ pub fn task() -> Task {
 
 const GHR_TASK: GHRTask = GHRTask {
     asset_filter,
-    #[cfg(windows)]
-    command: "yq.exe",
-    #[cfg(not(windows))]
     command: "yq",
     repo: ("mikefarah", "yq"),
     trim_version,
