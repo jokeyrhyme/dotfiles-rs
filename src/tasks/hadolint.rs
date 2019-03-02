@@ -13,7 +13,7 @@ use crate::{
 
 pub fn task() -> Task {
     Task {
-        name: "hadolint".to_string(),
+        name: String::from("hadolint"),
         sync,
         update,
     }

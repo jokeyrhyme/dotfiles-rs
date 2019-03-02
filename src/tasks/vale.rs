@@ -10,7 +10,7 @@ use crate::utils::github::Asset;
 
 pub fn task() -> Task {
     Task {
-        name: "vale".to_string(),
+        name: String::from("vale"),
         sync,
         update,
     }

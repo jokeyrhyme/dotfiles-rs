@@ -11,7 +11,7 @@ use crate::utils::golang::os;
 
 pub fn task() -> Task {
     Task {
-        name: "bazel".to_string(),
+        name: String::from("bazel"),
         sync,
         update,
     }

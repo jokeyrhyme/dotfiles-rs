@@ -7,7 +7,7 @@ use crate::{
 
 pub fn task() -> Task {
     Task {
-        name: "bash".to_string(),
+        name: String::from("bash"),
         sync,
         update,
     }

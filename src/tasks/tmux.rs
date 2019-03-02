@@ -3,7 +3,7 @@ use crate::utils;
 
 pub fn task() -> Task {
     Task {
-        name: "tmux".to_string(),
+        name: String::from("tmux"),
         sync,
         update,
     }

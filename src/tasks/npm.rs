@@ -45,7 +45,7 @@ struct Package {
 
 pub fn task() -> Task {
     Task {
-        name: "npm".to_string(),
+        name: String::from("npm"),
         sync,
         update,
     }

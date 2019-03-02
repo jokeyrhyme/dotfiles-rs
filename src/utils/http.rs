@@ -152,7 +152,7 @@ mod tests {
         let input = vec!["", "not a key-value pair", "Name: one", "name: two"];
         let got = parse_headers(input);
         let mut want = HashMap::<String, String>::new();
-        want.insert("name".to_string(), "two".to_string());
+        want.insert(String::from("name"), String::from("two"));
         assert_eq!(got, want);
     }
 }

@@ -3,7 +3,7 @@ use crate::utils;
 
 pub fn task() -> Task {
     Task {
-        name: "psql".to_string(),
+        name: String::from("psql"),
         sync,
         update,
     }

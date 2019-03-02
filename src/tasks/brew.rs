@@ -35,7 +35,7 @@ pub fn env(mut exports: Exports) -> Exports {
 
 pub fn task() -> Task {
     Task {
-        name: "brew".to_string(),
+        name: String::from("brew"),
         sync,
         update,
     }

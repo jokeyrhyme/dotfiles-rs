@@ -46,24 +46,20 @@ pub fn is_installed() -> bool {
 }
 
 pub fn latest_version() -> Result<String, task::Error> {
-    let tags: Vec<utils::github::Tag> = match utils::github::fetch_tags("golang", "go") {
-        Ok(t) => {
-            t.into_iter()
-                .filter(|t| {
-                    // release tags look like "go1.10.2"
-                    // other tags start with "weekly.", or "release.", etc
-                    t.id.starts_with("go") && version::is_stable(t.id.as_str())
-                })
-                .collect()
-        }
-        Err(error) => {
-            return Err(task::Error::IOError("cannot fetch tags".to_string(), error));
-        }
-    };
-    if tags.is_empty() {
+    let tags: Vec<utils::github::Tag> = utils::github::fetch_tags("golang", "go")?;
+    let release_tags: Vec<utils::github::Tag> = tags
+        .into_iter()
+        .filter(|t| {
+            // release tags look like "go1.10.2"
+            // other tags start with "weekly.", or "release.", etc
+            t.id.starts_with("go") && version::is_stable(t.id.as_str())
+        })
+        .collect();
+
+    if release_tags.is_empty() {
         return Err(task::Error::NoTagsError {});
     }
-    match tags.last() {
+    match release_tags.last() {
         Some(latest) => Ok(latest.clone().id),
         None => Err(task::Error::NoTagsError {}),
     }

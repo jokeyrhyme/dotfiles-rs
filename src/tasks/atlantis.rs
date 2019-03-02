@@ -11,7 +11,7 @@ use crate::utils::{
 
 pub fn task() -> Task {
     Task {
-        name: "atlantis".to_string(),
+        name: String::from("atlantis"),
         sync,
         update,
     }
