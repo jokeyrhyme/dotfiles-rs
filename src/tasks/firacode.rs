@@ -5,16 +5,16 @@ use crate::lib::{
 
 pub fn task() -> Task {
     Task {
-        name: String::from("inter"),
+        name: String::from("firacode"),
         sync,
         update,
     }
 }
 
 const GHRA_FONT: GhraFont = GhraFont {
-    asset_re: r"^Inter-.*\.zip$",
+    asset_re: r"^FiraCode_.*\.zip$",
     font_suffix: ".otf",
-    repo: ("rsms", "inter"),
+    repo: ("tonsky", "FiraCode"),
 };
 
 fn sync() -> task::Result {

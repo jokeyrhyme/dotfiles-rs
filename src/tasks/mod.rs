@@ -11,6 +11,7 @@ mod brew;
 mod dep;
 mod dotfiles;
 mod fccache;
+mod firacode;
 mod git;
 mod gitleaks;
 mod gitsizer;
@@ -120,6 +121,7 @@ fn rust_tasks() -> Vec<Task> {
 fn tasks() -> Vec<Task> {
     vec![
         // fonts
+        firacode::task(),
         inter::task(),
         fccache::task(), // deps: all other font tasks
         // these are GitHub Release tasks,
