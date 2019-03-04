@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.28.0] - 2019-03-05
+
 ### Added
 
 - golang: `env` exports GOROOT and GOPATH when found
