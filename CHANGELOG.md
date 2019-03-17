@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- git: synchronise settings from ~/.dotfiles/config/git.toml
+
 ## [0.28.0] - 2019-03-05
 
 ### Added

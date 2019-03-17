@@ -116,7 +116,7 @@ fn read_config() -> Config {
     let contents = match fs::read_to_string(&cfg_path) {
         Ok(s) => s,
         Err(error) => {
-            println!("nodejs: ignoring config: {}", error);
+            println!("npm: ignoring config: {}", error);
             return Config::new();
         }
     };
@@ -125,7 +125,7 @@ fn read_config() -> Config {
         Ok(c) => c,
         Err(error) => {
             println!(
-                "warning: nodejs: unable to parse {}, {}",
+                "warning: npm: unable to parse {}, {}",
                 &cfg_path.display(),
                 error
             );
@@ -158,7 +158,7 @@ fn sync() -> task::Result {
     match configure_npm() {
         Ok(_) => {}
         Err(error) => {
-            println!("warning: nodejs: unable to configure npm: {}", error);
+            println!("warning: npm: unable to configure npm: {}", error);
         }
     };
 
@@ -179,7 +179,7 @@ fn sync() -> task::Result {
         ) {
             Ok(_status) => {}
             Err(error) => {
-                println!("warning: nodejs: unable to bootstrap npm: {}", error);
+                println!("warning: npm: unable to bootstrap npm: {}", error);
             }
         };
     }
@@ -208,7 +208,7 @@ fn sync() -> task::Result {
     match utils::process::command_spawn_wait("npm", &install_args) {
         Ok(_status) => {}
         Err(error) => println!(
-            "warning: nodejs: unable to install missing npm packages: {}",
+            "warning: npm: unable to install missing npm packages: {}",
             error
         ),
     };
@@ -234,7 +234,7 @@ fn sync() -> task::Result {
     match utils::process::command_spawn_wait("npm", &uninstall_args) {
         Ok(_status) => {}
         Err(error) => println!(
-            "warning: nodejs: unable to uninstall unused npm packages: {}",
+            "warning: npm: unable to uninstall unused npm packages: {}",
             error
         ),
     };
