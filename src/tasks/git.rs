@@ -9,7 +9,7 @@ use crate::{
     utils,
 };
 
-const COMMAND_DELIMITERS: &[char] = &[';', '|'];
+const COMMAND_DELIMITERS: &[char] = &[';', '|', '&'];
 const ERROR_MSG: &str = "error: git";
 
 pub fn task() -> Task {
@@ -78,6 +78,7 @@ where
     s.as_ref()
         .split(|c: char| COMMAND_DELIMITERS.contains(&c))
         .filter_map(|s| match s.trim().split(" ").next() {
+            Some("") => None,
             Some(s) => Some(String::from(s)),
             None => None,
         })
@@ -191,6 +192,10 @@ mod test {
         );
         assert_eq!(
             extract_commands("diff foo bar; less"),
+            vec![String::from("diff"), String::from("less")]
+        );
+        assert_eq!(
+            extract_commands("diff && less foo"),
             vec![String::from("diff"), String::from("less")]
         );
     }
