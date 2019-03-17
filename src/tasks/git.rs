@@ -77,7 +77,7 @@ where
 {
     s.as_ref()
         .split(|c: char| COMMAND_DELIMITERS.contains(&c))
-        .filter_map(|s| match s.trim().split(" ").next() {
+        .filter_map(|s| match s.trim().split(' ').next() {
             Some("") => None,
             Some(s) => Some(String::from(s)),
             None => None,
