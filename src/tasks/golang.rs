@@ -38,10 +38,9 @@ pub fn task() -> Task {
     }
 }
 
-#[allow(clippy::needless_pass_by_value)]
 fn install_golang<S>(version: S) -> task::Result
 where
-    S: Into<String> + AsRef<str>,
+    S: Into<String>,
 {
     let current = if utils::golang::is_installed() {
         utils::golang::current_version()
@@ -51,9 +50,10 @@ where
 
     let temp_path = mkftemp()?;
 
+    let v = version.into();
     let remote_url = format!(
         "https://dl.google.com/go/{}.{}-{}.{}",
-        version.as_ref(),
+        &v,
         os(),
         arch(),
         if OS == "windows" { "zip" } else { "tar.gz" },
@@ -72,7 +72,7 @@ where
 
     utils::fs::delete_if_exists(&temp_path);
 
-    Ok(Status::Changed(current, version.as_ref().to_string()))
+    Ok(Status::Changed(current, v))
 }
 
 fn sync() -> task::Result {

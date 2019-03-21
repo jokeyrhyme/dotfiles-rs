@@ -1,4 +1,4 @@
-use std::{fs, io, str};
+use std::{fs, io};
 
 use regex::Regex;
 use toml;
@@ -21,17 +21,16 @@ pub fn task() -> Task {
     }
 }
 
-#[allow(clippy::needless_pass_by_value)]
 fn cargo_latest_version<S>(krate: S) -> Result<String, String>
 where
-    S: Into<String> + AsRef<str>,
+    S: Into<String>,
 {
     let mut pattern = String::from("^");
-    pattern.push_str(krate.as_ref());
+    let k = krate.into();
+    pattern.push_str(&k);
     pattern.push_str(r#"\s=\s"(\S+)""#);
     let re = Regex::new(&pattern).unwrap();
-    let stdout =
-        cargo::cargo_output(&["search", "--limit", "1", krate.as_ref()]).unwrap_or_default();
+    let stdout = cargo::cargo_output(&["search", "--limit", "1", &k]).unwrap_or_default();
     let lines = stdout.lines();
     for line in lines {
         if let Some(caps) = re.captures(line) {

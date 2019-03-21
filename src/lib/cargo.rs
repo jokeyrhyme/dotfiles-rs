@@ -61,7 +61,6 @@ pub fn has_cargo() -> bool {
     }
 }
 
-#[allow(clippy::needless_pass_by_value)]
 pub fn cargo<S>(args: &[S]) -> io::Result<()>
 where
     S: Into<String> + AsRef<str>,
@@ -69,7 +68,6 @@ where
     command_spawn_wait(cargo_exe(), args).map(|_| ())
 }
 
-#[allow(clippy::needless_pass_by_value)]
 pub fn cargo_output<S>(args: &[S]) -> io::Result<String>
 where
     S: Into<String> + AsRef<str>,
@@ -91,16 +89,15 @@ fn cargo_exe() -> PathBuf {
     })
 }
 
-#[allow(clippy::needless_pass_by_value)]
 fn parse_installed<S>(stdout: S) -> HashMap<String, String>
 where
-    S: Into<String> + AsRef<str>,
+    S: Into<String>,
 {
     let re = regex::Regex::new(r"^(?P<name>\S+)\sv(?P<version>\S+):").unwrap();
-    let lines = stdout.as_ref().lines();
+    let s = stdout.into();
     let mut krates: HashMap<String, String> = HashMap::new();
 
-    for line in lines {
+    for line in s.lines() {
         if let Some(caps) = re.captures(line) {
             let krate = caps.get(1).unwrap().as_str();
             let version = caps.get(2).unwrap().as_str();

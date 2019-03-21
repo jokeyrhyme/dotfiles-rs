@@ -1,6 +1,6 @@
 use std::{
     env::consts::OS,
-    ffi::{OsStr, OsString},
+    ffi::OsString,
     io,
     process::{Command, ExitStatus, Output},
     str,
@@ -8,39 +8,52 @@ use std::{
 
 use crate::tasks;
 
-#[allow(clippy::needless_pass_by_value)]
 pub fn command_output<O, S>(cmd: O, args: &[S]) -> io::Result<Output>
 where
-    O: Into<OsString> + AsRef<OsStr>,
+    O: Into<OsString>,
     S: Into<String> + AsRef<str>,
 {
+    let cmd_args = args.iter().map(|s| s.as_ref().into()).collect();
     if OS == "windows" {
         let cmd_os = cmd.into();
-        let cmd_lossy = cmd_os.to_string_lossy();
-        let mut cmd_args: Vec<&str> = vec!["/c", cmd_lossy.as_ref()];
-        cmd_args.extend::<Vec<&str>>(args.into_iter().map(|s| s.as_ref()).collect());
-        with_env(Command::new("cmd").args(cmd_args)).output()
+        with_env(
+            Command::new("cmd").args(
+                [
+                    vec![String::from("/c"), cmd_os.to_string_lossy().into_owned()],
+                    cmd_args,
+                ]
+                .concat(),
+            ),
+        )
+        .output()
     } else {
-        let cmd_args: Vec<&str> = args.into_iter().map(|s| s.as_ref()).collect();
-        with_env(Command::new(cmd).args(cmd_args)).output()
+        with_env(Command::new(cmd.into()).args(cmd_args)).output()
     }
 }
 
-#[allow(clippy::needless_pass_by_value)]
 pub fn command_spawn_wait<O, S>(cmd: O, args: &[S]) -> io::Result<ExitStatus>
 where
-    O: Into<OsString> + AsRef<OsStr>,
+    O: Into<OsString>,
     S: Into<String> + AsRef<str>,
 {
+    let cmd_args = args.iter().map(|s| s.as_ref().into()).collect();
     if OS == "windows" {
         let cmd_os = cmd.into();
-        let cmd_lossy = cmd_os.to_string_lossy();
-        let mut cmd_args: Vec<&str> = vec!["/c", cmd_lossy.as_ref()];
-        cmd_args.extend::<Vec<&str>>(args.into_iter().map(|s| s.as_ref()).collect());
-        with_env(Command::new("cmd").args(cmd_args)).spawn()?.wait()
+        with_env(
+            Command::new("cmd").args(
+                [
+                    vec![String::from("/c"), cmd_os.to_string_lossy().into_owned()],
+                    cmd_args,
+                ]
+                .concat(),
+            ),
+        )
+        .spawn()?
+        .wait()
     } else {
-        let cmd_args: Vec<&str> = args.into_iter().map(|s| s.as_ref()).collect();
-        with_env(Command::new(cmd).args(cmd_args)).spawn()?.wait()
+        with_env(Command::new(cmd.into()).args(cmd_args))
+            .spawn()?
+            .wait()
     }
 }
 

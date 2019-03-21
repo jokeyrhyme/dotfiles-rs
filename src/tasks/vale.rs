@@ -61,7 +61,6 @@ fn sync() -> task::Result {
     GHRA_TASK.sync()
 }
 
-#[allow(clippy::needless_pass_by_value)]
 fn trim_version(stdout: String) -> String {
     String::from(stdout.trim())
 }

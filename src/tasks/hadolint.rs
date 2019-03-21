@@ -37,7 +37,6 @@ fn sync() -> task::Result {
     GHR_TASK.sync()
 }
 
-#[allow(clippy::needless_pass_by_value)]
 fn trim_version(stdout: String) -> String {
     let re = Regex::new(r"(\d+\.\d+\.\d+)").unwrap();
     let caps = re.captures_iter(stdout.trim()).next().unwrap();

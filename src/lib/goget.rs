@@ -71,12 +71,11 @@ impl Favourites for GoGetFavourites {
     }
 }
 
-#[allow(clippy::needless_pass_by_value)]
 fn pkg_found<S>(pkg: S) -> bool
 where
-    S: Into<String> + AsRef<str>,
+    S: Into<String>,
 {
-    let p = PathBuf::from(pkg.as_ref());
+    let p = PathBuf::from(pkg.into());
     match p.file_name() {
         Some(f) => {
             let bin = gopath()

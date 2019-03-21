@@ -3,22 +3,18 @@ use std;
 use std::fs::File;
 #[cfg(unix)]
 use std::os::unix::fs::PermissionsExt;
-use std::{
-    fmt::Debug,
-    io,
-    path::{Path, PathBuf},
-};
+use std::{fmt::Debug, io, path::PathBuf};
 
 use mktemp;
 
 use crate::lib::task::{self, Status};
 
-#[allow(clippy::needless_pass_by_value)]
 pub fn delete_if_exists<P>(path: P)
 where
-    P: Into<PathBuf> + AsRef<Path> + Debug,
+    P: Into<PathBuf> + Debug,
 {
-    let attr = match std::fs::symlink_metadata(path.as_ref()) {
+    let p = path.into();
+    let attr = match std::fs::symlink_metadata(&p) {
         Ok(attr) => attr,
         Err(_error) => {
             // might not exist, noop
@@ -27,59 +23,56 @@ where
     };
 
     if attr.is_dir() {
-        match std::fs::remove_dir_all(path.as_ref()) {
+        match std::fs::remove_dir_all(&p) {
             Ok(_removed) => {}
             Err(error) => println!(
                 "unable to recursively delete directory {}: {:?}",
-                path.as_ref().display(),
+                p.display(),
                 error
             ),
         };
         return;
     }
 
-    match std::fs::remove_file(path.as_ref()) {
+    match std::fs::remove_file(&p) {
         Ok(_removed) => {}
-        Err(error) => println!(
-            "unable to delete file {}: {:?}",
-            path.as_ref().display(),
-            error
-        ),
+        Err(error) => println!("unable to delete file {}: {:?}", p.display(), error),
     }
 }
 
 #[cfg(unix)]
-#[allow(clippy::needless_pass_by_value)]
+
 pub fn set_executable<P>(target: P) -> std::io::Result<()>
 where
-    P: Into<PathBuf> + AsRef<Path>,
+    P: Into<PathBuf>,
 {
-    let file = File::open(target).unwrap();
+    let file = File::open(target.into()).unwrap();
     let mut perms = file.metadata().unwrap().permissions();
     perms.set_mode(0o755); // a+rx, u+w
     file.set_permissions(perms)
 }
 
 #[cfg(not(unix))]
-#[allow(clippy::needless_pass_by_value)]
+
 pub fn set_executable<P>(_target: P) -> std::io::Result<()>
 where
-    P: Into<PathBuf> + AsRef<Path> + PartialEq,
+    P: Into<PathBuf> + PartialEq,
 {
     Ok(())
 }
 
-#[allow(clippy::needless_pass_by_value)]
 pub fn symbolic_link_if_exists<P>(src: P, dest: P) -> task::Result
 where
-    P: Into<PathBuf> + AsRef<Path> + Debug,
+    P: Into<PathBuf> + Debug,
 {
-    match std::fs::read_link(dest.as_ref()) {
+    let d = dest.into();
+    let s = src.into();
+    match std::fs::read_link(&d) {
         Ok(target) => {
-            if src.as_ref() == target {
+            if s == target {
                 return Ok(Status::NoChange(format!(
                     "already symlinked: {} -> {}",
-                    dest.as_ref().display(),
+                    d.display(),
                     target.display(),
                 )));
             }
@@ -89,47 +82,43 @@ where
         }
     };
 
-    if std::fs::symlink_metadata(src.as_ref()).is_err() {
+    if std::fs::symlink_metadata(&s).is_err() {
         return Ok(Status::Skipped);
     }
 
-    if let Some(parent) = dest.as_ref().parent() {
+    if let Some(parent) = d.parent() {
         std::fs::create_dir_all(&parent)?;
     }
 
-    match std::fs::symlink_metadata(dest.as_ref()) {
+    match std::fs::symlink_metadata(&d) {
         Ok(_attr) => {
-            delete_if_exists(dest.as_ref());
+            delete_if_exists(&d);
         }
         Err(_error) => { /* might not exist, continue */ }
     }
 
-    symbolic_link(src.as_ref(), dest.as_ref())?;
+    symbolic_link(&s, &d)?;
 
     Ok(Status::Changed(
         String::from("previous symlink"),
-        format!(
-            "symlinked: {} -> {}",
-            dest.as_ref().display(),
-            src.as_ref().display(),
-        ),
+        format!("symlinked: {} -> {}", d.display(), s.display(),),
     ))
 }
 
 #[cfg(not(windows))]
-#[allow(clippy::needless_pass_by_value)]
+
 fn symbolic_link<P>(src: P, dest: P) -> io::Result<()>
 where
-    P: Into<PathBuf> + AsRef<Path>,
+    P: Into<PathBuf>,
 {
-    std::os::unix::fs::symlink(src, dest)
+    std::os::unix::fs::symlink(src.into(), dest.into())
 }
 
 #[cfg(windows)]
-#[allow(clippy::needless_pass_by_value)]
+
 fn symbolic_link<P>(src: P, dest: P) -> io::Result<()>
 where
-    P: Into<PathBuf> + AsRef<Path>,
+    P: Into<PathBuf>,
 {
     let src_attr = std::fs::symlink_metadata(&src)?;
     if src_attr.is_dir() {
@@ -161,7 +150,7 @@ pub fn mkftemp() -> io::Result<PathBuf> {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use std::path::Path;
 
     #[test]
     fn check_cargo() {
