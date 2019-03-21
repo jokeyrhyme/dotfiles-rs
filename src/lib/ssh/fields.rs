@@ -29,15 +29,16 @@ impl Display for Duration {
 
 impl<S> From<S> for Duration
 where
-    S: Into<String> + AsRef<str>,
+    S: Into<String>,
 {
     fn from(source: S) -> Self {
-        match i32::from_str_radix(source.as_ref(), 10) {
+        let s = source.into();
+        match i32::from_str_radix(&s, 10) {
             Ok(n) => Duration::Seconds(n),
             Err(_) => {
                 let re = regex::Regex::new(r"^(\d+[smhdwSMHDW])+$").unwrap();
-                if re.is_match(source.as_ref()) {
-                    Duration::Time(String::from(source.as_ref()))
+                if re.is_match(&s) {
+                    Duration::Time(s)
                 } else {
                     Duration::Time(String::new())
                 }
@@ -63,10 +64,10 @@ impl Display for YesNo {
 
 impl<S> From<S> for YesNo
 where
-    S: Into<String> + AsRef<str>,
+    S: Into<String>,
 {
     fn from(source: S) -> Self {
-        match source.as_ref() {
+        match source.into().as_str() {
             YES | "1" | "true" => YesNo::Yes,
             _ => YesNo::No,
         }
@@ -90,11 +91,12 @@ impl Display for YesNoAsk {
 
 impl<S> From<S> for YesNoAsk
 where
-    S: Into<String> + AsRef<str>,
+    S: Into<String>,
 {
     fn from(source: S) -> Self {
-        match source.as_ref() {
-            YES | NO => YesNoAsk::YesNo(YesNo::from(source)),
+        let s = source.into();
+        match s.as_str() {
+            YES | NO => YesNoAsk::YesNo(YesNo::from(s)),
             _ => YesNoAsk::Ask,
         }
     }
@@ -125,11 +127,12 @@ impl Display for YesNoAskAutoAutoAsk {
 
 impl<S> From<S> for YesNoAskAutoAutoAsk
 where
-    S: Into<String> + AsRef<str>,
+    S: Into<String>,
 {
     fn from(source: S) -> Self {
-        match source.as_ref() {
-            YES | NO | ASK => YesNoAskAutoAutoAsk::YesNoAsk(YesNoAsk::from(source)),
+        let s = source.into();
+        match s.as_str() {
+            YES | NO | ASK => YesNoAskAutoAutoAsk::YesNoAsk(YesNoAsk::from(s)),
             AUTO => YesNoAskAutoAutoAsk::Auto,
             _ => YesNoAskAutoAutoAsk::AutoAsk,
         }
@@ -163,12 +166,13 @@ impl Display for YesNoDuration {
 
 impl<S> From<S> for YesNoDuration
 where
-    S: Into<String> + AsRef<str>,
+    S: Into<String>,
 {
     fn from(source: S) -> Self {
-        match source.as_ref() {
-            YES | NO => YesNoDuration::YesNo(YesNo::from(source)),
-            _ => YesNoDuration::Duration(Duration::from(source)),
+        let s = source.into();
+        match s.as_str() {
+            YES | NO => YesNoDuration::YesNo(YesNo::from(s)),
+            _ => YesNoDuration::Duration(Duration::from(s)),
         }
     }
 }

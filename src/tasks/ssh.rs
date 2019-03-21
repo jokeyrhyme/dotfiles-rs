@@ -13,13 +13,12 @@ pub fn task() -> Task {
     }
 }
 
-#[allow(clippy::needless_pass_by_value)]
 fn is_blacklist_supported<S>(ssh_version: S) -> bool
 where
-    S: Into<String> + AsRef<str>,
+    S: Into<String>,
 {
     let re = regex::Regex::new(r"OpenSSH_(\d+\.\d+)").unwrap();
-    for caps in re.captures_iter(ssh_version.as_ref()) {
+    for caps in re.captures_iter(&ssh_version.into()) {
         let version = caps.get(1).unwrap().as_str();
         if let Ok(v) = version.parse::<f32>() {
             // OpenSSH 7.5 supports blacklists, 7.4 and older doesn't
@@ -29,36 +28,35 @@ where
     true
 }
 
-#[allow(clippy::needless_pass_by_value)]
 fn is_weak_cipher<S>(cipher: S) -> bool
 where
-    S: Into<String> + AsRef<str>,
+    S: Into<String>,
 {
+    let c = cipher.into();
     let cbc_re = regex::Regex::new(r"\bcbc\b").unwrap();
     let rc4_re = regex::Regex::new(r"\b(arcfour|rc4)").unwrap();
     // no ending word-boundary: need to catch "arcfour" and "arcfour128"
 
     // CBC ciphers are weak: https://access.redhat.com/solutions/420283
     // RC4 ciphers are weak: https://en.wikipedia.org/wiki/RC4#Security
-    cbc_re.is_match(cipher.as_ref()) || rc4_re.is_match(cipher.as_ref())
+    cbc_re.is_match(&c) || rc4_re.is_match(&c)
 }
 
-#[allow(clippy::needless_pass_by_value)]
 fn is_weak_kex<S>(kex: S) -> bool
 where
-    S: Into<String> + AsRef<str>,
+    S: Into<String>,
 {
     let sha1_re = regex::Regex::new(r"\bsha1\b").unwrap();
 
     // SHA1 is weak: https://en.wikipedia.org/wiki/SHA-1
-    sha1_re.is_match(kex.as_ref())
+    sha1_re.is_match(&kex.into())
 }
 
-#[allow(clippy::needless_pass_by_value)]
 fn is_weak_mac<S>(mac: S) -> bool
 where
-    S: Into<String> + AsRef<str>,
+    S: Into<String>,
 {
+    let m = mac.into();
     let bits96_re = regex::Regex::new(r"\b96\b").unwrap();
     let md5_re = regex::Regex::new(r"\bmd5\b").unwrap();
     let sha1_re = regex::Regex::new(r"\bsha1\b").unwrap();
@@ -66,9 +64,7 @@ where
     // 96-bit algorithms are weak: https://access.redhat.com/solutions/420283
     // MD5 is weak: https://access.redhat.com/solutions/420283
     // SHA1 is weak: https://en.wikipedia.org/wiki/SHA-1
-    bits96_re.is_match(mac.as_ref())
-        || md5_re.is_match(mac.as_ref())
-        || sha1_re.is_match(mac.as_ref())
+    bits96_re.is_match(&m) || md5_re.is_match(&m) || sha1_re.is_match(&m)
 }
 
 fn ssh_version() -> String {

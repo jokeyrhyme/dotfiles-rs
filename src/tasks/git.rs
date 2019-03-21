@@ -28,11 +28,11 @@ struct ComplexConfigEntry {
 }
 impl<S> From<S> for ComplexConfigEntry
 where
-    S: Into<String> + AsRef<str>,
+    S: Into<String>,
 {
     fn from(s: S) -> ComplexConfigEntry {
         ComplexConfigEntry {
-            value: String::from(s.as_ref()),
+            value: s.into(),
             when: String::new(),
         }
     }
@@ -51,10 +51,10 @@ impl Config {
 }
 impl<S> From<S> for Config
 where
-    S: Into<String> + AsRef<str>,
+    S: Into<String>,
 {
     fn from(s: S) -> Config {
-        match toml::from_str(&s.as_ref()) {
+        match toml::from_str(&s.into()) {
             Ok(c) => c,
             Err(error) => {
                 println!("warning: git: unable to parse TOML, {}", error);
@@ -73,9 +73,9 @@ enum ConfigEntry {
 
 fn extract_commands<S>(s: S) -> Vec<String>
 where
-    S: Into<String> + AsRef<str>,
+    S: Into<String>,
 {
-    s.as_ref()
+    s.into()
         .split(|c: char| COMMAND_DELIMITERS.contains(&c))
         .filter_map(|s| match s.trim().split(' ').next() {
             Some("") => None,

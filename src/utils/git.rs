@@ -1,7 +1,4 @@
-use std::{
-    io,
-    path::{Path, PathBuf},
-};
+use std::{io, path::PathBuf};
 
 use crate::utils;
 
@@ -12,69 +9,56 @@ pub fn has_git() -> bool {
     }
 }
 
-#[allow(clippy::needless_pass_by_value)]
 pub fn path_is_git_repository<P>(path: P) -> bool
 where
-    P: Into<PathBuf> + AsRef<Path>,
+    P: Into<PathBuf>,
 {
-    if !path.as_ref().is_dir() {
+    let p = path.into();
+    if !p.is_dir() {
         return false;
     }
-    match utils::process::command_output(
-        "git",
-        &["-C", path.as_ref().to_string_lossy().as_ref(), "status"],
-    ) {
+    match utils::process::command_output("git", &["-C", &p.to_string_lossy(), "status"]) {
         Ok(output) => output.status.success(),
         Err(_error) => false,
     }
 }
 
-#[allow(clippy::needless_pass_by_value)]
 pub fn pull<P>(path: P)
 where
-    P: Into<PathBuf> + AsRef<Path>,
+    P: Into<PathBuf>,
 {
-    match utils::process::command_spawn_wait(
-        "git",
-        &["-C", path.as_ref().to_str().unwrap(), "pull"],
-    ) {
+    match utils::process::command_spawn_wait("git", &["-C", path.into().to_str().unwrap(), "pull"])
+    {
         Ok(_) => {}
         Err(error) => println!("`git pull` failed: {}", error),
     }
 }
 
-#[allow(clippy::needless_pass_by_value)]
 pub fn shallow_clone<S>(source: S, target: S) -> io::Result<()>
 where
-    S: Into<String> + AsRef<str>,
+    S: Into<String>,
 {
     match utils::process::command_spawn_wait(
         "git",
-        &["clone", "--depth", "1", source.as_ref(), target.as_ref()],
+        &["clone", "--depth", "1", &source.into(), &target.into()],
     ) {
         Ok(_status) => Ok(()),
         Err(error) => Err(error),
     }
 }
 
-#[allow(clippy::needless_pass_by_value)]
 pub fn shallow_fetch<S>(target: S) -> io::Result<()>
 where
-    S: Into<String> + AsRef<str>,
+    S: Into<String>,
 {
-    match utils::process::command_spawn_wait(
-        "git",
-        &["-C", target.as_ref(), "fetch", "--depth", "1"],
-    ) {
+    let t = target.into();
+    match utils::process::command_spawn_wait("git", &["-C", &t, "fetch", "--depth", "1"]) {
         Ok(_status) => {}
         Err(error) => {
             return Err(error);
         }
     }
-    match utils::process::command_spawn_wait(
-        "git",
-        &["-C", target.as_ref(), "reset", "--hard", "FETCH_HEAD"],
-    ) {
+    match utils::process::command_spawn_wait("git", &["-C", &t, "reset", "--hard", "FETCH_HEAD"]) {
         Ok(_status) => Ok(()),
         Err(error) => Err(error),
     }
@@ -82,6 +66,8 @@ where
 
 #[cfg(test)]
 mod tests {
+    use std::path::Path;
+
     use crate::utils::fs::mkdtemp;
 
     use super::*;

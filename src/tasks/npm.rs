@@ -67,12 +67,11 @@ fn configure_npm() -> io::Result<()> {
     Ok(())
 }
 
-#[allow(clippy::needless_pass_by_value)]
 fn is_global_package_bin_linked<S>(name: S) -> bool
 where
-    S: Into<String> + AsRef<str>,
+    S: Into<String>,
 {
-    let pkg = match read_global_package(name.as_ref()) {
+    let pkg = match read_global_package(name.into()) {
         Ok(p) => p,
         Err(_) => {
             return false;
@@ -134,14 +133,13 @@ fn read_config() -> Config {
     }
 }
 
-#[allow(clippy::needless_pass_by_value)]
 fn read_global_package<S>(name: S) -> io::Result<Package>
 where
-    S: Into<String> + AsRef<str>,
+    S: Into<String>,
 {
     let pkg_path = utils::nodejs::lib_dir()
         .join("node_modules")
-        .join(name.as_ref())
+        .join(name.into())
         .join("package.json");
     let contents = fs::read_to_string(&pkg_path)?;
     match serde_json::from_str(&contents) {

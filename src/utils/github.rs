@@ -3,7 +3,7 @@ use std::{
     env::consts::{ARCH, OS},
     error::Error,
     fmt, io,
-    path::{Path, PathBuf},
+    path::PathBuf,
     str,
 };
 
@@ -96,21 +96,20 @@ pub fn compatible_asset(release: &Release, filter: &Fn(&Asset) -> bool) -> Resul
     }
 }
 
-#[allow(clippy::needless_pass_by_value)]
 pub fn download_release_asset<P>(asset: &Asset, bin_path: P) -> Result<()>
 where
-    P: Into<PathBuf> + AsRef<Path>,
+    P: Into<PathBuf>,
 {
     let req = create_request(asset.browser_download_url.clone());
-    utils::http::download_request(&req, bin_path.as_ref())?;
-    utils::fs::set_executable(bin_path.as_ref())?;
+    let bp = bin_path.into();
+    utils::http::download_request(&req, &bp)?;
+    utils::fs::set_executable(&bp)?;
     Ok(())
 }
 
-#[allow(clippy::needless_pass_by_value)]
 fn create_request<S>(url: S) -> Request
 where
-    S: Into<String> + AsRef<str>,
+    S: Into<String>,
 {
     let mut headers: Vec<String> = Vec::new();
 
@@ -123,18 +122,17 @@ where
     };
 
     let headers_slice: Vec<&str> = headers.iter().map(|h| &**h).collect();
-    utils::http::create_request(url.as_ref(), &headers_slice)
+    utils::http::create_request(url, &headers_slice)
 }
 
-#[allow(clippy::needless_pass_by_value)]
 fn fetch_releases<S>(owner: S, repo: S) -> Result<Vec<Release>>
 where
-    S: Into<String> + AsRef<str>,
+    S: Into<String>,
 {
     let uri = format!(
         "https://api.github.com/repos/{}/{}/releases",
-        owner.as_ref(),
-        repo.as_ref(),
+        owner.into(),
+        repo.into(),
     );
     let req = create_request(uri);
     let res = utils::http::fetch_request(&req)?;
@@ -150,15 +148,14 @@ where
     Ok(releases)
 }
 
-#[allow(clippy::needless_pass_by_value)]
 pub fn fetch_tags<S>(owner: S, repo: S) -> Result<Vec<Tag>>
 where
-    S: Into<String> + AsRef<str>,
+    S: Into<String>,
 {
     let uri = format!(
         "https://api.github.com/repos/{}/{}/git/refs/tags",
-        owner.as_ref(),
-        repo.as_ref(),
+        owner.into(),
+        repo.into(),
     );
     let req = create_request(uri);
     let res = utils::http::fetch_request(&req)?;
@@ -180,10 +177,9 @@ where
         .collect())
 }
 
-#[allow(clippy::needless_pass_by_value)]
 pub fn latest_release<S>(owner: S, repo: S) -> Result<Release>
 where
-    S: Into<String> + AsRef<str>,
+    S: Into<String>,
 {
     let releases = fetch_releases(owner, repo)?;
     if releases.is_empty() {
@@ -197,10 +193,9 @@ where
     }
 }
 
-#[allow(clippy::needless_pass_by_value)]
 pub fn release_versus_current<S>(current: S, owner: S, repo: S) -> Option<Release>
 where
-    S: Into<String> + AsRef<str>,
+    S: Into<String>,
 {
     let release = match latest_release(owner, repo) {
         Ok(r) => r,
@@ -210,10 +205,8 @@ where
         }
     };
 
-    let installed = current
-        .as_ref()
-        .trim_start_matches(|c: char| !c.is_digit(10))
-        .trim();
+    let c = current.into();
+    let installed = c.trim_start_matches(|c: char| !c.is_digit(10)).trim();
     let tag_name = release.tag_name.clone();
     let latest = tag_name
         .trim_start_matches(|c: char| !c.is_digit(10))

@@ -93,7 +93,6 @@ impl<'a> From<&'a str> for Shell {
     }
 }
 
-#[allow(clippy::needless_pass_by_value)]
 fn export_bash<S>(key: S, value: S) -> String
 where
     S: Into<String> + AsRef<str> + Display,
@@ -101,7 +100,6 @@ where
     format!("export {}={}", key, value)
 }
 
-#[allow(clippy::needless_pass_by_value)]
 fn export_fish<S>(key: S, value: S) -> String
 where
     S: Into<String> + AsRef<str> + Display,
@@ -109,7 +107,6 @@ where
     format!("set --export {} {}", key, value)
 }
 
-#[allow(clippy::needless_pass_by_value)]
 fn export_shell<S>(shell: &Shell, key: S, value: S) -> String
 where
     S: Into<String> + AsRef<str> + Display,
@@ -120,16 +117,8 @@ where
     match shell {
         Shell::Bash => export_bash(key, value),
         Shell::Fish => export_fish(key, value),
-        Shell::Zsh => export_zsh(key, value),
+        Shell::Zsh => export_bash(key, value),
     }
-}
-
-#[allow(clippy::needless_pass_by_value)]
-fn export_zsh<S>(key: S, value: S) -> String
-where
-    S: Into<String> + AsRef<str> + Display,
-{
-    export_bash(key, value)
 }
 
 #[cfg(test)]

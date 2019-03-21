@@ -1,4 +1,4 @@
-use std::{self, env::consts::OS, io, str};
+use std::{self, env::consts::OS, io};
 
 use crate::lib::{
     env::Exports,
@@ -28,18 +28,18 @@ pub fn task() -> Task {
     }
 }
 
-#[allow(clippy::needless_pass_by_value)]
 fn install_nodejs<S>(version: S) -> io::Result<()>
 where
-    S: Into<String> + AsRef<str>,
+    S: Into<String>,
 {
     let temp_path = mkftemp()?;
 
-    let prefix = format!("node-{}-{}-{}", version.as_ref(), os(), arch());
+    let v = version.into();
+    let prefix = format!("node-{}-{}-{}", &v, os(), arch());
 
     let remote_url = format!(
         "https://nodejs.org/dist/{}/{}.{}",
-        version.as_ref(),
+        &v,
         &prefix,
         if OS == "windows" { "zip" } else { "tar.gz" },
     );

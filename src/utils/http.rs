@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use std::fs::{create_dir_all, File};
 use std::io::{self, ErrorKind, Write};
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 use cabot::{request::Request, response::Response, Client, RequestBuilder};
 
@@ -24,12 +24,11 @@ impl<'a> HTTPCall<'a> {
 
 pub const EMPTY_HEADERS: &[&str] = &[];
 
-#[allow(clippy::needless_pass_by_value)]
 pub fn create_request<S>(url: S, headers: &[&str]) -> Request
 where
-    S: Into<String> + AsRef<str>,
+    S: Into<String>,
 {
-    RequestBuilder::new(url.as_ref())
+    RequestBuilder::new(url.into().as_str())
         .set_http_method("GET")
         .add_header(&format!("User-Agent: {}", user_agent()))
         .add_headers(&headers)
@@ -37,29 +36,28 @@ where
         .unwrap()
 }
 
-#[allow(clippy::needless_pass_by_value)]
 pub fn download<P, S>(url: S, dest: P) -> io::Result<()>
 where
-    P: Into<PathBuf> + AsRef<Path>,
-    S: Into<String> + AsRef<str>,
+    P: Into<PathBuf>,
+    S: Into<String>,
 {
     let req = create_request(url, &EMPTY_HEADERS);
 
-    download_request(&req, dest.as_ref())
+    download_request(&req, dest.into())
 }
 
-#[allow(clippy::needless_pass_by_value)]
 pub fn download_request<P>(req: &Request, dest: P) -> io::Result<()>
 where
-    P: Into<PathBuf> + AsRef<Path>,
+    P: Into<PathBuf>,
 {
     let res = fetch_request(&req)?;
 
-    if let Some(parent) = dest.as_ref().parent() {
+    let d = dest.into();
+    if let Some(parent) = d.parent() {
         create_dir_all(&parent)?;
     };
 
-    let mut file = File::create(dest)?;
+    let mut file = File::create(d)?;
     file.write_all(res.body().unwrap_or_default())?;
 
     Ok(())

@@ -35,7 +35,6 @@ fn sync() -> task::Result {
     GHR_TASK.sync()
 }
 
-#[allow(clippy::needless_pass_by_value)]
 fn trim_version(stdout: String) -> String {
     let line = stdout.lines().next().unwrap_or_default();
     let parts: Vec<&str> = line.splitn(2, ':').collect();

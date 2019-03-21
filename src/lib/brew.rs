@@ -17,7 +17,6 @@ pub fn has_brew() -> bool {
     }
 }
 
-#[allow(clippy::needless_pass_by_value)]
 pub fn brew<S>(args: &[S]) -> io::Result<()>
 where
     S: Into<String> + AsRef<str>,
@@ -28,7 +27,6 @@ where
     }
 }
 
-#[allow(clippy::needless_pass_by_value)]
 pub fn brew_output<S>(args: &[S]) -> io::Result<String>
 where
     S: Into<String> + AsRef<str>,
