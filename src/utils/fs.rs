@@ -131,7 +131,7 @@ where
 pub fn mkdtemp() -> io::Result<PathBuf> {
     let temp_path;
     {
-        let mut temp = mktemp::Temp::new_dir()?;
+        let temp = mktemp::Temp::new_dir()?;
         temp_path = temp.to_path_buf();
         temp.release();
     }
@@ -141,7 +141,7 @@ pub fn mkdtemp() -> io::Result<PathBuf> {
 pub fn mkftemp() -> io::Result<PathBuf> {
     let temp_path;
     {
-        let mut temp = mktemp::Temp::new_file()?;
+        let temp = mktemp::Temp::new_file()?;
         temp_path = temp.to_path_buf();
         temp.release();
     }
