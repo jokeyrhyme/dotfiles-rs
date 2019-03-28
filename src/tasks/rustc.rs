@@ -5,7 +5,7 @@ use crate::lib::{
     task::{self, Status, Task},
 };
 
-const TOOLCHAINS: &[&str] = &["stable", "nightly"];
+const TOOLCHAINS: &[&str] = &["stable"];
 
 pub fn task() -> Task {
     Task {
