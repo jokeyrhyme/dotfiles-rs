@@ -1,6 +1,6 @@
 use std::env::var;
 
-use clap::{App, SubCommand};
+use clap::{App, Arg, SubCommand};
 
 mod lib {
     pub mod brew;
@@ -41,11 +41,25 @@ fn main() {
             SubCommand::with_name("all")
                 .about("sync / update my settings and packages on this computer"),
         )
+        .subcommand(
+            SubCommand::with_name("some")
+                .arg(Arg::with_name("tasks"))
+                .about("run specific comma-separated tasks"),
+        )
         .subcommand(SubCommand::with_name("env").about("export generated environment variables"))
         .get_matches();
 
     if let Some(_matches) = matches.subcommand_matches("all") {
         tasks::all();
+        return;
+    }
+
+    if let Some(matches) = matches.subcommand_matches("some") {
+        if matches.is_present("tasks") {
+            tasks::some(matches.value_of("tasks").unwrap());
+        } else {
+            println!("Error: comma-separated list of tasks is mandatory for 'some'");
+        }
         return;
     }
 

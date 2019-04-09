@@ -1,4 +1,4 @@
-use std::thread;
+use std::collections::HashMap;
 
 use crate::lib::{env::Exports, task::Task};
 
@@ -64,99 +64,161 @@ pub fn all() {
     // TODO: realise these goals :)
     // TODO: maybe queue I/O within GitHub and HTTP helpers
 
-    dotfiles::task().sync_then_update(); // provides: config; must be first
-
-    // split out tasks that may involve compilation,
-    // so we might be able to download at the same time
-
-    let golang_handle = thread::spawn(|| {
-        for t in golang_tasks() {
+    let tasks = mapping();
+    for s in sequence() {
+        if let Some(t) = tasks.get(&s) {
             t.sync_then_update();
         }
-    });
-
-    let nodejs_handle = thread::spawn(|| {
-        for t in nodejs_tasks() {
-            t.sync_then_update();
-        }
-    });
-
-    let rust_handle = thread::spawn(|| {
-        for t in rust_tasks() {
-            t.sync_then_update();
-        }
-    });
-
-    golang_handle.join().unwrap();
-    nodejs_handle.join().unwrap();
-    rust_handle.join().unwrap();
-
-    // run remaining tasks in serial,
-    // without any other concurrent tasks
-    for t in tasks() {
-        t.sync_then_update();
     }
 }
 
-fn golang_tasks() -> Vec<Task> {
-    vec![
-        golang::task(),
-        goget::task(), // deps: golang
-    ]
+pub fn some<S>(input: S)
+where
+    S: AsRef<str>,
+{
+    let tasks = mapping();
+    for name in input.as_ref().split(',') {
+        if let Some(task) = tasks.get(name) {
+            task.sync_then_update();
+        }
+    }
 }
 
-fn nodejs_tasks() -> Vec<Task> {
+fn sequence() -> Vec<String> {
     vec![
-        nodejs::task(),
-        npm::task(), // deps: nodejs
-    ]
-}
-
-fn rust_tasks() -> Vec<Task> {
-    vec![
-        rustup::task(),
-        rustc::task(), // deps: rustup
-        rust::task(),  // deps: rustc
-    ]
-}
-
-fn tasks() -> Vec<Task> {
-    vec![
+        dotfiles::task().name, // provides: config; must be first
+        golang::task().name,
+        goget::task().name, // deps: config,golang
+        nodejs::task().name,
+        npm::task().name, // deps: config,nodejs
+        rustup::task().name,
+        rustc::task().name, // deps: rustup
+        rust::task().name,  // deps: config,rustc
         // fonts
-        firacode::task(),
-        hack::task(),
-        hasklig::task(),
-        inter::task(),
-        fccache::task(), // deps: all other font tasks
+        firacode::task().name,
+        hack::task().name,
+        hasklig::task().name,
+        inter::task().name,
+        fccache::task().name, // deps: all other font tasks
         // these are GitHub Release tasks,
         // that are mostly I/O-heavy,
         // and serialising such things avoids clogging our pipes
-        atlantis::task(),
-        bazel::task(),
-        dep::task(),
-        gitleaks::task(),
-        gitsizer::task(),
-        hadolint::task(),
-        jq::task(),
-        minikube::task(),
-        shfmt::task(),
-        skaffold::task(),
-        vale::task(),
-        yq::task(),
-        alacritty::task(), // deps: config
-        atom::task(),
-        bash::task(), // deps: config
-        brew::task(),
-        git::task(), // deps: nodejs/npm
-        googlecloudsdk::task(),
-        hyper::task(), // deps: config
-        macos::task(),
-        psql::task(),   // deps: config
-        ssh::task(),    // deps: config
-        tmux::task(),   // deps: config
-        vim::task(),    // deps: config; takes over the terminal
-        vscode::task(), // deps: config
-        zsh::task(),    // deps: config
-        windows::task(),
+        atlantis::task().name,
+        bazel::task().name,
+        dep::task().name,
+        gitleaks::task().name,
+        gitsizer::task().name,
+        hadolint::task().name,
+        jq::task().name,
+        minikube::task().name,
+        shfmt::task().name,
+        skaffold::task().name,
+        vale::task().name,
+        yq::task().name,
+        alacritty::task().name, // deps: config
+        atom::task().name,
+        bash::task().name, // deps: config
+        brew::task().name,
+        git::task().name, // deps: nodejs/npm
+        googlecloudsdk::task().name,
+        hyper::task().name, // deps: config
+        macos::task().name,
+        psql::task().name,   // deps: config
+        ssh::task().name,    // deps: config
+        tmux::task().name,   // deps: config
+        vim::task().name,    // deps: config; takes over the terminal
+        vscode::task().name, // deps: config
+        zsh::task().name,    // deps: config
+        windows::task().name,
     ]
+}
+
+fn mapping() -> HashMap<String, Task> {
+    let mut map = HashMap::<String, Task>::new();
+    map.insert(String::from("alacritty"), alacritty::task());
+    map.insert(String::from("atlantis"), atlantis::task());
+    map.insert(String::from("atom"), atom::task());
+    map.insert(String::from("bash"), bash::task());
+    map.insert(String::from("bazel"), bazel::task());
+    map.insert(String::from("brew"), brew::task());
+    map.insert(String::from("dep"), dep::task());
+    map.insert(String::from("dotfiles"), dotfiles::task());
+    map.insert(String::from("fccache"), fccache::task());
+    map.insert(String::from("firacode"), firacode::task());
+    map.insert(String::from("git"), git::task());
+    map.insert(String::from("gitleaks"), gitleaks::task());
+    map.insert(String::from("gitsizer"), gitsizer::task());
+    map.insert(String::from("goget"), goget::task());
+    map.insert(String::from("golang"), golang::task());
+    map.insert(String::from("googlecloudsdk"), googlecloudsdk::task());
+    map.insert(String::from("hack"), hack::task());
+    map.insert(String::from("hadolint"), hadolint::task());
+    map.insert(String::from("hasklig"), hasklig::task());
+    map.insert(String::from("hyper"), hyper::task());
+    map.insert(String::from("inter"), inter::task());
+    map.insert(String::from("jq"), jq::task());
+    map.insert(String::from("macos"), macos::task());
+    map.insert(String::from("minikube"), minikube::task());
+    map.insert(String::from("nodejs"), nodejs::task());
+    map.insert(String::from("npm"), npm::task());
+    map.insert(String::from("psql"), psql::task());
+    map.insert(String::from("rust"), rust::task());
+    map.insert(String::from("rustc"), rustc::task());
+    map.insert(String::from("rustup"), rustup::task());
+    map.insert(String::from("shfmt"), shfmt::task());
+    map.insert(String::from("skaffold"), skaffold::task());
+    map.insert(String::from("ssh"), ssh::task());
+    map.insert(String::from("tmux"), tmux::task());
+    map.insert(String::from("vale"), vale::task());
+    map.insert(String::from("vim"), vim::task());
+    map.insert(String::from("vscode"), vscode::task());
+    map.insert(String::from("windows"), windows::task());
+    map.insert(String::from("yq"), yq::task());
+    map.insert(String::from("zsh"), zsh::task());
+    map
+}
+
+#[cfg(test)]
+mod tests {
+    use std::{fs, path::PathBuf};
+
+    use super::*;
+
+    #[test]
+    fn sequence_lists_all_tasks() {
+        let seq = sequence();
+
+        let entries = fs::read_dir(PathBuf::from("src/tasks")).expect("must read");
+        let mut count = 0;
+        for entry in entries {
+            if let Ok(entry) = entry {
+                let name = entry
+                    .file_name()
+                    .to_string_lossy()
+                    .into_owned()
+                    .replace(".rs", "");
+                if name == "local" || name == "mod" {
+                    continue;
+                }
+                count += 1;
+                if !seq.contains(&name) {
+                    assert_eq!("", name);
+                }
+
+                assert!(seq.contains(&name));
+            }
+        }
+        assert_eq!(count, seq.len());
+    }
+
+    #[test]
+    fn mapping_maps_all_tasks() {
+        let tasks = mapping();
+        let seq = sequence();
+
+        assert_eq!(seq.len(), tasks.len());
+        for s in seq {
+            assert!(tasks.contains_key(&s));
+        }
+    }
 }

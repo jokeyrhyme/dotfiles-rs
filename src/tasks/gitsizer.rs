@@ -11,7 +11,7 @@ use crate::utils::{
 
 pub fn task() -> Task {
     Task {
-        name: String::from("git-sizer"),
+        name: String::from("gitsizer"),
         sync,
         update,
     }
