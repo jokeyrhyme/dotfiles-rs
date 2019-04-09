@@ -1,4 +1,5 @@
 use dirs;
+use which::which;
 
 use crate::{
     lib::task::{self, Status, Task},
@@ -18,6 +19,9 @@ fn sync() -> task::Result {
 }
 
 fn update() -> task::Result {
+    if which("fc-cache").is_err() {
+        return Ok(Status::Skipped);
+    }
     if dirs::font_dir().is_none() {
         return Ok(Status::Skipped);
     };

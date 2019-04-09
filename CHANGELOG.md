@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - rustc: no longer install "nightly" toolchain by default
 
+### Fixed
+
+- fccache: skip when unavailable
+
 ## [0.28.0] - 2019-03-05
 
 ### Added
