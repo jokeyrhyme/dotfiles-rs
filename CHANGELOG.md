@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - new `some example,tasks` command to run specific tasks
 
+- pip: read favourites from a TOML file, keep them `sync`ed and `update`d
+
 ## [0.29.0] - 2019-04-09
 
 ### Added

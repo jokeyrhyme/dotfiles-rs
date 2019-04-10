@@ -29,6 +29,7 @@ mod macos;
 mod minikube;
 mod nodejs;
 mod npm;
+mod pip;
 mod psql;
 mod rust;
 mod rustc;
@@ -91,6 +92,7 @@ fn sequence() -> Vec<String> {
         goget::task().name, // deps: config,golang
         nodejs::task().name,
         npm::task().name, // deps: config,nodejs
+        pip::task().name,
         rustup::task().name,
         rustc::task().name, // deps: rustup
         rust::task().name,  // deps: config,rustc
@@ -161,6 +163,7 @@ fn mapping() -> HashMap<String, Task> {
     map.insert(String::from("minikube"), minikube::task());
     map.insert(String::from("nodejs"), nodejs::task());
     map.insert(String::from("npm"), npm::task());
+    map.insert(String::from("pip"), pip::task());
     map.insert(String::from("psql"), psql::task());
     map.insert(String::from("rust"), rust::task());
     map.insert(String::from("rustc"), rustc::task());

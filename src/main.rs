@@ -11,6 +11,7 @@ mod lib {
     pub mod ghratask;
     pub mod ghrtask;
     pub mod goget;
+    pub mod pip;
     pub mod python;
     pub mod rust;
     pub mod ssh;
