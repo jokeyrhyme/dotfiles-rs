@@ -52,6 +52,7 @@ pub fn env() -> Exports {
     exports = googlecloudsdk::env(exports);
     exports = local::env(exports);
     exports = nodejs::env(exports);
+    exports = pip::env(exports);
     exports = rustup::env(exports);
     exports = vim::env(exports);
     exports

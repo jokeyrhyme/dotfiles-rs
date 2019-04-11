@@ -1,15 +1,34 @@
-use std::{fs, io};
+use std::{fs, io, path::PathBuf};
 
 use toml;
 
 use crate::{
     lib::{
+        env::Exports,
         favourites::Favourites,
         pip::{self, PipFavourites},
+        python::python_output,
         task::{self, Status, Task},
     },
     utils,
 };
+
+// python -c "import site; print(site.USER_BASE)"
+// python -c "import site; print(site.USER_SITE)"
+
+pub fn env(mut exports: Exports) -> Exports {
+    let user_base = match python_output(&["-c", "import site; print(site.USER_BASE)"]) {
+        Ok(ub) => ub,
+        Err(_) => return exports,
+    };
+    let dir = PathBuf::from(user_base.trim()).join("bin");
+    if !exports.path.contains(&dir) {
+        let mut paths = vec![dir];
+        paths.append(&mut exports.path);
+        exports.path = paths;
+    }
+    exports
+}
 
 pub fn task() -> Task {
     Task {

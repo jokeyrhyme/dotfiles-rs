@@ -70,14 +70,14 @@ pub fn has_pip() -> bool {
 
 pub fn pip<S>(args: &[S]) -> io::Result<()>
 where
-    S: Into<String> + AsRef<str>,
+    S: AsRef<str>,
 {
     command_spawn_wait(pip_exe()?, args).map(|_| ())
 }
 
 pub fn pip_output<S>(args: &[S]) -> io::Result<String>
 where
-    S: Into<String> + AsRef<str>,
+    S: AsRef<str>,
 {
     let output = command_output(pip_exe()?, args)?;
     Ok(format!(

@@ -11,6 +11,8 @@ and [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 - new `some example,tasks` command to run specific tasks
 
+- pip: `env` exports PATH for `site.USER_SITE` packages
+
 - pip: read favourites from a TOML file, keep them `sync`ed and `update`d
 
 ## [0.29.0] - 2019-04-09
