@@ -36,7 +36,7 @@ impl Favourites for CargoFavourites {
         cargo(&args)
     }
     fn found(&self) -> Vec<String> {
-        found_versions().keys().map(|k| k.clone()).collect()
+        found_versions().keys().cloned().collect()
     }
     fn wanted(&self) -> Vec<String> {
         self.install.clone()

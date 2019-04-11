@@ -104,7 +104,7 @@ fn pkgs_installed() -> Vec<String> {
     globals
         .dependencies
         .keys()
-        .map(|name| name.clone())
+        .cloned()
         .filter(|name| is_global_package_bin_linked(name.as_str()))
         .collect()
 }

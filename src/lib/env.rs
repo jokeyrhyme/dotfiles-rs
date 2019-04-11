@@ -69,7 +69,7 @@ impl Default for Exports {
         exports.path = match var("PATH") {
             Ok(paths) => {
                 let path_strings = paths.split(if OS == "windows" { ";" } else { ":" });
-                path_strings.map(|p| PathBuf::from(p)).collect()
+                path_strings.map(PathBuf::from).collect()
             }
             Err(_) => exports.path,
         };

@@ -1,21 +1,17 @@
 .NOCACHE: fmt
 fmt:
+	set -eux
 	cargo fmt
 
 .NOCACHE: lint
 lint:
+	set -eux
 	cargo fix --allow-dirty --allow-staged
-	# `rustup target add` may exit with error if target already added
-	# rustup target add x86_64-apple-darwin || true
-	# cargo check --all-features --target x86_64-apple-darwin
-	# rustup target add x86_64-pc-windows-msvc || true
-	# cargo check --all-features --target x86_64-pc-windows-msvc
-	# rustup target add x86_64-unknown-linux-gnu || true
-	# cargo check --all-features --target x86_64-unknown-linux-gnu
-	cargo check --all-features --all-targets
-	cargo clippy --all-features --all-targets -- -D all -D cargo -D pedantic
+	touch src/main.rs && cargo check --all-features --all-targets
+	touch src/main.rs && cargo clippy --all-features --all-targets -- -D clippy::all
 
 .NOCACHE: test
 test:
+	set -eux
 	RUST_BACKTRACE=1 cargo test
 

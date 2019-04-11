@@ -10,10 +10,7 @@ pub fn bin_dir() -> PathBuf {
 }
 
 pub fn has_rustup() -> bool {
-    match command_output(rustup_exe(), &["--version"]) {
-        Ok(_) => true,
-        Err(_) => false,
-    }
+    command_output(rustup_exe(), &["--version"]).is_ok()
 }
 
 pub fn rustup<S>(args: &[S]) -> io::Result<()>

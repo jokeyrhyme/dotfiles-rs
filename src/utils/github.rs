@@ -227,10 +227,10 @@ mod tests {
     fn fetch_tags_github_hub() {
         match fetch_tags("github", "hub") {
             Ok(tags) => {
-                assert!(tags.len() > 0);
+                assert!(!tags.is_empty());
                 let first = tags.into_iter().next().unwrap();
-                assert!(first.id.len() > 0);
-                assert!(first.url.len() > 0);
+                assert!(!first.id.is_empty());
+                assert!(!first.url.is_empty());
             }
             Err(_error) => assert!(false),
         }
@@ -240,11 +240,11 @@ mod tests {
     fn latest_release_github_hub() {
         match latest_release("github", "hub") {
             Ok(release) => {
-                assert!(release.assets.len() > 0);
+                assert!(!release.assets.is_empty());
                 assert_eq!(release.draft, false);
                 assert!(release.name.contains("hub"));
                 assert_eq!(release.prelease, false);
-                assert!(release.tag_name.contains("v"));
+                assert!(release.tag_name.contains('v'));
             }
             Err(_error) => assert!(false),
         }

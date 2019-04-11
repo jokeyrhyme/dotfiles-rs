@@ -96,11 +96,8 @@ mod tests {
     impl Favourites for MyFavourites {
         fn cull(&mut self) -> io::Result<()> {
             for u in self.unwanted() {
-                match self.installed.iter().position(|i| i == &u) {
-                    Some(idx) => {
-                        self.installed.swap_remove(idx);
-                    }
-                    None => {}
+                if let Some(idx) = self.installed.iter().position(|i| i == &u) {
+                    self.installed.swap_remove(idx);
                 }
             }
             Ok(())
