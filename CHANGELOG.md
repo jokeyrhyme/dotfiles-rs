@@ -7,6 +7,8 @@ and [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.30.0] - 2019-04-12
+
 ### Added
 
 - new `some example,tasks` command to run specific tasks
