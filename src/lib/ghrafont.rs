@@ -1,4 +1,4 @@
-use std::{fs, io, path::PathBuf};
+use std::{fs, io, path::Path};
 
 use dirs;
 use regex;
@@ -107,9 +107,9 @@ struct JrdfMetadata {
 impl JrdfMetadata {
     fn read<P>(p: P) -> io::Result<JrdfMetadata>
     where
-        P: Into<PathBuf>,
+        P: AsRef<Path>,
     {
-        let contents = fs::read_to_string(&p.into())?;
+        let contents = fs::read_to_string(&p.as_ref())?;
         match toml::from_str(&contents) {
             Ok(t) => Ok(t),
             Err(e) => Err(io::Error::new(io::ErrorKind::InvalidData, e)),
@@ -117,12 +117,12 @@ impl JrdfMetadata {
     }
     fn write<P>(&self, p: P) -> io::Result<()>
     where
-        P: Into<PathBuf>,
+        P: AsRef<Path>,
     {
         let contents = match toml::to_string_pretty(&self) {
             Ok(t) => t,
             Err(e) => return Err(io::Error::new(io::ErrorKind::InvalidData, e)),
         };
-        fs::write(&p.into(), contents)
+        fs::write(&p.as_ref(), contents)
     }
 }

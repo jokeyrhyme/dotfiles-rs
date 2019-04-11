@@ -9,17 +9,14 @@ const INSTALL_DIRS: &[&str] = &["/usr/local", "/home/linuxbrew/.linuxbrew", "~/.
 
 pub fn has_brew() -> bool {
     match brew_exe() {
-        Some(exe) => match command_output(exe, &["--version"]) {
-            Ok(_) => true,
-            Err(_) => false,
-        },
+        Some(exe) => command_output(exe, &["--version"]).is_ok(),
         None => false,
     }
 }
 
 pub fn brew<S>(args: &[S]) -> io::Result<()>
 where
-    S: Into<String> + AsRef<str>,
+    S: AsRef<str>,
 {
     match brew_exe() {
         Some(exe) => command_spawn_wait(exe, args).map(|_| ()),
@@ -29,7 +26,7 @@ where
 
 pub fn brew_output<S>(args: &[S]) -> io::Result<String>
 where
-    S: Into<String> + AsRef<str>,
+    S: AsRef<str>,
 {
     match brew_exe() {
         Some(exe) => {
@@ -53,15 +50,14 @@ pub fn brew_prefix() -> Option<PathBuf> {
         } else {
             prefix.to_string()
         });
-        match which_in(
+        if which_in(
             "brew",
             Some(dir.join("bin")),
             env::current_dir().expect("brew: no $PWD"),
-        ) {
-            Ok(_) => {
-                return Some(dir);
-            }
-            Err(_) => {}
+        )
+        .is_ok()
+        {
+            return Some(dir);
         }
     }
     None

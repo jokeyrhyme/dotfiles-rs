@@ -10,22 +10,19 @@ pub fn bin_dir() -> PathBuf {
 }
 
 pub fn has_rustup() -> bool {
-    match command_output(rustup_exe(), &["--version"]) {
-        Ok(_) => true,
-        Err(_) => false,
-    }
+    command_output(rustup_exe(), &["--version"]).is_ok()
 }
 
 pub fn rustup<S>(args: &[S]) -> io::Result<()>
 where
-    S: Into<String> + AsRef<str>,
+    S: AsRef<str>,
 {
     command_spawn_wait(rustup_exe(), args).map(|_| ())
 }
 
 pub fn rustup_output<S>(args: &[S]) -> io::Result<String>
 where
-    S: Into<String> + AsRef<str>,
+    S: AsRef<str>,
 {
     let output = command_output(rustup_exe(), args)?;
     Ok(format!(

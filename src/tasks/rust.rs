@@ -23,10 +23,10 @@ pub fn task() -> Task {
 
 fn cargo_latest_version<S>(krate: S) -> Result<String, String>
 where
-    S: Into<String>,
+    S: AsRef<str>,
 {
     let mut pattern = String::from("^");
-    let k = krate.into();
+    let k = krate.as_ref();
     pattern.push_str(&k);
     pattern.push_str(r#"\s=\s"(\S+)""#);
     let re = Regex::new(&pattern).unwrap();

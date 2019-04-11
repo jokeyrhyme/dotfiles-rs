@@ -54,7 +54,7 @@ mod tests {
                 return;
             }
         };
-        let re = Regex::new(&format!(r"^2\.\d+\.\d+.*$")).unwrap();
+        let re = Regex::new(&r"^2\.\d+\.\d+.*$").unwrap();
         assert!(re.is_match(&extract_version(output)));
     }
 }

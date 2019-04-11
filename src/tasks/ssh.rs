@@ -15,10 +15,10 @@ pub fn task() -> Task {
 
 fn is_blacklist_supported<S>(ssh_version: S) -> bool
 where
-    S: Into<String>,
+    S: AsRef<str>,
 {
     let re = regex::Regex::new(r"OpenSSH_(\d+\.\d+)").unwrap();
-    for caps in re.captures_iter(&ssh_version.into()) {
+    for caps in re.captures_iter(&ssh_version.as_ref()) {
         let version = caps.get(1).unwrap().as_str();
         if let Ok(v) = version.parse::<f32>() {
             // OpenSSH 7.5 supports blacklists, 7.4 and older doesn't
@@ -30,9 +30,9 @@ where
 
 fn is_weak_cipher<S>(cipher: S) -> bool
 where
-    S: Into<String>,
+    S: AsRef<str>,
 {
-    let c = cipher.into();
+    let c = cipher.as_ref();
     let cbc_re = regex::Regex::new(r"\bcbc\b").unwrap();
     let rc4_re = regex::Regex::new(r"\b(arcfour|rc4)").unwrap();
     // no ending word-boundary: need to catch "arcfour" and "arcfour128"
@@ -44,19 +44,19 @@ where
 
 fn is_weak_kex<S>(kex: S) -> bool
 where
-    S: Into<String>,
+    S: AsRef<str>,
 {
     let sha1_re = regex::Regex::new(r"\bsha1\b").unwrap();
 
     // SHA1 is weak: https://en.wikipedia.org/wiki/SHA-1
-    sha1_re.is_match(&kex.into())
+    sha1_re.is_match(&kex.as_ref())
 }
 
 fn is_weak_mac<S>(mac: S) -> bool
 where
-    S: Into<String>,
+    S: AsRef<str>,
 {
-    let m = mac.into();
+    let m = mac.as_ref();
     let bits96_re = regex::Regex::new(r"\b96\b").unwrap();
     let md5_re = regex::Regex::new(r"\bmd5\b").unwrap();
     let sha1_re = regex::Regex::new(r"\bsha1\b").unwrap();
@@ -211,12 +211,9 @@ mod tests {
 
     #[test]
     fn ssh_version_is_not_blank() {
-        match which::which("ssh") {
-            Ok(_) => {
-                let version = ssh_version();
-                assert!(!version.is_empty());
-            }
-            Err(_) => {}
+        if which::which("ssh").is_ok() {
+            let version = ssh_version();
+            assert!(!version.is_empty());
         }
     }
 

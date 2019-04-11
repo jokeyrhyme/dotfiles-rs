@@ -4,14 +4,14 @@ const UNSTABLE: &[&str] = &["alpha", "beta", "canary", "dev", "preview", "rc"];
 
 pub fn is_stable<S>(version: S) -> bool
 where
-    S: Into<String>,
+    S: AsRef<str>,
 {
     let re = regex::Regex::new(&format!(
         "(\\b|[[:^alpha:]])({})(\\b|[[:^alpha:]])",
         UNSTABLE.join("|")
     ))
     .unwrap();
-    !re.is_match(&version.into())
+    !re.is_match(&version.as_ref())
 }
 
 #[cfg(test)]

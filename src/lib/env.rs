@@ -69,7 +69,7 @@ impl Default for Exports {
         exports.path = match var("PATH") {
             Ok(paths) => {
                 let path_strings = paths.split(if OS == "windows" { ";" } else { ":" });
-                path_strings.map(|p| PathBuf::from(p)).collect()
+                path_strings.map(PathBuf::from).collect()
             }
             Err(_) => exports.path,
         };
@@ -95,21 +95,21 @@ impl<'a> From<&'a str> for Shell {
 
 fn export_bash<S>(key: S, value: S) -> String
 where
-    S: Into<String> + AsRef<str> + Display,
+    S: AsRef<str> + Display,
 {
     format!("export {}={}", key, value)
 }
 
 fn export_fish<S>(key: S, value: S) -> String
 where
-    S: Into<String> + AsRef<str> + Display,
+    S: AsRef<str> + Display,
 {
     format!("set --export {} {}", key, value)
 }
 
 fn export_shell<S>(shell: &Shell, key: S, value: S) -> String
 where
-    S: Into<String> + AsRef<str> + Display,
+    S: AsRef<str> + Display,
 {
     if value.as_ref().trim().is_empty() {
         return String::new();

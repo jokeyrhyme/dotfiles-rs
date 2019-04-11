@@ -3,7 +3,11 @@ use std;
 use std::fs::File;
 #[cfg(unix)]
 use std::os::unix::fs::PermissionsExt;
-use std::{fmt::Debug, io, path::PathBuf};
+use std::{
+    fmt::Debug,
+    io,
+    path::{Path, PathBuf},
+};
 
 use mktemp;
 
@@ -11,9 +15,9 @@ use crate::lib::task::{self, Status};
 
 pub fn delete_if_exists<P>(path: P)
 where
-    P: Into<PathBuf> + Debug,
+    P: AsRef<Path> + Debug,
 {
-    let p = path.into();
+    let p = path.as_ref();
     let attr = match std::fs::symlink_metadata(&p) {
         Ok(attr) => attr,
         Err(_error) => {
@@ -44,9 +48,9 @@ where
 
 pub fn set_executable<P>(target: P) -> std::io::Result<()>
 where
-    P: Into<PathBuf>,
+    P: AsRef<Path>,
 {
-    let file = File::open(target.into()).unwrap();
+    let file = File::open(target.as_ref()).unwrap();
     let mut perms = file.metadata().unwrap().permissions();
     perms.set_mode(0o755); // a+rx, u+w
     file.set_permissions(perms)
@@ -56,17 +60,17 @@ where
 
 pub fn set_executable<P>(_target: P) -> std::io::Result<()>
 where
-    P: Into<PathBuf> + PartialEq,
+    P: AsRef<Path> + PartialEq,
 {
     Ok(())
 }
 
 pub fn symbolic_link_if_exists<P>(src: P, dest: P) -> task::Result
 where
-    P: Into<PathBuf> + Debug,
+    P: AsRef<Path> + Debug,
 {
-    let d = dest.into();
-    let s = src.into();
+    let d = dest.as_ref();
+    let s = src.as_ref();
     match std::fs::read_link(&d) {
         Ok(target) => {
             if s == target {
@@ -109,16 +113,16 @@ where
 
 fn symbolic_link<P>(src: P, dest: P) -> io::Result<()>
 where
-    P: Into<PathBuf>,
+    P: AsRef<Path>,
 {
-    std::os::unix::fs::symlink(src.into(), dest.into())
+    std::os::unix::fs::symlink(src.as_ref(), dest.as_ref())
 }
 
 #[cfg(windows)]
 
 fn symbolic_link<P>(src: P, dest: P) -> io::Result<()>
 where
-    P: Into<PathBuf>,
+    P: AsRef<Path>,
 {
     let src_attr = std::fs::symlink_metadata(&src)?;
     if src_attr.is_dir() {

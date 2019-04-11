@@ -1,4 +1,4 @@
-use std::{io, path::PathBuf};
+use std::{io, path::Path};
 
 use crate::utils;
 
@@ -11,9 +11,9 @@ pub fn has_git() -> bool {
 
 pub fn path_is_git_repository<P>(path: P) -> bool
 where
-    P: Into<PathBuf>,
+    P: AsRef<Path>,
 {
-    let p = path.into();
+    let p = path.as_ref();
     if !p.is_dir() {
         return false;
     }
@@ -25,10 +25,12 @@ where
 
 pub fn pull<P>(path: P)
 where
-    P: Into<PathBuf>,
+    P: AsRef<Path>,
 {
-    match utils::process::command_spawn_wait("git", &["-C", path.into().to_str().unwrap(), "pull"])
-    {
+    match utils::process::command_spawn_wait(
+        "git",
+        &["-C", path.as_ref().to_str().unwrap(), "pull"],
+    ) {
         Ok(_) => {}
         Err(error) => println!("`git pull` failed: {}", error),
     }
@@ -36,11 +38,11 @@ where
 
 pub fn shallow_clone<S>(source: S, target: S) -> io::Result<()>
 where
-    S: Into<String>,
+    S: AsRef<str>,
 {
     match utils::process::command_spawn_wait(
         "git",
-        &["clone", "--depth", "1", &source.into(), &target.into()],
+        &["clone", "--depth", "1", &source.as_ref(), &target.as_ref()],
     ) {
         Ok(_status) => Ok(()),
         Err(error) => Err(error),
@@ -49,9 +51,9 @@ where
 
 pub fn shallow_fetch<S>(target: S) -> io::Result<()>
 where
-    S: Into<String>,
+    S: AsRef<str>,
 {
-    let t = target.into();
+    let t = target.as_ref();
     match utils::process::command_spawn_wait("git", &["-C", &t, "fetch", "--depth", "1"]) {
         Ok(_status) => {}
         Err(error) => {

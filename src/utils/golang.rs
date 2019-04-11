@@ -84,7 +84,7 @@ mod tests {
 
     #[test]
     fn latest_version_found() {
-        assert!(latest_version().unwrap().len() > 0);
+        assert!(!latest_version().unwrap().is_empty());
     }
 
     #[test]
