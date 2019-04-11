@@ -1,15 +1,19 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
+We document all notable changes to this project in this file.
 
-The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
-and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
+This project adheres to [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
+and [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
 ### Added
 
 - new `some example,tasks` command to run specific tasks
+
+- pip: `env` exports PATH for `site.USER_SITE` packages
+
+- pip: read favourites from a TOML file, keep them `sync`ed and `update`d
 
 ## [0.29.0] - 2019-04-09
 
@@ -43,7 +47,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-- golang: Windows: maybe fix bad download URL (#190)
+- golang: Windows: (hopefully) fix bad download URL (#190)
 
 - better error handling in GitHub Release tasks (#191)
 
@@ -131,7 +135,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - goget: no longer run `gometalinter --install`
 
-- golang, nodejs, rustup: modify PATH given by `env` command
+- golang, nodejs, rustup: inform the PATH given by `env` command
 
 - rust: extract out separate "rustup" task
 
@@ -171,7 +175,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - all tasks now output a typed `Status` result
 
-- use colors when displaying `Status` output
+- use colorful text when displaying `Status` output
 
 - run GitHub Release tasks in parallel with all other tasks
 
@@ -313,7 +317,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-- ssh: deterministic Host and Match section order
+- ssh: deterministic declaration block order e.g. Match
 
 - vscode: fix copy-pasta with macOS xattr fix
 
@@ -447,7 +451,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- atom: implement `sync` and `update`
+- atom: keep settings and packages `sync`ed and `update`d
 
 ### Fixed
 
@@ -471,7 +475,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-- fix attribute usage so that Windows can successfully build
+- fix attribute usage so that Windows can build
 
 ## [0.2.0] - 2018-02-22
 

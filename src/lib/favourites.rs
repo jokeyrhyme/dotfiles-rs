@@ -138,41 +138,27 @@ mod tests {
     #[test]
     fn cull_and_status_works() {
         let mut favs: MyFavourites = Default::default();
-        match favs.cull_and_status() {
-            Ok(s) => {
-                assert_eq!(
-                    Status::Changed(String::from("unwanted"), String::from("")),
-                    s
-                );
-            }
-            Err(_) => assert!(false),
-        };
-        match favs.cull_and_status() {
-            Ok(s) => {
-                assert_eq!(Status::NoChange(String::from("")), s);
-            }
-            Err(_) => assert!(false),
-        };
+        assert_eq!(
+            Status::Changed(String::from("unwanted"), String::from("")),
+            favs.cull_and_status().expect("must Ok")
+        );
+        assert_eq!(
+            Status::NoChange(String::from("")),
+            favs.cull_and_status().expect("must Ok")
+        );
     }
 
     #[test]
     fn fill_and_status_works() {
         let mut favs: MyFavourites = Default::default();
-        match favs.fill_and_status() {
-            Ok(s) => {
-                assert_eq!(
-                    Status::Changed(String::from(""), String::from("wanted-missing")),
-                    s
-                );
-            }
-            Err(_) => assert!(false),
-        };
-        match favs.fill_and_status() {
-            Ok(s) => {
-                assert_eq!(Status::NoChange(String::from("")), s);
-            }
-            Err(_) => assert!(false),
-        };
+        assert_eq!(
+            Status::Changed(String::from(""), String::from("wanted-missing")),
+            favs.fill_and_status().expect("must Ok")
+        );
+        assert_eq!(
+            Status::NoChange(String::from("")),
+            favs.fill_and_status().expect("must Ok")
+        );
     }
 
     #[test]
