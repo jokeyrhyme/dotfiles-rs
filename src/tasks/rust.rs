@@ -133,13 +133,8 @@ mod tests {
 
     #[test]
     fn test_cargo_latest_version() {
-        match cargo_latest_version("serde") {
-            Ok(version) => assert!(!version.is_empty()),
-            Err(_) => assert!(false),
-        }
-        match cargo_latest_version("this-does-not-exist-maybe") {
-            Ok(_) => assert!(false),
-            Err(error) => assert_eq!("not found", error),
-        }
+        let version = cargo_latest_version("serde").expect("must execute");
+        assert!(!version.is_empty());
+        assert!(cargo_latest_version("this-does-not-exist-maybe").is_err());
     }
 }

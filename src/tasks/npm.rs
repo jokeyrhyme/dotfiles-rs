@@ -275,15 +275,8 @@ mod tests {
         if !utils::nodejs::has_npx() {
             return;
         }
-        match read_global_package("npx") {
-            Ok(pkg) => {
-                assert_eq!(pkg.name, "npx");
-                assert!(pkg.bin.get("npx") != None);
-            }
-            Err(e) => {
-                println!("read_global_package_for_npx: {:?}", e);
-                assert!(false);
-            }
-        }
+        let pkg = read_global_package("npx").expect("must read");
+        assert_eq!(pkg.name, "npx");
+        assert!(pkg.bin.get("npx") != None);
     }
 }
