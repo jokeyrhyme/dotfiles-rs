@@ -40,7 +40,7 @@ pub fn task() -> Task {
 
 fn install_golang<S>(version: S) -> task::Result
 where
-    S: Into<String>,
+    S: AsRef<str>,
 {
     let current = if utils::golang::is_installed() {
         utils::golang::current_version()
@@ -50,7 +50,7 @@ where
 
     let temp_path = mkftemp()?;
 
-    let v = version.into();
+    let v = version.as_ref();
     let remote_url = format!(
         "https://dl.google.com/go/{}.{}-{}.{}",
         &v,
@@ -72,7 +72,7 @@ where
 
     utils::fs::delete_if_exists(&temp_path);
 
-    Ok(Status::Changed(current, v))
+    Ok(Status::Changed(current, String::from(v)))
 }
 
 fn sync() -> task::Result {

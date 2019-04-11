@@ -230,7 +230,7 @@ impl BitOr for Config {
 
 impl<S> From<S> for Config
 where
-    S: Into<String>,
+    S: AsRef<str>,
 {
     fn from(source: S) -> Self {
         let mut config = Config::new();
@@ -238,7 +238,7 @@ where
         let mut section_key: String = String::from("");
         let mut section_type: Section = Section::Global;
 
-        for line in source.into().lines() {
+        for line in source.as_ref().lines() {
             let trimmed = line.trim();
             if trimmed.is_empty() || trimmed.chars().next().unwrap_or('#') == '#' {
                 continue; // skip empty lines and comments
@@ -518,10 +518,10 @@ enum Section {
 fn format<D, S>(key: S, value: &Option<D>) -> String
 where
     D: Display,
-    S: Into<String>,
+    S: AsRef<str>,
 {
     match value {
-        Some(v) => format!("{} {}\n", key.into(), v),
+        Some(v) => format!("{} {}\n", key.as_ref(), v),
         None => String::from(""),
     }
 }
@@ -546,16 +546,16 @@ pub fn has_ssh() -> bool {
 
 fn parse_char<S>(text: S) -> Option<char>
 where
-    S: Into<String>,
+    S: AsRef<str>,
 {
-    Some(text.into().chars().next().unwrap_or('~'))
+    Some(text.as_ref().chars().next().unwrap_or('~'))
 }
 
 fn parse_number<S>(text: S) -> Option<i32>
 where
-    S: Into<String>,
+    S: AsRef<str>,
 {
-    match i32::from_str_radix(&text.into(), 10) {
+    match i32::from_str_radix(&text.as_ref(), 10) {
         Ok(n) => Some(n),
         Err(_) => None,
     }
@@ -563,17 +563,17 @@ where
 
 fn parse_pathbuf<S>(text: S) -> Option<PathBuf>
 where
-    S: Into<String>,
+    S: AsRef<str>,
 {
-    Some(PathBuf::new().join(text.into()))
+    Some(PathBuf::new().join(text.as_ref()))
 }
 
 fn parse_strings<S>(text: S) -> Option<Vec<String>>
 where
-    S: Into<String>,
+    S: AsRef<str>,
 {
     Some(
-        text.into()
+        text.as_ref()
             .split(',')
             .filter_map(|s| {
                 let trimmed = s.trim();

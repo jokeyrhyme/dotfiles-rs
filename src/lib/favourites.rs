@@ -43,7 +43,7 @@ pub trait Favourites {
         let found = self.found();
         self.wanted()
             .into_iter()
-            .filter_map(|f| if found.contains(&f) { None } else { Some(f) })
+            .filter(|f| !found.contains(&f))
             .collect()
     }
 
@@ -52,7 +52,7 @@ pub trait Favourites {
         let found = self.found();
         self.unwanted()
             .into_iter()
-            .filter_map(|f| if found.contains(&f) { Some(f) } else { None })
+            .filter(|f| found.contains(&f))
             .collect()
     }
 }
@@ -60,7 +60,7 @@ pub trait Favourites {
 // diff_before_after() returns favourites that are newly absent and newly present
 fn diff_before_after<S>(before: Vec<S>, after: Vec<S>) -> (Vec<String>, Vec<String>)
 where
-    S: Into<String> + AsRef<str> + PartialEq,
+    S: AsRef<str> + PartialEq,
 {
     let absent: Vec<String> = before
         .iter()

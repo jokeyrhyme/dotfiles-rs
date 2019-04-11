@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use std::fs::{create_dir_all, File};
 use std::io::{self, ErrorKind, Write};
-use std::path::PathBuf;
+use std::path::Path;
 
 use cabot::{request::Request, response::Response, Client, RequestBuilder};
 
@@ -26,9 +26,9 @@ pub const EMPTY_HEADERS: &[&str] = &[];
 
 pub fn create_request<S>(url: S, headers: &[&str]) -> Request
 where
-    S: Into<String>,
+    S: AsRef<str>,
 {
-    RequestBuilder::new(url.into().as_str())
+    RequestBuilder::new(url.as_ref())
         .set_http_method("GET")
         .add_header(&format!("User-Agent: {}", user_agent()))
         .add_headers(&headers)
@@ -38,21 +38,21 @@ where
 
 pub fn download<P, S>(url: S, dest: P) -> io::Result<()>
 where
-    P: Into<PathBuf>,
-    S: Into<String>,
+    P: AsRef<Path>,
+    S: AsRef<str>,
 {
     let req = create_request(url, &EMPTY_HEADERS);
 
-    download_request(&req, dest.into())
+    download_request(&req, dest.as_ref())
 }
 
 pub fn download_request<P>(req: &Request, dest: P) -> io::Result<()>
 where
-    P: Into<PathBuf>,
+    P: AsRef<Path>,
 {
     let res = fetch_request(&req)?;
 
-    let d = dest.into();
+    let d = dest.as_ref();
     if let Some(parent) = d.parent() {
         create_dir_all(&parent)?;
     };

@@ -55,22 +55,19 @@ pub fn found_versions() -> HashMap<String, String> {
 }
 
 pub fn has_cargo() -> bool {
-    match command_output(cargo_exe(), &["--version"]) {
-        Ok(_) => true,
-        Err(_) => false,
-    }
+    command_output(cargo_exe(), &["--version"]).is_ok()
 }
 
 pub fn cargo<S>(args: &[S]) -> io::Result<()>
 where
-    S: Into<String> + AsRef<str>,
+    S: AsRef<str>,
 {
     command_spawn_wait(cargo_exe(), args).map(|_| ())
 }
 
 pub fn cargo_output<S>(args: &[S]) -> io::Result<String>
 where
-    S: Into<String> + AsRef<str>,
+    S: AsRef<str>,
 {
     let output = command_output(cargo_exe(), args)?;
     Ok(format!(
@@ -91,10 +88,10 @@ fn cargo_exe() -> PathBuf {
 
 fn parse_installed<S>(stdout: S) -> HashMap<String, String>
 where
-    S: Into<String>,
+    S: AsRef<str>,
 {
     let re = regex::Regex::new(r"^(?P<name>\S+)\sv(?P<version>\S+):").unwrap();
-    let s = stdout.into();
+    let s = stdout.as_ref();
     let mut krates: HashMap<String, String> = HashMap::new();
 
     for line in s.lines() {

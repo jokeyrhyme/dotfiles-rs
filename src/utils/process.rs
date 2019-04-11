@@ -1,6 +1,6 @@
 use std::{
     env::consts::OS,
-    ffi::OsString,
+    ffi::OsStr,
     io,
     process::{Command, ExitStatus, Output},
     str,
@@ -10,12 +10,12 @@ use crate::tasks;
 
 pub fn command_output<O, S>(cmd: O, args: &[S]) -> io::Result<Output>
 where
-    O: Into<OsString>,
-    S: Into<String> + AsRef<str>,
+    O: AsRef<OsStr>,
+    S: AsRef<str>,
 {
-    let cmd_args = args.iter().map(|s| s.as_ref().into()).collect();
+    let cmd_args = args.iter().map(|s| String::from(s.as_ref())).collect();
     if OS == "windows" {
-        let cmd_os = cmd.into();
+        let cmd_os = cmd.as_ref();
         with_env(
             Command::new("cmd").args(
                 [
@@ -27,18 +27,18 @@ where
         )
         .output()
     } else {
-        with_env(Command::new(cmd.into()).args(cmd_args)).output()
+        with_env(Command::new(cmd.as_ref()).args(cmd_args)).output()
     }
 }
 
 pub fn command_spawn_wait<O, S>(cmd: O, args: &[S]) -> io::Result<ExitStatus>
 where
-    O: Into<OsString>,
-    S: Into<String> + AsRef<str>,
+    O: AsRef<OsStr>,
+    S: AsRef<str>,
 {
-    let cmd_args = args.iter().map(|s| s.as_ref().into()).collect();
+    let cmd_args = args.iter().map(|s| String::from(s.as_ref())).collect();
     if OS == "windows" {
-        let cmd_os = cmd.into();
+        let cmd_os = cmd.as_ref();
         with_env(
             Command::new("cmd").args(
                 [
@@ -51,7 +51,7 @@ where
         .spawn()?
         .wait()
     } else {
-        with_env(Command::new(cmd.into()).args(cmd_args))
+        with_env(Command::new(cmd.as_ref()).args(cmd_args))
             .spawn()?
             .wait()
     }

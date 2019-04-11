@@ -30,11 +30,11 @@ pub fn task() -> Task {
 
 fn install_nodejs<S>(version: S) -> io::Result<()>
 where
-    S: Into<String>,
+    S: AsRef<str>,
 {
     let temp_path = mkftemp()?;
 
-    let v = version.into();
+    let v = version.as_ref();
     let prefix = format!("node-{}-{}-{}", &v, os(), arch());
 
     let remote_url = format!(

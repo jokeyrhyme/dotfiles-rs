@@ -69,9 +69,9 @@ fn configure_npm() -> io::Result<()> {
 
 fn is_global_package_bin_linked<S>(name: S) -> bool
 where
-    S: Into<String>,
+    S: AsRef<str>,
 {
-    let pkg = match read_global_package(name.into()) {
+    let pkg = match read_global_package(name.as_ref()) {
         Ok(p) => p,
         Err(_) => {
             return false;
@@ -135,11 +135,11 @@ fn read_config() -> Config {
 
 fn read_global_package<S>(name: S) -> io::Result<Package>
 where
-    S: Into<String>,
+    S: AsRef<str>,
 {
     let pkg_path = utils::nodejs::lib_dir()
         .join("node_modules")
-        .join(name.into())
+        .join(name.as_ref())
         .join("package.json");
     let contents = fs::read_to_string(&pkg_path)?;
     match serde_json::from_str(&contents) {
@@ -188,12 +188,7 @@ fn sync() -> task::Result {
     let missing: Vec<String> = config
         .install
         .into_iter()
-        .filter_map(|pkg| {
-            if pkgs.contains(&pkg) {
-                return None;
-            }
-            Some(pkg)
-        })
+        .filter(|pkg| !pkgs.contains(&pkg))
         .collect();
 
     if missing.is_empty() {
@@ -214,12 +209,7 @@ fn sync() -> task::Result {
     let found: Vec<String> = config
         .uninstall
         .into_iter()
-        .filter_map(|pkg| {
-            if pkgs.contains(&pkg) {
-                return Some(pkg);
-            }
-            None
-        })
+        .filter(|pkg| pkgs.contains(&pkg))
         .collect();
 
     if found.is_empty() {

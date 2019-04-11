@@ -73,9 +73,9 @@ impl Favourites for GoGetFavourites {
 
 fn pkg_found<S>(pkg: S) -> bool
 where
-    S: Into<String>,
+    S: AsRef<str>,
 {
-    let p = PathBuf::from(pkg.into());
+    let p = PathBuf::from(pkg.as_ref());
     match p.file_name() {
         Some(f) => {
             let bin = gopath()

@@ -3,7 +3,7 @@ use std::{
     env::consts::{ARCH, OS},
     error::Error,
     fmt, io,
-    path::PathBuf,
+    path::Path,
     str,
 };
 
@@ -98,10 +98,10 @@ pub fn compatible_asset(release: &Release, filter: &Fn(&Asset) -> bool) -> Resul
 
 pub fn download_release_asset<P>(asset: &Asset, bin_path: P) -> Result<()>
 where
-    P: Into<PathBuf>,
+    P: AsRef<Path>,
 {
     let req = create_request(asset.browser_download_url.clone());
-    let bp = bin_path.into();
+    let bp = bin_path.as_ref();
     utils::http::download_request(&req, &bp)?;
     utils::fs::set_executable(&bp)?;
     Ok(())
@@ -109,7 +109,7 @@ where
 
 fn create_request<S>(url: S) -> Request
 where
-    S: Into<String>,
+    S: AsRef<str>,
 {
     let mut headers: Vec<String> = Vec::new();
 
@@ -127,12 +127,12 @@ where
 
 fn fetch_releases<S>(owner: S, repo: S) -> Result<Vec<Release>>
 where
-    S: Into<String>,
+    S: AsRef<str>,
 {
     let uri = format!(
         "https://api.github.com/repos/{}/{}/releases",
-        owner.into(),
-        repo.into(),
+        owner.as_ref(),
+        repo.as_ref(),
     );
     let req = create_request(uri);
     let res = utils::http::fetch_request(&req)?;
@@ -150,12 +150,12 @@ where
 
 pub fn fetch_tags<S>(owner: S, repo: S) -> Result<Vec<Tag>>
 where
-    S: Into<String>,
+    S: AsRef<str>,
 {
     let uri = format!(
         "https://api.github.com/repos/{}/{}/git/refs/tags",
-        owner.into(),
-        repo.into(),
+        owner.as_ref(),
+        repo.as_ref(),
     );
     let req = create_request(uri);
     let res = utils::http::fetch_request(&req)?;
@@ -179,7 +179,7 @@ where
 
 pub fn latest_release<S>(owner: S, repo: S) -> Result<Release>
 where
-    S: Into<String>,
+    S: AsRef<str>,
 {
     let releases = fetch_releases(owner, repo)?;
     if releases.is_empty() {
@@ -195,7 +195,7 @@ where
 
 pub fn release_versus_current<S>(current: S, owner: S, repo: S) -> Option<Release>
 where
-    S: Into<String>,
+    S: AsRef<str>,
 {
     let release = match latest_release(owner, repo) {
         Ok(r) => r,
@@ -205,7 +205,7 @@ where
         }
     };
 
-    let c = current.into();
+    let c = current.as_ref();
     let installed = c.trim_start_matches(|c: char| !c.is_digit(10)).trim();
     let tag_name = release.tag_name.clone();
     let latest = tag_name
