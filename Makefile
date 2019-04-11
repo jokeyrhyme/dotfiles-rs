@@ -12,8 +12,8 @@ lint:
 	# cargo check --all-features --target x86_64-pc-windows-msvc
 	# rustup target add x86_64-unknown-linux-gnu || true
 	# cargo check --all-features --target x86_64-unknown-linux-gnu
-	cargo check --all-features --benches --tests
-	cargo clippy --all-features --benches --tests -- --deny clippy::all
+	cargo check --all-features --all-targets
+	cargo clippy --all-features --all-targets -- -D all -D cargo -D pedantic
 
 .NOCACHE: test
 test:
