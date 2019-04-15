@@ -31,6 +31,7 @@ mod nodejs;
 mod npm;
 mod pip;
 mod psql;
+mod publicsans;
 mod rust;
 mod rustc;
 mod rustup;
@@ -102,6 +103,7 @@ fn sequence() -> Vec<String> {
         hack::task().name,
         hasklig::task().name,
         inter::task().name,
+        publicsans::task().name,
         fccache::task().name, // deps: all other font tasks
         // these are GitHub Release tasks,
         // that are mostly I/O-heavy,
@@ -166,6 +168,7 @@ fn mapping() -> HashMap<String, Task> {
     map.insert(String::from("npm"), npm::task());
     map.insert(String::from("pip"), pip::task());
     map.insert(String::from("psql"), psql::task());
+    map.insert(String::from("publicsans"), publicsans::task());
     map.insert(String::from("rust"), rust::task());
     map.insert(String::from("rustc"), rustc::task());
     map.insert(String::from("rustup"), rustup::task());
