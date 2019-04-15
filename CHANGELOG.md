@@ -7,6 +7,10 @@ and [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- publicsans: keep [Public Sans (font)](https://github.com/uswds/public-sans) `sync`ed and `update`d
+
 ### Fixed
 
 - parse possible-`null` "name" in GitHub Releases (#213)
