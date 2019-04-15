@@ -7,6 +7,10 @@ and [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- parse possible-`null` "name" in GitHub Releases (#213)
+
 ## [0.30.0] - 2019-04-12
 
 ### Added
