@@ -9,6 +9,10 @@ and [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- brewbundle: use [`brew bundle`](https://github.com/Homebrew/homebrew-bundle) for non-Windows favourites
+
+- brewfile: symlink ~/.dotfiles/config/Brewfile to [~/.Brewfile](https://github.com/Homebrew/homebrew-bundle)
+
 - publicsans: keep [Public Sans (font)](https://github.com/uswds/public-sans) `sync`ed and `update`d
 
 ### Fixed

@@ -5,7 +5,7 @@ pub fn task() -> Task {
     Task {
         name: String::from("psql"),
         sync,
-        update,
+        ..Default::default()
     }
 }
 
@@ -27,8 +27,4 @@ fn sync() -> task::Result {
     let dest = utils::env::home_dir().join(".psqlrc");
 
     utils::fs::symbolic_link_if_exists(&src, &dest)
-}
-
-fn update() -> task::Result {
-    Ok(Status::NotImplemented)
 }

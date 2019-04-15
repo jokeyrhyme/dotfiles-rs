@@ -8,6 +8,8 @@ mod atom;
 mod bash;
 mod bazel;
 mod brew;
+mod brewbundle;
+mod brewfile;
 mod dep;
 mod dotfiles;
 mod fccache;
@@ -90,6 +92,9 @@ where
 fn sequence() -> Vec<String> {
     vec![
         dotfiles::task().name, // provides: config; must be first
+        brewfile::task().name, // deps: config
+        brewbundle::task().name,
+        brew::task().name, // deps: brewfile, brewbundle
         golang::task().name,
         goget::task().name, // deps: config,golang
         nodejs::task().name,
@@ -123,8 +128,7 @@ fn sequence() -> Vec<String> {
         alacritty::task().name, // deps: config
         atom::task().name,
         bash::task().name, // deps: config
-        brew::task().name,
-        git::task().name, // deps: nodejs/npm
+        git::task().name,  // deps: nodejs/npm
         googlecloudsdk::task().name,
         hyper::task().name, // deps: config
         macos::task().name,
@@ -146,6 +150,8 @@ fn mapping() -> HashMap<String, Task> {
     map.insert(String::from("bash"), bash::task());
     map.insert(String::from("bazel"), bazel::task());
     map.insert(String::from("brew"), brew::task());
+    map.insert(String::from("brewbundle"), brewbundle::task());
+    map.insert(String::from("brewfile"), brewfile::task());
     map.insert(String::from("dep"), dep::task());
     map.insert(String::from("dotfiles"), dotfiles::task());
     map.insert(String::from("fccache"), fccache::task());
