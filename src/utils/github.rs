@@ -27,7 +27,7 @@ pub struct Release {
     pub assets: Vec<Asset>,
     #[serde(default = "default_json_false")]
     draft: bool,
-    name: String,
+    name: Option<String>,
     #[serde(default = "default_json_false")]
     prelease: bool,
     pub tag_name: String,
@@ -107,47 +107,6 @@ where
     Ok(())
 }
 
-fn create_request<S>(url: S) -> Request
-where
-    S: AsRef<str>,
-{
-    let mut headers: Vec<String> = Vec::new();
-
-    match std::env::var("GITHUB_TOKEN") {
-        Ok(token) => {
-            let auth = format!("Authorization: token {}", token);
-            headers.push(auth);
-        }
-        Err(_error) => {}
-    };
-
-    let headers_slice: Vec<&str> = headers.iter().map(|h| &**h).collect();
-    utils::http::create_request(url, &headers_slice)
-}
-
-fn fetch_releases<S>(owner: S, repo: S) -> Result<Vec<Release>>
-where
-    S: AsRef<str>,
-{
-    let uri = format!(
-        "https://api.github.com/repos/{}/{}/releases",
-        owner.as_ref(),
-        repo.as_ref(),
-    );
-    let req = create_request(uri);
-    let res = utils::http::fetch_request(&req)?;
-    let body = res.body_as_string().unwrap_or_default();
-
-    let releases: Vec<Release> = match serde_json::from_str(&body) {
-        Ok(r) => r,
-        Err(error) => {
-            println!("cannot fetch GitHub Releases: {:?}", error);
-            Vec::<Release>::new()
-        }
-    };
-    Ok(releases)
-}
-
 pub fn fetch_tags<S>(owner: S, repo: S) -> Result<Vec<Tag>>
 where
     S: AsRef<str>,
@@ -186,7 +145,8 @@ where
         return Err(GitHubError::EmptyReleases {});
     }
     match releases.into_iter().find(|r| {
-        !r.draft && !r.prelease && !r.assets.is_empty() && version::is_stable(r.name.as_str())
+        let name = r.name.clone().unwrap_or_default();
+        !r.draft && !r.prelease && !r.assets.is_empty() && version::is_stable(name.as_str())
     }) {
         Some(latest) => Ok(latest),
         None => Err(GitHubError::ValidReleaseNotFound {}),
@@ -219,8 +179,58 @@ where
     }
 }
 
+fn create_request<S>(url: S) -> Request
+where
+    S: AsRef<str>,
+{
+    let mut headers: Vec<String> = Vec::new();
+
+    match std::env::var("GITHUB_TOKEN") {
+        Ok(token) => {
+            let auth = format!("Authorization: token {}", token);
+            headers.push(auth);
+        }
+        Err(_error) => {}
+    };
+
+    let headers_slice: Vec<&str> = headers.iter().map(|h| &**h).collect();
+    utils::http::create_request(url, &headers_slice)
+}
+
+fn fetch_releases<S>(owner: S, repo: S) -> Result<Vec<Release>>
+where
+    S: AsRef<str>,
+{
+    let uri = format!(
+        "https://api.github.com/repos/{}/{}/releases",
+        owner.as_ref(),
+        repo.as_ref(),
+    );
+    let req = create_request(uri);
+    let res = utils::http::fetch_request(&req)?;
+    let body = res.body_as_string().unwrap_or_default();
+
+    let releases: Vec<Release> = match parse_releases_json(&body) {
+        Ok(r) => r,
+        Err(error) => {
+            println!("cannot fetch GitHub Releases: {:?}", error);
+            Vec::<Release>::new()
+        }
+    };
+    Ok(releases)
+}
+
+fn parse_releases_json<S>(json: S) -> serde_json::Result<Vec<Release>>
+where
+    S: AsRef<str>,
+{
+    serde_json::from_str(json.as_ref())
+}
+
 #[cfg(test)]
 mod tests {
+    use std::{fs, path::PathBuf};
+
     use super::*;
 
     #[test]
@@ -237,8 +247,18 @@ mod tests {
         let release = latest_release("github", "hub").expect("must fetch");
         assert!(!release.assets.is_empty());
         assert_eq!(release.draft, false);
-        assert!(release.name.contains("hub"));
+        assert!(release.name.unwrap_or_default().contains("hub"));
         assert_eq!(release.prelease, false);
         assert!(release.tag_name.contains('v'));
+    }
+
+    #[test]
+    fn parse_releases_json_works() {
+        let fixture_path = PathBuf::from("tests/fixtures/github-releases.json");
+        let fixture = fs::read_to_string(&fixture_path).expect("must read");
+        let releases = parse_releases_json(&fixture).expect("must parse");
+        assert_eq!(releases.len(), 2);
+        assert_eq!(releases[0].name, None);
+        assert_eq!(releases[1].name, Some(String::new()));
     }
 }
