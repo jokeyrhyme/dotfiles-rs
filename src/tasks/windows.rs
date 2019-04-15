@@ -7,7 +7,7 @@ pub fn task() -> Task {
     Task {
         name: String::from("windows"),
         sync,
-        update,
+        ..Default::default()
     }
 }
 
@@ -28,8 +28,4 @@ fn sync() -> task::Result {
     println!("- {}", node_bin_path.display());
 
     Ok(Status::Done)
-}
-
-fn update() -> task::Result {
-    Ok(Status::NotImplemented)
 }

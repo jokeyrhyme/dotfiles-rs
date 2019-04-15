@@ -5,7 +5,7 @@ pub fn task() -> Task {
     Task {
         name: String::from("dotfiles"),
         sync,
-        update,
+        ..Default::default()
     }
 }
 
@@ -16,8 +16,4 @@ fn sync() -> task::Result {
         utils::git::pull(&target);
     }
     Ok(Status::Done)
-}
-
-fn update() -> task::Result {
-    Ok(Status::NotImplemented)
 }

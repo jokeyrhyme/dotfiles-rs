@@ -9,13 +9,9 @@ use crate::{
 pub fn task() -> Task {
     Task {
         name: String::from("fccache"),
-        sync,
         update,
+        ..Default::default()
     }
-}
-
-fn sync() -> task::Result {
-    Ok(Status::Skipped)
 }
 
 fn update() -> task::Result {

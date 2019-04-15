@@ -1,11 +1,11 @@
-use crate::lib::task::{self, Status, Task};
+use crate::lib::task::{self, Task};
 use crate::utils;
 
 pub fn task() -> Task {
     Task {
         name: String::from("hyper"),
         sync,
-        update,
+        ..Default::default()
     }
 }
 
@@ -14,8 +14,4 @@ fn sync() -> task::Result {
     let dest = utils::env::home_dir().join(".hyper.js");
 
     utils::fs::symbolic_link_if_exists(&src, &dest)
-}
-
-fn update() -> task::Result {
-    Ok(Status::NotImplemented)
 }

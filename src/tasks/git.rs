@@ -16,7 +16,7 @@ pub fn task() -> Task {
     Task {
         name: String::from("git"),
         sync,
-        update,
+        ..Default::default()
     }
 }
 
@@ -173,10 +173,6 @@ fn load_config() -> String {
             String::new()
         }
     }
-}
-
-fn update() -> task::Result {
-    Ok(Status::NotImplemented)
 }
 
 #[cfg(test)]

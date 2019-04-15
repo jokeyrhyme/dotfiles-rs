@@ -9,7 +9,7 @@ pub fn task() -> Task {
     Task {
         name: String::from("ssh"),
         sync,
-        update,
+        ..Default::default()
     }
 }
 
@@ -190,10 +190,6 @@ fn sync() -> task::Result {
     };
 
     Ok(Status::Done)
-}
-
-fn update() -> task::Result {
-    Ok(Status::NotImplemented)
 }
 
 #[cfg(test)]

@@ -1,6 +1,7 @@
 use std::{fmt, io, result};
 
 use colored::*;
+use subprocess;
 
 use crate::utils::github;
 
@@ -9,6 +10,7 @@ pub enum Error {
     GitHubError(String, github::GitHubError),
     IoError(String, io::Error),
     NoTagsError,
+    PopenError(String, subprocess::PopenError),
 }
 impl std::error::Error for Error {}
 impl fmt::Display for Error {
@@ -19,6 +21,7 @@ impl fmt::Display for Error {
             }
             Error::IoError(msg, cause) => write!(f, "{}", format!("{}: {:?}", msg, cause).red()),
             Error::NoTagsError => write!(f, "{}", "NoTagsError".red()),
+            Error::PopenError(msg, cause) => write!(f, "{}", format!("{}: {:?}", msg, cause).red()),
         }
     }
 }
@@ -30,6 +33,11 @@ impl From<github::GitHubError> for Error {
 impl From<io::Error> for Error {
     fn from(cause: io::Error) -> Error {
         Error::IoError(String::new(), cause)
+    }
+}
+impl From<subprocess::PopenError> for Error {
+    fn from(cause: subprocess::PopenError) -> Error {
+        Error::PopenError(String::new(), cause)
     }
 }
 
@@ -79,6 +87,15 @@ impl Task {
         match (self.update)() {
             Ok(status) => println!("{}: update: {}", self.name, status),
             Err(error) => println!("{}: update error: {:?}", self.name, error),
+        }
+    }
+}
+impl Default for Task {
+    fn default() -> Task {
+        Task {
+            name: String::from("unknown"),
+            sync: || Ok(Status::NotImplemented),
+            update: || Ok(Status::NotImplemented),
         }
     }
 }

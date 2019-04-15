@@ -9,7 +9,7 @@ pub fn task() -> Task {
     Task {
         name: String::from("macos"),
         sync,
-        update,
+        ..Default::default()
     }
 }
 
@@ -21,8 +21,4 @@ fn sync() -> task::Result {
     utils::process::command_spawn_wait("qlmanage", &["-d", "1", "-r", "cache"])?;
 
     Ok(Status::Done)
-}
-
-fn update() -> task::Result {
-    Ok(Status::NotImplemented)
 }
