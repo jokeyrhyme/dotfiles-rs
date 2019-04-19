@@ -15,6 +15,8 @@ and [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 - fira: keep [Fira (font)](https://github.com/mozilla/Fira) `sync`ed and `update`d
 
+- overpass: keep [Overpass (font)](https://github.com/RedHatBrand/Overpass) `sync`ed and `update`d
+
 - publicsans: keep [Public Sans (font)](https://github.com/uswds/public-sans) `sync`ed and `update`d
 
 ### Fixed

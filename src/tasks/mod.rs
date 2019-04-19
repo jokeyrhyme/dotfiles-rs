@@ -32,6 +32,7 @@ mod macos;
 mod minikube;
 mod nodejs;
 mod npm;
+mod overpass;
 mod pip;
 mod psql;
 mod publicsans;
@@ -110,6 +111,7 @@ fn sequence() -> Vec<String> {
         hack::task().name,
         hasklig::task().name,
         inter::task().name,
+        overpass::task().name,
         publicsans::task().name,
         fccache::task().name, // deps: all other font tasks
         // these are GitHub Release tasks,
@@ -137,7 +139,7 @@ fn sequence() -> Vec<String> {
         psql::task().name,   // deps: config
         ssh::task().name,    // deps: config
         tmux::task().name,   // deps: config,brewbundle
-        vim::task().name,    // deps: config; takes over the terminal
+        vim::task().name,    // deps: config,pip; takes over the terminal
         vscode::task().name, // deps: config
         zsh::task().name,    // deps: config,brewbundle
         windows::task().name,
@@ -175,6 +177,7 @@ fn mapping() -> HashMap<String, Task> {
     map.insert(String::from("minikube"), minikube::task());
     map.insert(String::from("nodejs"), nodejs::task());
     map.insert(String::from("npm"), npm::task());
+    map.insert(String::from("overpass"), overpass::task());
     map.insert(String::from("pip"), pip::task());
     map.insert(String::from("psql"), psql::task());
     map.insert(String::from("publicsans"), publicsans::task());
