@@ -7,6 +7,8 @@ and [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.31.0] - 2019-04-19
+
 ### Added
 
 - brewbundle: use [`brew bundle`](https://github.com/Homebrew/homebrew-bundle) for non-Windows favourites
