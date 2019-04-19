@@ -31,6 +31,7 @@ pub struct Release {
     #[serde(default = "default_json_false")]
     prelease: bool,
     pub tag_name: String,
+    pub zipball_url: String,
 }
 
 fn default_json_false() -> bool {
@@ -96,14 +97,23 @@ pub fn compatible_asset(release: &Release, filter: &Fn(&Asset) -> bool) -> Resul
     }
 }
 
+pub fn download<S, P>(url: S, target: P) -> Result<()>
+where
+    P: AsRef<Path>,
+    S: AsRef<str>,
+{
+    let req = create_request(url);
+    let bp = target.as_ref();
+    utils::http::download_request(&req, &bp)?;
+    Ok(())
+}
+
 pub fn download_release_asset<P>(asset: &Asset, bin_path: P) -> Result<()>
 where
     P: AsRef<Path>,
 {
-    let req = create_request(asset.browser_download_url.clone());
-    let bp = bin_path.as_ref();
-    utils::http::download_request(&req, &bp)?;
-    utils::fs::set_executable(&bp)?;
+    download(asset.browser_download_url.clone(), &bin_path)?;
+    utils::fs::set_executable(&bin_path)?;
     Ok(())
 }
 
@@ -146,7 +156,7 @@ where
     }
     match releases.into_iter().find(|r| {
         let name = r.name.clone().unwrap_or_default();
-        !r.draft && !r.prelease && !r.assets.is_empty() && version::is_stable(name.as_str())
+        !r.draft && !r.prelease && version::is_stable(name.as_str())
     }) {
         Some(latest) => Ok(latest),
         None => Err(GitHubError::ValidReleaseNotFound {}),

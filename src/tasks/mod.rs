@@ -13,6 +13,7 @@ mod brewfile;
 mod dep;
 mod dotfiles;
 mod fccache;
+mod fira;
 mod firacode;
 mod git;
 mod gitleaks;
@@ -104,6 +105,7 @@ fn sequence() -> Vec<String> {
         rustc::task().name, // deps: rustup
         rust::task().name,  // deps: config,rustc
         // fonts
+        fira::task().name,
         firacode::task().name,
         hack::task().name,
         hasklig::task().name,
@@ -134,10 +136,10 @@ fn sequence() -> Vec<String> {
         macos::task().name,
         psql::task().name,   // deps: config
         ssh::task().name,    // deps: config
-        tmux::task().name,   // deps: config
+        tmux::task().name,   // deps: config,brewbundle
         vim::task().name,    // deps: config; takes over the terminal
         vscode::task().name, // deps: config
-        zsh::task().name,    // deps: config
+        zsh::task().name,    // deps: config,brewbundle
         windows::task().name,
     ]
 }
@@ -155,6 +157,7 @@ fn mapping() -> HashMap<String, Task> {
     map.insert(String::from("dep"), dep::task());
     map.insert(String::from("dotfiles"), dotfiles::task());
     map.insert(String::from("fccache"), fccache::task());
+    map.insert(String::from("fira"), fira::task());
     map.insert(String::from("firacode"), firacode::task());
     map.insert(String::from("git"), git::task());
     map.insert(String::from("gitleaks"), gitleaks::task());

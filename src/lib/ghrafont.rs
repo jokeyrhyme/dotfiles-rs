@@ -70,13 +70,15 @@ impl<'a> GhraFont<'a> {
             None => return Ok(Status::Skipped),
         };
         let install_dir = font_dir.join(&self.repo.1);
+        let archive_path = mkftemp()?;
 
         let asset_re = regex::Regex::new(&self.asset_re).unwrap();
-        let asset = github::compatible_asset(&release, &|a: &github::Asset| {
+        match github::compatible_asset(&release, &|a: &github::Asset| {
             asset_re.is_match(a.name.as_str())
-        })?;
-        let archive_path = mkftemp()?;
-        github::download_release_asset(&asset, &archive_path)?;
+        }) {
+            Ok(asset) => github::download(asset.browser_download_url.clone(), &archive_path)?,
+            Err(_) => github::download(release.zipball_url.clone(), &archive_path)?,
+        };
 
         delete_if_exists(&install_dir);
         extract_zip_pattern(&archive_path, &install_dir, &|n| {

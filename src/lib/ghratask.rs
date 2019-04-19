@@ -66,7 +66,7 @@ impl<'a> GHRATask<'a> {
             .join(format!("{}{}", &self.command, EXE_SUFFIX));
 
         let archive_path = mkftemp()?;
-        github::download_release_asset(&asset, &archive_path)?;
+        github::download(asset.browser_download_url.clone(), &archive_path)?;
 
         let extract_path = mkdtemp()?;
         if asset.name.ends_with(".tar.gz") {

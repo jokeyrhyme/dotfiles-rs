@@ -13,6 +13,8 @@ and [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 - brewfile: symlink ~/.dotfiles/config/Brewfile to [~/.Brewfile](https://github.com/Homebrew/homebrew-bundle)
 
+- fira: keep [Fira (font)](https://github.com/mozilla/Fira) `sync`ed and `update`d
+
 - publicsans: keep [Public Sans (font)](https://github.com/uswds/public-sans) `sync`ed and `update`d
 
 ### Fixed
