@@ -2,6 +2,13 @@ language: rust
 rust:
   - stable
 
+matrix:
+  include:
+    - os: linux
+    - os: osx
+      osx_image: xcode10.2
+    - os: windows
+
 # cache trick from https://github.com/japaric/trust
 before_cache:
   - chmod -R a+r $HOME/.cargo
