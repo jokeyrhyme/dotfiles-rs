@@ -17,26 +17,15 @@ install:
 - rustup update
 - rustup component add clippy
 
-stages:
-  - name: test
-  - name: deploy
-    if: tag IS present AND fork = false
+script:
+  - cargo build --verbose
+  - make test
+  - make lint
 
-jobs:
-  include:
-    - name: build
-      stage: test
-      script: cargo build --verbose
-    - name: lint
-      script: make lint
-    - name: test
-      script: make test
-    - name: deploy to crates.io
-      stage: deploy
-      script: false
-      deploy:
-        on:
-          tags: true
-        provider: cargo
-        token: $CARGO_TOKEN
+deploy:
+  on:
+    repo: jokeyrhyme/dotfiles-rs
+    tags: true
+  provider: cargo
+  token: $CARGO_TOKEN
 
