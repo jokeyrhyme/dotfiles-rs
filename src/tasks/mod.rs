@@ -34,6 +34,7 @@ mod nodejs;
 mod npm;
 mod overpass;
 mod pip;
+mod plex;
 mod psql;
 mod publicsans;
 mod rust;
@@ -41,6 +42,8 @@ mod rustc;
 mod rustup;
 mod shfmt;
 mod skaffold;
+mod sourcesanspro;
+mod sourceserifpro;
 mod ssh;
 mod tmux;
 mod vale;
@@ -112,6 +115,9 @@ fn sequence() -> Vec<String> {
         hasklig::task().name,
         inter::task().name,
         overpass::task().name,
+        plex::task().name,
+        sourcesanspro::task().name,
+        sourceserifpro::task().name,
         publicsans::task().name,
         fccache::task().name, // deps: all other font tasks
         // these are GitHub Release tasks,
@@ -179,6 +185,7 @@ fn mapping() -> HashMap<String, Task> {
     map.insert(String::from("npm"), npm::task());
     map.insert(String::from("overpass"), overpass::task());
     map.insert(String::from("pip"), pip::task());
+    map.insert(String::from("plex"), plex::task());
     map.insert(String::from("psql"), psql::task());
     map.insert(String::from("publicsans"), publicsans::task());
     map.insert(String::from("rust"), rust::task());
@@ -186,6 +193,8 @@ fn mapping() -> HashMap<String, Task> {
     map.insert(String::from("rustup"), rustup::task());
     map.insert(String::from("shfmt"), shfmt::task());
     map.insert(String::from("skaffold"), skaffold::task());
+    map.insert(String::from("sourcesanspro"), sourcesanspro::task());
+    map.insert(String::from("sourceserifpro"), sourceserifpro::task());
     map.insert(String::from("ssh"), ssh::task());
     map.insert(String::from("tmux"), tmux::task());
     map.insert(String::from("vale"), vale::task());
