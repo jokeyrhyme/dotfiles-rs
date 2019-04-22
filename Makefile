@@ -7,7 +7,7 @@ fmt:
 lint:
 	set -eux
 	touch src/main.rs && cargo check --all-features --all-targets
-	touch src/main.rs && cargo clippy --all-features --all-targets -- -D clippy::all -D clippy::pedantic
+	touch src/main.rs && cargo clippy --all-features --all-targets -- -D clippy::all
 
 .NOCACHE: test
 test:

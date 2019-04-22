@@ -28,7 +28,7 @@ install:
 script:
   - cargo build --verbose
   - cargo test
-  - cargo clippy --all-features --all-targets -- -D clippy::all -D clippy::pedantic
+  - cargo clippy --all-features --all-targets -- -D clippy::all
 
 deploy:
   on:
