@@ -12,7 +12,7 @@ pub fn task() -> Task {
 fn sync() -> task::Result {
     let target = utils::env::home_dir().join(".dotfiles");
 
-    if utils::git::has_git() && utils::git::path_is_git_repository(&target) {
+    if utils::git::has() && utils::git::path_is_git_repository(&target) {
         utils::git::pull(&target);
     }
     Ok(Status::Done)

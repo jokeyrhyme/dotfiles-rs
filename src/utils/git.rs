@@ -2,7 +2,7 @@ use std::{io, path::Path};
 
 use crate::utils;
 
-pub fn has_git() -> bool {
+pub fn has() -> bool {
     match utils::process::command_output("git", &["--version"]) {
         Ok(output) => output.status.success(),
         Err(_error) => false,
@@ -76,15 +76,15 @@ mod tests {
 
     #[test]
     #[cfg(unix)]
-    fn has_git_is_true_for_unix() {
-        let got = has_git();
+    fn has_is_true_for_unix() {
+        let got = has();
 
         assert!(got);
     }
 
     #[test]
     fn path_is_git_repository_here() {
-        if !has_git() {
+        if !has() {
             return;
         }
 
@@ -95,7 +95,7 @@ mod tests {
 
     #[test]
     fn shallow_clone_and_shallow_fetch() {
-        if !has_git() {
+        if !has() {
             return;
         }
 

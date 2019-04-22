@@ -57,11 +57,11 @@ pub fn latest_version() -> Result<String, task::Error> {
         .collect();
 
     if release_tags.is_empty() {
-        return Err(task::Error::NoTagsError {});
+        return Err(task::Error::NoTags {});
     }
     match release_tags.last() {
         Some(latest) => Ok(latest.clone().id),
-        None => Err(task::Error::NoTagsError {}),
+        None => Err(task::Error::NoTags {}),
     }
 }
 

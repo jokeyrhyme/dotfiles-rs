@@ -105,7 +105,7 @@ fn supported_ssh_macs() -> Vec<String> {
 }
 
 fn sync() -> task::Result {
-    if !utils::ssh::has_ssh() {
+    if !utils::ssh::has() {
         return Ok(Status::Skipped);
     }
 

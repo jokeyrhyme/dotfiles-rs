@@ -29,7 +29,7 @@ impl<'a> GHRATask<'a> {
         let release = match self.latest_release() {
             Ok(r) => r,
             Err(error) => {
-                return Err(task::Error::GitHubError(
+                return Err(task::Error::GitHub(
                     format!("unable to check latest release for {:?}", &self.repo),
                     error,
                 ));

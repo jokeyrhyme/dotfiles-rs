@@ -540,7 +540,7 @@ fn format_strings(key: &str, value: &Option<Vec<String>>) -> String {
     }
 }
 
-pub fn has_ssh() -> bool {
+pub fn has() -> bool {
     which::which("ssh").is_ok()
 }
 
@@ -577,10 +577,10 @@ where
             .split(',')
             .filter_map(|s| {
                 let trimmed = s.trim();
-                if !trimmed.is_empty() {
-                    Some(String::from(s))
-                } else {
+                if trimmed.is_empty() {
                     None
+                } else {
+                    Some(String::from(s))
                 }
             })
             .collect(),
