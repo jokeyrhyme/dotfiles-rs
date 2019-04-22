@@ -86,7 +86,7 @@ where
 }
 
 fn sync() -> task::Result {
-    if !utils::git::has_git() {
+    if !utils::git::has() {
         return Ok(Status::Skipped);
     }
 

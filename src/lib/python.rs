@@ -6,8 +6,8 @@ use which;
 const VERSION_ARGS: &[&str] = &["--version"];
 
 /*
-pub fn has_python() -> bool {
-    python_output(VERSION_ARGS).is_ok()
+pub fn has() -> bool {
+    exe_output(VERSION_ARGS).is_ok()
 }
 */
 
@@ -28,7 +28,7 @@ where
 }
 */
 
-pub fn python_output<O>(args: &[O]) -> subprocess::Result<String>
+pub fn exe_output<O>(args: &[O]) -> subprocess::Result<String>
 where
     O: AsRef<OsStr>,
 {

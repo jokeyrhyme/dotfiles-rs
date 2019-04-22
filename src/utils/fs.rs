@@ -1,13 +1,11 @@
-use std;
-#[cfg(unix)]
-use std::fs::File;
-#[cfg(unix)]
-use std::os::unix::fs::PermissionsExt;
 use std::{
+    self,
     fmt::Debug,
     io,
     path::{Path, PathBuf},
 };
+#[cfg(unix)]
+use std::{fs::File, os::unix::fs::PermissionsExt};
 
 use mktemp;
 
@@ -45,7 +43,6 @@ where
 }
 
 #[cfg(unix)]
-
 pub fn set_executable<P>(target: P) -> std::io::Result<()>
 where
     P: AsRef<Path>,
@@ -57,10 +54,9 @@ where
 }
 
 #[cfg(not(unix))]
-
 pub fn set_executable<P>(_target: P) -> std::io::Result<()>
 where
-    P: AsRef<Path> + PartialEq,
+    P: AsRef<Path>,
 {
     Ok(())
 }

@@ -7,7 +7,7 @@ use crate::{
         env::Exports,
         favourites::Favourites,
         pip::{self, PipFavourites},
-        python::python_output,
+        python::exe_output,
         task::{self, Status, Task},
     },
     utils,
@@ -17,7 +17,7 @@ use crate::{
 // python -c "import site; print(site.USER_SITE)"
 
 pub fn env(mut exports: Exports) -> Exports {
-    let user_base = match python_output(&["-c", "import site; print(site.USER_BASE)"]) {
+    let user_base = match exe_output(&["-c", "import site; print(site.USER_BASE)"]) {
         Ok(ub) => ub,
         Err(_) => return exports,
     };
@@ -46,7 +46,7 @@ fn read_config() -> io::Result<PipFavourites> {
 }
 
 fn sync() -> task::Result {
-    if !pip::has_pip() {
+    if !pip::has() {
         return Ok(Status::Skipped);
     }
 
@@ -59,7 +59,7 @@ fn sync() -> task::Result {
 }
 
 fn update() -> task::Result {
-    if !pip::has_pip() {
+    if !pip::has() {
         return Ok(Status::Done);
     }
 

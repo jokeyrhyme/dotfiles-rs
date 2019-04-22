@@ -134,7 +134,11 @@ mod tests {
             path: vec![PathBuf::from("/usr/bin"), PathBuf::from("/bin")],
         };
         let got = exports.to_shell(Shell::Bash);
-        let want = "export EDITOR=/usr/bin/vim\n\n\nexport PATH=/usr/bin:/bin";
+        let want = if OS == "windows" {
+            "export EDITOR=/usr/bin/vim\n\n\nexport PATH=/usr/bin;/bin"
+        } else {
+            "export EDITOR=/usr/bin/vim\n\n\nexport PATH=/usr/bin:/bin"
+        };
         assert_eq!(got, want);
     }
 
@@ -147,7 +151,11 @@ mod tests {
             path: vec![PathBuf::from("/usr/bin"), PathBuf::from("/bin")],
         };
         let got = exports.to_shell(Shell::Fish);
-        let want = "set --export EDITOR /usr/bin/vim\n\n\nset --export PATH /usr/bin:/bin";
+        let want = if OS == "windows" {
+            "set --export EDITOR /usr/bin/vim\n\n\nset --export PATH /usr/bin;/bin"
+        } else {
+            "set --export EDITOR /usr/bin/vim\n\n\nset --export PATH /usr/bin:/bin"
+        };
         assert_eq!(got, want);
     }
 
@@ -160,7 +168,11 @@ mod tests {
             path: vec![PathBuf::from("/usr/bin"), PathBuf::from("/bin")],
         };
         let got = exports.to_shell(Shell::Zsh);
-        let want = "export EDITOR=/usr/bin/vim\n\n\nexport PATH=/usr/bin:/bin";
+        let want = if OS == "windows" {
+            "export EDITOR=/usr/bin/vim\n\n\nexport PATH=/usr/bin;/bin"
+        } else {
+            "export EDITOR=/usr/bin/vim\n\n\nexport PATH=/usr/bin:/bin"
+        };
         assert_eq!(got, want);
     }
 }

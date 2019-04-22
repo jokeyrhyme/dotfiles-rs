@@ -81,7 +81,7 @@ fn sync() -> task::Result {
     let latest = utils::nodejs::latest_version();
     match install_nodejs(latest.clone()) {
         Ok(()) => Ok(Status::Changed(String::from("unknown"), latest)),
-        Err(error) => Err(task::Error::IoError(
+        Err(error) => Err(task::Error::Io(
             String::from("unable to install Node.js"),
             error,
         )),
@@ -101,7 +101,7 @@ fn update() -> task::Result {
     } else {
         match install_nodejs(latest.clone()) {
             Ok(()) => Ok(Status::Changed(current, latest)),
-            Err(error) => Err(task::Error::IoError(
+            Err(error) => Err(task::Error::Io(
                 String::from("unable to install Node.js"),
                 error,
             )),

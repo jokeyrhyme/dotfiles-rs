@@ -78,7 +78,7 @@ fn sync() -> task::Result {
     let contents = match fs::read_to_string(&cfg_path) {
         Ok(s) => s,
         Err(error) => {
-            return Err(task::Error::IoError(String::from("ignoring config"), error));
+            return Err(task::Error::Io(String::from("ignoring config"), error));
         }
     };
 

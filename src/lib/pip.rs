@@ -57,15 +57,15 @@ impl Favourites for PipFavourites {
 }
 
 pub fn found_versions() -> Vec<PipPackage> {
-    if !has_pip() {
+    if !has() {
         return Vec::new();
     };
-    let stdout = pip_output(&["list", "--format=json", "--user"]).unwrap_or_default();
+    let stdout = exe_output(&["list", "--format=json", "--user"]).unwrap_or_default();
     parse_pippackages(stdout)
 }
 
-pub fn has_pip() -> bool {
-    pip_output(VERSION_ARGS).is_ok()
+pub fn has() -> bool {
+    exe_output(VERSION_ARGS).is_ok()
 }
 
 pub fn pip<S>(args: &[S]) -> io::Result<()>
@@ -75,7 +75,7 @@ where
     command_spawn_wait(pip_exe()?, args).map(|_| ())
 }
 
-pub fn pip_output<S>(args: &[S]) -> io::Result<String>
+pub fn exe_output<S>(args: &[S]) -> io::Result<String>
 where
     S: AsRef<str>,
 {

@@ -7,37 +7,35 @@ use crate::utils::github;
 
 #[derive(Debug)]
 pub enum Error {
-    GitHubError(String, github::GitHubError),
-    IoError(String, io::Error),
-    NoTagsError,
-    PopenError(String, subprocess::PopenError),
+    GitHub(String, github::GitHubError),
+    Io(String, io::Error),
+    NoTags,
+    Popen(String, subprocess::PopenError),
 }
 impl std::error::Error for Error {}
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match &self {
-            Error::GitHubError(msg, cause) => {
-                write!(f, "{}", format!("{}: {:?}", msg, cause).red())
-            }
-            Error::IoError(msg, cause) => write!(f, "{}", format!("{}: {:?}", msg, cause).red()),
-            Error::NoTagsError => write!(f, "{}", "NoTagsError".red()),
-            Error::PopenError(msg, cause) => write!(f, "{}", format!("{}: {:?}", msg, cause).red()),
+            Error::GitHub(msg, cause) => write!(f, "{}", format!("{}: {:?}", msg, cause).red()),
+            Error::Io(msg, cause) => write!(f, "{}", format!("{}: {:?}", msg, cause).red()),
+            Error::NoTags => write!(f, "{}", "NoTagsError".red()),
+            Error::Popen(msg, cause) => write!(f, "{}", format!("{}: {:?}", msg, cause).red()),
         }
     }
 }
 impl From<github::GitHubError> for Error {
     fn from(cause: github::GitHubError) -> Error {
-        Error::GitHubError(String::new(), cause)
+        Error::GitHub(String::new(), cause)
     }
 }
 impl From<io::Error> for Error {
     fn from(cause: io::Error) -> Error {
-        Error::IoError(String::new(), cause)
+        Error::Io(String::new(), cause)
     }
 }
 impl From<subprocess::PopenError> for Error {
     fn from(cause: subprocess::PopenError) -> Error {
-        Error::PopenError(String::new(), cause)
+        Error::Popen(String::new(), cause)
     }
 }
 
