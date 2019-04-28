@@ -15,6 +15,10 @@ and [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 - sourceserifpro: keep [Source Serif Pro (font)](https://github.com/adobe-fonts/source-serif-pro) `sync`ed and `update`d
 
+### Fixed
+
+- fix Windows build in `set_executable` RE: PartialEq
+
 ## [0.31.0] - 2019-04-19
 
 ### Added
