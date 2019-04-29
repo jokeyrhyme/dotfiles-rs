@@ -20,7 +20,7 @@ pub fn task() -> Task {
     Task {
         name: String::from("vscode"),
         sync,
-        update,
+        ..Default::default()
     }
 }
 
@@ -114,8 +114,4 @@ fn sync() -> task::Result {
     }
 
     Ok(Status::Done)
-}
-
-fn update() -> task::Result {
-    Ok(Status::NotImplemented)
 }

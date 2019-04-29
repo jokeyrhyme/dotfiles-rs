@@ -88,7 +88,7 @@ fn sync() -> task::Result {
     Ok(Status::Done)
 }
 
-fn update() -> task::Result {
+fn update(_: Status) -> task::Result {
     for vim in &VIMS {
         if !vim.exists() {
             continue;

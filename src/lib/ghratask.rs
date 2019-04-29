@@ -39,8 +39,11 @@ impl<'a> GHRATask<'a> {
         Ok(Status::Changed(String::from("absent"), release.tag_name))
     }
 
-    pub fn update(&mut self) -> task::Result {
-        self.as_ghrtask().update()
+    pub fn update(&mut self, sync: Status) -> task::Result {
+        match sync {
+            Status::Changed(_, _) => Ok(Status::Skipped),
+            _ => self.as_ghrtask().update(sync),
+        }
     }
 
     fn as_ghrtask(&self) -> GHRTask<'a> {

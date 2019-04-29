@@ -62,9 +62,9 @@ impl fmt::Display for Status {
             Status::Skipped => write!(f, "{}", "skipped".blue()),
 
             Status::Changed(old, new) => {
-                write!(f, "{}", format!("changed '{}' -> '{}'", old, new).yellow())
+                write!(f, "{}", format!("'{}' -> '{}'", old.red(), new.yellow()))
             }
-            Status::NoChange(old) => write!(f, "{}", format!("'{}' -> no change", old).green()),
+            Status::NoChange(old) => write!(f, "{}", format!("'{}'", old).green()),
         }
     }
 }
@@ -72,17 +72,22 @@ impl fmt::Display for Status {
 pub struct Task {
     pub name: String,
     pub sync: fn() -> Result,
-    pub update: fn() -> Result,
+    pub update: fn(Status) -> Result,
 }
 impl Task {
     pub fn sync_then_update(&self) {
-        match (self.sync)() {
-            Ok(status) => println!("{}: sync: {}", self.name, status),
-            Err(error) => println!("{}: sync error: {:?}", self.name, error),
-        }
+        let sync = match (self.sync)() {
+            Ok(s) => {
+                if Status::NotImplemented != s {
+                    println!("{}: sync: {}", self.name, &s);
+                }
+                s
+            }
+            Err(error) => return println!("{}: sync error: {:?}", self.name, error),
+        };
         // TODO: ensure we can trust the accuracy of `sync()` results
         // TODO: only call `update()` when `sync()` result suggests it is needed
-        match (self.update)() {
+        match (self.update)(sync) {
             Ok(status) => println!("{}: update: {}", self.name, status),
             Err(error) => println!("{}: update error: {:?}", self.name, error),
         }
@@ -93,7 +98,7 @@ impl Default for Task {
         Task {
             name: String::from("unknown"),
             sync: || Ok(Status::NotImplemented),
-            update: || Ok(Status::NotImplemented),
+            update: |_| Ok(Status::NotImplemented),
         }
     }
 }

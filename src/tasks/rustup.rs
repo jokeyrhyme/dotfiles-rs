@@ -31,7 +31,7 @@ fn sync() -> task::Result {
     }
 }
 
-fn update() -> task::Result {
+fn update(_: Status) -> task::Result {
     if !rust::has_rustup() {
         return Ok(Status::Skipped);
     }

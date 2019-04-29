@@ -4,7 +4,7 @@ use regex::Regex;
 
 use crate::lib::{
     ghratask::GHRATask,
-    task::{self, Task},
+    task::{self, Status, Task},
 };
 use crate::utils::github::Asset;
 
@@ -65,6 +65,6 @@ fn trim_version(stdout: String) -> String {
     String::from(stdout.trim())
 }
 
-fn update() -> task::Result {
-    GHRA_TASK.update()
+fn update(sync: Status) -> task::Result {
+    GHRA_TASK.update(sync)
 }

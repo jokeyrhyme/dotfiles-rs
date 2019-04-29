@@ -14,7 +14,7 @@ pub fn task() -> Task {
     }
 }
 
-fn update() -> task::Result {
+fn update(_: Status) -> task::Result {
     if which("fc-cache").is_err() {
         return Ok(Status::Skipped);
     }

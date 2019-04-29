@@ -9,11 +9,17 @@ and [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- auto-skip pure GitHub Release `update` tasks when `sync` had to install something
+
 - plex: keep [Plex (font)](https://github.com/IBM/plex) `sync`ed and `update`d
 
 - sourcesanspro: keep [Source Sans Pro (font)](https://github.com/adobe-fonts/source-sans-pro) `sync`ed and `update`d
 
 - sourceserifpro: keep [Source Serif Pro (font)](https://github.com/adobe-fonts/source-serif-pro) `sync`ed and `update`d
+
+### Changed
+
+- simplify/tweak task Status output a little
 
 ### Fixed
 

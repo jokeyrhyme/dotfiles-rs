@@ -64,7 +64,10 @@ impl<'a> GHRTask<'a> {
         Ok(Status::Changed(String::from("absent"), release.tag_name))
     }
 
-    pub fn update(&self) -> task::Result {
+    pub fn update(&mut self, sync: Status) -> task::Result {
+        if let Status::Changed(_, _) = sync {
+            return Ok(Status::Skipped);
+        }
         if !self.exists() {
             return Ok(Status::Skipped);
         }

@@ -68,7 +68,7 @@ fn sync() -> task::Result {
     Ok(Status::Done)
 }
 
-fn update() -> task::Result {
+fn update(_: Status) -> task::Result {
     if OS == "windows" || !has_bash() {
         return Ok(Status::Skipped);
     }

@@ -94,7 +94,7 @@ fn sync() -> task::Result {
     Ok(Status::Done)
 }
 
-fn update() -> task::Result {
+fn update(_: Status) -> task::Result {
     if !cargo::has_cargo() {
         return Ok(Status::Done);
     }

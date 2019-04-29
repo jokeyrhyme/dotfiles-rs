@@ -40,7 +40,7 @@ impl<'a> GhraFont<'a> {
         self.install(&release)
     }
 
-    pub fn update(&self) -> task::Result {
+    pub fn update(&self, _: Status) -> task::Result {
         let font_dir = match dirs::font_dir() {
             Some(d) => d,
             None => return Ok(Status::Skipped),

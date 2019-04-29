@@ -4,7 +4,7 @@ use regex::Regex;
 
 use crate::lib::{
     ghrtask::GHRTask,
-    task::{self, Task},
+    task::{self, Status, Task},
 };
 use crate::utils::github::Asset;
 use crate::utils::golang::os;
@@ -45,6 +45,6 @@ fn trim_version(stdout: String) -> String {
     String::from("unexpected")
 }
 
-fn update() -> task::Result {
-    GHR_TASK.update()
+fn update(sync: Status) -> task::Result {
+    GHR_TASK.update(sync)
 }

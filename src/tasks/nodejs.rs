@@ -88,7 +88,7 @@ fn sync() -> task::Result {
     }
 }
 
-fn update() -> task::Result {
+fn update(_: Status) -> task::Result {
     if !utils::nodejs::has_node() {
         return Ok(Status::Skipped);
     }
