@@ -19,6 +19,8 @@ and [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- extracted out bashrc, inputrc, profile, zshrc tasks from bash and zsh tasks
+
 - simplify/tweak task Status output a little
 
 ### Fixed
