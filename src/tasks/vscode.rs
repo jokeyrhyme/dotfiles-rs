@@ -73,17 +73,6 @@ fn sync() -> task::Result {
         return Ok(Status::Skipped);
     }
 
-    let src = utils::env::home_dir().join(".dotfiles/config/vscode.json");
-
-    let settings_path = match OS {
-        "macos" => "Library/Application Support/Code/User/settings.json",
-        "windows" => "AppData/Roaming/Code/User/settings.json",
-        _ => ".config/Code/User/settings.json",
-    };
-    let dest = utils::env::home_dir().join(Path::new(settings_path));
-
-    utils::fs::symbolic_link_if_exists(&src, &dest)?;
-
     let cfg_path = utils::env::home_dir().join(".dotfiles/config/vscode.toml");
 
     let contents = match fs::read_to_string(&cfg_path) {

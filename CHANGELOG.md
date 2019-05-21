@@ -19,7 +19,9 @@ and [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
-- extracted out bashrc, inputrc, profile, tmuxconf, zshrc tasks from bash, tmux, zsh tasks
+- extracted out bashrc, inputrc, profile, tmuxconf, zshrc symlink tasks from bash, tmux, zsh tasks
+
+- extracted out vscodejson symlink task out from vscode task
 
 - simplify/tweak task Status output a little
 
