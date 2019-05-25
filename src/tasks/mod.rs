@@ -6,6 +6,7 @@ mod alacritty;
 mod atlantis;
 mod atom;
 mod bash;
+mod bashrc;
 mod bazel;
 mod brew;
 mod brewbundle;
@@ -25,6 +26,7 @@ mod hack;
 mod hadolint;
 mod hasklig;
 mod hyper;
+mod inputrc;
 mod inter;
 mod jq;
 mod local;
@@ -35,6 +37,7 @@ mod npm;
 mod overpass;
 mod pip;
 mod plex;
+mod profile;
 mod psql;
 mod publicsans;
 mod rust;
@@ -46,12 +49,15 @@ mod sourcesanspro;
 mod sourceserifpro;
 mod ssh;
 mod tmux;
+mod tmuxconf;
 mod vale;
 mod vim;
 mod vscode;
+mod vscodejson;
 mod windows;
 mod yq;
 mod zsh;
+mod zshrc;
 
 pub fn env() -> Exports {
     let mut exports: Exports = Default::default();
@@ -137,17 +143,23 @@ fn sequence() -> Vec<String> {
         yq::task().name,
         alacritty::task().name, // deps: config
         atom::task().name,
-        bash::task().name, // deps: config
-        git::task().name,  // deps: nodejs/npm
+        bashrc::task().name,  // deps: config
+        inputrc::task().name, // deps: config
+        profile::task().name, // deps: config
+        bash::task().name,    // deps: bashrc,inputrc,profile
+        git::task().name,     // deps: nodejs/npm
         googlecloudsdk::task().name,
         hyper::task().name, // deps: config
         macos::task().name,
-        psql::task().name,   // deps: config
-        ssh::task().name,    // deps: config
-        tmux::task().name,   // deps: config,brewbundle
-        vim::task().name,    // deps: config,pip; takes over the terminal
-        vscode::task().name, // deps: config
-        zsh::task().name,    // deps: config,brewbundle
+        psql::task().name,       // deps: config
+        ssh::task().name,        // deps: config
+        tmuxconf::task().name,   // deps: config
+        tmux::task().name,       // deps: tmuxconf,brewbundle
+        vim::task().name,        // deps: config,pip; takes over the terminal
+        vscodejson::task().name, // deps: config
+        vscode::task().name,     // deps: config,vscodejson
+        zshrc::task().name,      // deps: config
+        zsh::task().name,        // deps: profile,inputrc,zshrc,brewbundle
         windows::task().name,
     ]
 }
@@ -157,6 +169,7 @@ fn mapping() -> HashMap<String, Task> {
     map.insert(String::from("alacritty"), alacritty::task());
     map.insert(String::from("atlantis"), atlantis::task());
     map.insert(String::from("atom"), atom::task());
+    map.insert(String::from("bashrc"), bashrc::task());
     map.insert(String::from("bash"), bash::task());
     map.insert(String::from("bazel"), bazel::task());
     map.insert(String::from("brew"), brew::task());
@@ -177,6 +190,7 @@ fn mapping() -> HashMap<String, Task> {
     map.insert(String::from("hadolint"), hadolint::task());
     map.insert(String::from("hasklig"), hasklig::task());
     map.insert(String::from("hyper"), hyper::task());
+    map.insert(String::from("inputrc"), inputrc::task());
     map.insert(String::from("inter"), inter::task());
     map.insert(String::from("jq"), jq::task());
     map.insert(String::from("macos"), macos::task());
@@ -186,6 +200,7 @@ fn mapping() -> HashMap<String, Task> {
     map.insert(String::from("overpass"), overpass::task());
     map.insert(String::from("pip"), pip::task());
     map.insert(String::from("plex"), plex::task());
+    map.insert(String::from("profile"), profile::task());
     map.insert(String::from("psql"), psql::task());
     map.insert(String::from("publicsans"), publicsans::task());
     map.insert(String::from("rust"), rust::task());
@@ -197,12 +212,15 @@ fn mapping() -> HashMap<String, Task> {
     map.insert(String::from("sourceserifpro"), sourceserifpro::task());
     map.insert(String::from("ssh"), ssh::task());
     map.insert(String::from("tmux"), tmux::task());
+    map.insert(String::from("tmuxconf"), tmuxconf::task());
     map.insert(String::from("vale"), vale::task());
     map.insert(String::from("vim"), vim::task());
     map.insert(String::from("vscode"), vscode::task());
+    map.insert(String::from("vscodejson"), vscodejson::task());
     map.insert(String::from("windows"), windows::task());
     map.insert(String::from("yq"), yq::task());
     map.insert(String::from("zsh"), zsh::task());
+    map.insert(String::from("zshrc"), zshrc::task());
     map
 }
 

@@ -3,7 +3,7 @@ use std::env::consts::{ARCH, EXE_SUFFIX, OS};
 use crate::{
     lib::{
         ghrtask::GHRTask,
-        task::{self, Task},
+        task::{self, Status, Task},
     },
     utils::github::Asset,
 };
@@ -58,6 +58,6 @@ fn trim_version(stdout: String) -> String {
     String::from(stdout.trim())
 }
 
-fn update() -> task::Result {
-    GHR_TASK.update()
+fn update(sync: Status) -> task::Result {
+    GHR_TASK.update(sync)
 }

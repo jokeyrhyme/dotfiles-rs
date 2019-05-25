@@ -92,7 +92,7 @@ fn sync() -> task::Result {
     // TODO: cleanup GOPATH/pkg: https://github.com/golang/go/issues/4719
 }
 
-fn update() -> task::Result {
+fn update(_: Status) -> task::Result {
     if !utils::golang::is_installed() {
         return Ok(Status::Skipped);
     }

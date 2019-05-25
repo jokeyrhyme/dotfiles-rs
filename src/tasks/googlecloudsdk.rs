@@ -43,7 +43,7 @@ fn sync() -> task::Result {
     Ok(Status::Done)
 }
 
-fn update() -> task::Result {
+fn update(_: Status) -> task::Result {
     let sdk_path = utils::env::home_dir()
         .join(".local")
         .join("google-cloud-sdk");

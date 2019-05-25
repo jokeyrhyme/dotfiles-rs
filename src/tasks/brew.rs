@@ -48,7 +48,7 @@ fn sync() -> task::Result {
     Ok(Status::Done)
 }
 
-fn update() -> task::Result {
+fn update(_: Status) -> task::Result {
     if !brew::has_brew() {
         return Ok(Status::Skipped);
     }

@@ -27,15 +27,6 @@ fn sync() -> task::Result {
         return Ok(Status::Skipped);
     }
 
-    utils::fs::symbolic_link_if_exists(
-        utils::env::home_dir().join(".dotfiles/config/profile"),
-        utils::env::home_dir().join(".profile"),
-    )?;
-    utils::fs::symbolic_link_if_exists(
-        utils::env::home_dir().join(".dotfiles/config/zshrc"),
-        utils::env::home_dir().join(".zshrc"),
-    )?;
-
     let oh_path = utils::env::home_dir().join(".oh-my-zsh");
     if !utils::git::path_is_git_repository(&oh_path) {
         utils::fs::delete_if_exists(&oh_path);
@@ -68,7 +59,7 @@ fn sync() -> task::Result {
     Ok(Status::Done)
 }
 
-fn update() -> task::Result {
+fn update(_: Status) -> task::Result {
     if OS == "windows" || !has_zsh() {
         return Ok(Status::Skipped);
     }

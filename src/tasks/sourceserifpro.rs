@@ -1,6 +1,6 @@
 use crate::lib::{
     ghrafont::GhraFont,
-    task::{self, Task},
+    task::{self, Status, Task},
 };
 
 pub fn task() -> Task {
@@ -21,6 +21,6 @@ fn sync() -> task::Result {
     GHRA_FONT.sync()
 }
 
-fn update() -> task::Result {
-    GHRA_FONT.update()
+fn update(sync: Status) -> task::Result {
+    GHRA_FONT.update(sync)
 }

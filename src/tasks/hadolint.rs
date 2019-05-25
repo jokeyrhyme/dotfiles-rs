@@ -6,7 +6,7 @@ use regex::Regex;
 use crate::{
     lib::{
         ghrtask::GHRTask,
-        task::{self, Task},
+        task::{self, Status, Task},
     },
     utils::{github::Asset, golang::os},
 };
@@ -46,6 +46,6 @@ fn trim_version(stdout: String) -> String {
     }
 }
 
-fn update() -> task::Result {
-    GHR_TASK.update()
+fn update(sync: Status) -> task::Result {
+    GHR_TASK.update(sync)
 }
