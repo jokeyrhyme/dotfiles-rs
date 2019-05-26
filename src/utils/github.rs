@@ -7,7 +7,7 @@ use std::{
     str,
 };
 
-use cabot::request::Request;
+use reqwest::{header, Request};
 use serde_derive::Deserialize;
 use serde_json;
 
@@ -104,7 +104,7 @@ where
 {
     let req = create_request(url);
     let bp = target.as_ref();
-    utils::http::download_request(&req, &bp)?;
+    utils::http::download_request(req, &bp)?;
     Ok(())
 }
 
@@ -127,8 +127,8 @@ where
         repo.as_ref(),
     );
     let req = create_request(uri);
-    let res = utils::http::fetch_request(&req)?;
-    let body = res.body_as_string().unwrap_or_default();
+    let mut res = utils::http::fetch_request(req)?;
+    let body = res.text().unwrap_or_default();
 
     let tags: Vec<Tag> = match serde_json::from_str(&body) {
         Ok(t) => t,
@@ -193,18 +193,19 @@ fn create_request<S>(url: S) -> Request
 where
     S: AsRef<str>,
 {
-    let mut headers: Vec<String> = Vec::new();
+    let mut headers = header::HeaderMap::new();
 
     match std::env::var("GITHUB_TOKEN") {
         Ok(token) => {
-            let auth = format!("Authorization: token {}", token);
-            headers.push(auth);
+            headers.insert(
+                header::AUTHORIZATION,
+                header::HeaderValue::from_str(&token).expect("Authorization header"),
+            );
         }
         Err(_error) => {}
     };
 
-    let headers_slice: Vec<&str> = headers.iter().map(|h| &**h).collect();
-    utils::http::create_request(url, &headers_slice)
+    utils::http::create_request(url, Some(headers))
 }
 
 fn fetch_releases<S>(owner: S, repo: S) -> Result<Vec<Release>>
@@ -217,8 +218,8 @@ where
         repo.as_ref(),
     );
     let req = create_request(uri);
-    let res = utils::http::fetch_request(&req)?;
-    let body = res.body_as_string().unwrap_or_default();
+    let mut res = utils::http::fetch_request(req)?;
+    let body = res.text().unwrap_or_default();
 
     let releases: Vec<Release> = match parse_releases_json(&body) {
         Ok(r) => r,
