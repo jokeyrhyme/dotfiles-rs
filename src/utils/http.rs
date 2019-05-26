@@ -49,7 +49,7 @@ where
 
 pub fn fetch_request(req: Request) -> io::Result<Response> {
     let client = create_client();
-    let mut res = match client.execute(req) {
+    let res = match client.execute(req) {
         Ok(r) => r,
         Err(e) => {
             return Err(io::Error::new(ErrorKind::Other, format!("{:?}", e)));
@@ -60,8 +60,6 @@ pub fn fetch_request(req: Request) -> io::Result<Response> {
         Ok(res)
     } else {
         println!("{:?} GET {}", &res.version(), &res.url());
-        println!("headers: {:?}", res.headers());
-        println!("{}", res.text().unwrap_or_default());
         let result = io::Error::new(ErrorKind::Other, "non-success");
         Err(result)
     }
