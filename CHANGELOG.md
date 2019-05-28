@@ -7,6 +7,8 @@ and [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.32.0] - 2019-05-28
+
 ### Added
 
 - auto-skip pure GitHub Release `update` tasks when `sync` had to install something
