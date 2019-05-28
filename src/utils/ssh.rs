@@ -113,7 +113,7 @@ impl Config {
 impl BitOr for Config {
     type Output = Self;
 
-    #[allow(clippy::cyclomatic_complexity)]
+    #[allow(clippy::cognitive_complexity)]
     fn bitor(self, rhs: Self) -> Self {
         let mut result = self.clone();
 

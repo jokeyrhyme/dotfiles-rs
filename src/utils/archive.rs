@@ -52,6 +52,7 @@ pub fn extract_tar(source: &Path, target: &Path) -> io::Result<()> {
     };
     let mut a = tar::Archive::new(file);
 
+    #[allow(clippy::identity_conversion)]
     for entry in a.entries()? {
         // Make sure there wasn't an I/O error
         let mut entry = entry?;

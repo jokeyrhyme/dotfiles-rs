@@ -7,7 +7,8 @@ matrix:
     - os: linux
     - os: osx
       osx_image: xcode10.2
-    - os: windows
+      # temporarily disable Windows testing (exceeds 10min of no output)
+      #    - os: windows
 
 # cache trick from https://github.com/japaric/trust
 before_cache:

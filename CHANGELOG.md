@@ -29,6 +29,10 @@ and [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 - fix Windows build in `set_executable` RE: PartialEq
 
+### Removed
+
+- no longer display HTTP response headers and body for failed requests
+
 ## [0.31.0] - 2019-04-19
 
 ### Added

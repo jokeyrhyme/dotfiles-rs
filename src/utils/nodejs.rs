@@ -82,9 +82,9 @@ pub fn install_path() -> PathBuf {
 }
 
 pub fn latest_version() -> String {
-    let req = utils::http::create_request(DIST_JSON_URL, &utils::http::EMPTY_HEADERS);
-    let res = utils::http::fetch_request(&req).expect(ERROR_MSG);
-    let body = res.body_as_string().expect(ERROR_MSG);
+    let req = utils::http::create_request(DIST_JSON_URL, None);
+    let mut res = utils::http::fetch_request(req).expect(ERROR_MSG);
+    let body = res.text().expect(ERROR_MSG);
     let releases: Vec<Release> = serde_json::from_str(&body).expect(ERROR_MSG);
 
     let latest_release: &Release = releases
