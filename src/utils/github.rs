@@ -199,7 +199,8 @@ where
         Ok(token) => {
             headers.insert(
                 header::AUTHORIZATION,
-                header::HeaderValue::from_str(&token).expect("Authorization header"),
+                header::HeaderValue::from_str(&format!("token {}", &token))
+                    .expect("Authorization header"),
             );
         }
         Err(_error) => {}
