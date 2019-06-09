@@ -2,6 +2,7 @@ use std::fs::{create_dir_all, File};
 use std::io::{self, Read};
 use std::path::Path;
 
+use chrono::{offset::Utc, Duration};
 use reqwest::{header, Client, Request, Url};
 
 use crate::lib::cache;
@@ -50,6 +51,15 @@ where
 }
 
 pub fn fetch_request(req: Request) -> io::Result<impl Read> {
+    let url = req.url().clone();
+    if let Ok(rm) = cache::load_response_metadata(&url) {
+        let a_while_ago = Utc::now() - Duration::minutes(15);
+        if rm.date > a_while_ago {
+            return cache::load_response_body(&url);
+        }
+    }
+    // proceed with fresh HTTP request
+
     let client = create_client();
     let res = match client.execute(req) {
         Ok(r) => r,
@@ -59,9 +69,8 @@ pub fn fetch_request(req: Request) -> io::Result<impl Read> {
     };
 
     if res.status().is_success() {
-        let url = res.url().clone();
-        cache::store_response(res)?;
-        cache::load_response(&url)
+        cache::store_response(&url, res)?;
+        cache::load_response_body(&url)
     } else {
         println!("{:?} GET {}", &res.version(), &res.url());
         let result = io::Error::new(io::ErrorKind::Other, "non-success");

@@ -4,6 +4,7 @@ use std::{
     path::PathBuf,
 };
 
+use chrono::{offset::Utc, DateTime};
 use dirs::cache_dir;
 use regex::Regex;
 use reqwest::{Response, Url};
@@ -11,17 +12,27 @@ use serde_derive::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use toml;
 
-#[derive(Debug, Default, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct ResponseMetadata {
+    pub content_length: u64,
+    pub date: DateTime<Utc>,
     headers: Vec<String>,
 }
 impl From<&Response> for ResponseMetadata {
     fn from(res: &Response) -> ResponseMetadata {
         let mut headers = Vec::<String>::new();
         for (k, v) in res.headers().iter() {
+            if k == "authorization" || k == "cookie" || k == "set-cookie" {
+                // avoid storing credentials
+                continue;
+            }
             headers.push(format!("{}: {}", k, v.to_str().unwrap_or("[non-string]")));
         }
-        ResponseMetadata { headers }
+        ResponseMetadata {
+            content_length: res.content_length().unwrap_or_default(),
+            date: Utc::now(),
+            headers,
+        }
     }
 }
 impl From<&ResponseMetadata> for String {
@@ -30,22 +41,34 @@ impl From<&ResponseMetadata> for String {
     }
 }
 
-pub fn load_response(url: &Url) -> io::Result<impl Read> {
+pub fn load_response_body(url: &Url) -> io::Result<impl Read> {
     File::open(url_body_path(url))
 }
 
-pub fn store_response(mut res: Response) -> io::Result<()> {
-    let fp = url_metadata_path(res.url());
+pub fn load_response_metadata(url: &Url) -> io::Result<ResponseMetadata> {
+    let mut f = File::open(url_metadata_path(url))?;
+    let mut text = String::new();
+    f.read_to_string(&mut text)?;
+    match toml::from_str(&text) {
+        Ok(rm) => Ok(rm),
+        Err(e) => Err(io::Error::new(io::ErrorKind::Other, e)),
+    }
+}
+
+pub fn store_response(url: &Url, mut res: Response) -> io::Result<()> {
+    let rm = ResponseMetadata::from(&res);
+
+    let fp = url_metadata_path(url);
     if let Some(p) = fp.parent() {
         fs::create_dir_all(p)?;
     }
-    fs::write(fp, String::from(&ResponseMetadata::from(&res)))?;
 
-    let mut file = File::create(url_body_path(res.url()))?;
-    match res.copy_to(&mut file) {
-        Ok(_) => Ok(()),
-        Err(e) => Err(io::Error::new(io::ErrorKind::Other, format!("{:?}", e))),
+    let mut file = File::create(url_body_path(url))?;
+    if let Err(e) = res.copy_to(&mut file) {
+        return Err(io::Error::new(io::ErrorKind::Other, format!("{:?}", e)));
     }
+
+    fs::write(fp, String::from(&rm))
 }
 
 const URL_TOO_LONG: usize = 100;

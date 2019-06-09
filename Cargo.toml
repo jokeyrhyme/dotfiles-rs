@@ -16,6 +16,7 @@ include = [
 license = "MIT"
 
 [dependencies]
+chrono = { version = "0.4", features = ["serde"] }
 colored = "1.8"
 clap = "2.33"
 dirs = "2.0"
