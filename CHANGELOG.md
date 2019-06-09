@@ -9,7 +9,7 @@ and [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- store HTTP response metadata in ~/.cache
+- store HTTP responses in ~/.cache/jokeyrhyme-dotfiles/
 
 ## [0.32.0] - 2019-05-28
 

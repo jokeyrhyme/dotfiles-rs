@@ -1,4 +1,8 @@
-use std::{fs, io, path::PathBuf};
+use std::{
+    fs::{self, File},
+    io::{self, Read},
+    path::PathBuf,
+};
 
 use dirs::cache_dir;
 use regex::Regex;
@@ -26,12 +30,22 @@ impl From<&ResponseMetadata> for String {
     }
 }
 
-pub fn store_response_metadata(res: &Response) -> io::Result<()> {
+pub fn load_response(url: &Url) -> io::Result<impl Read> {
+    File::open(url_body_path(url))
+}
+
+pub fn store_response(mut res: Response) -> io::Result<()> {
     let fp = url_metadata_path(res.url());
     if let Some(p) = fp.parent() {
         fs::create_dir_all(p)?;
     }
-    fs::write(fp, String::from(&ResponseMetadata::from(res)))
+    fs::write(fp, String::from(&ResponseMetadata::from(&res)))?;
+
+    let mut file = File::create(url_body_path(res.url()))?;
+    match res.copy_to(&mut file) {
+        Ok(_) => Ok(()),
+        Err(e) => Err(io::Error::new(io::ErrorKind::Other, format!("{:?}", e))),
+    }
 }
 
 const URL_TOO_LONG: usize = 100;
@@ -57,6 +71,13 @@ fn url_filename(url: &Url) -> String {
 
     let re = Regex::new(r"\W").expect("must parse Regex for non-word-character");
     String::from(re.replace_all(&s, "_"))
+}
+
+fn url_body_path(url: &Url) -> PathBuf {
+    cache_dir()
+        .expect("must find user's cache directory")
+        .join(env!("CARGO_PKG_NAME"))
+        .join(url_filename(url))
 }
 
 fn url_metadata_path(url: &Url) -> PathBuf {

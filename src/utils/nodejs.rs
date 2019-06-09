@@ -1,13 +1,13 @@
-use std;
-use std::env::consts::{ARCH, OS};
-use std::path::PathBuf;
-use std::string::String;
+use std::{
+    env::consts::{ARCH, OS},
+    io::Read,
+    path::PathBuf,
+};
 
 use serde_derive::Deserialize;
 use serde_json;
 
-use crate::lib::version;
-use crate::utils;
+use crate::{lib::version, utils};
 
 const DIST_JSON_URL: &str = "https://nodejs.org/dist/index.json";
 const ERROR_MSG: &str = "error: utils: nodejs";
@@ -84,7 +84,8 @@ pub fn install_path() -> PathBuf {
 pub fn latest_version() -> String {
     let req = utils::http::create_request(DIST_JSON_URL, None);
     let mut res = utils::http::fetch_request(req).expect(ERROR_MSG);
-    let body = res.text().expect(ERROR_MSG);
+    let mut body = String::new();
+    res.read_to_string(&mut body).expect(ERROR_MSG);
     let releases: Vec<Release> = serde_json::from_str(&body).expect(ERROR_MSG);
 
     let latest_release: &Release = releases

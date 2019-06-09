@@ -1,8 +1,8 @@
 use std::{
-    self,
     env::consts::{ARCH, OS},
     error::Error,
-    fmt, io,
+    fmt,
+    io::{self, Read},
     path::Path,
     str,
 };
@@ -128,7 +128,8 @@ where
     );
     let req = create_request(uri);
     let mut res = utils::http::fetch_request(req)?;
-    let body = res.text().unwrap_or_default();
+    let mut body = String::new();
+    res.read_to_string(&mut body).unwrap_or_default();
 
     let tags: Vec<Tag> = match serde_json::from_str(&body) {
         Ok(t) => t,
@@ -220,7 +221,8 @@ where
     );
     let req = create_request(uri);
     let mut res = utils::http::fetch_request(req)?;
-    let body = res.text().unwrap_or_default();
+    let mut body = String::new();
+    res.read_to_string(&mut body).unwrap_or_default();
 
     let releases: Vec<Release> = match parse_releases_json(&body) {
         Ok(r) => r,

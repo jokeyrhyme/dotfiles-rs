@@ -1,10 +1,10 @@
 use std::fs::{create_dir_all, File};
-use std::io::{self, ErrorKind};
+use std::io::{self, Read};
 use std::path::Path;
 
-use reqwest::{header, Client, Request, Response, Url};
+use reqwest::{header, Client, Request, Url};
 
-use crate::lib::cache::store_response_metadata;
+use crate::lib::cache;
 
 pub fn create_request<S>(url: S, headers: Option<header::HeaderMap>) -> Request
 where
@@ -43,27 +43,28 @@ where
     };
 
     let mut file = File::create(d)?;
-    match res.copy_to(&mut file) {
+    match io::copy(&mut res, &mut file) {
         Ok(_) => Ok(()),
-        Err(e) => Err(io::Error::new(ErrorKind::Other, format!("{:?}", e))),
+        Err(e) => Err(io::Error::new(io::ErrorKind::Other, format!("{:?}", e))),
     }
 }
 
-pub fn fetch_request(req: Request) -> io::Result<Response> {
+pub fn fetch_request(req: Request) -> io::Result<impl Read> {
     let client = create_client();
     let res = match client.execute(req) {
         Ok(r) => r,
         Err(e) => {
-            return Err(io::Error::new(ErrorKind::Other, format!("{:?}", e)));
+            return Err(io::Error::new(io::ErrorKind::Other, format!("{:?}", e)));
         }
     };
 
     if res.status().is_success() {
-        store_response_metadata(&res)?;
-        Ok(res)
+        let url = res.url().clone();
+        cache::store_response(res)?;
+        cache::load_response(&url)
     } else {
         println!("{:?} GET {}", &res.version(), &res.url());
-        let result = io::Error::new(ErrorKind::Other, "non-success");
+        let result = io::Error::new(io::ErrorKind::Other, "non-success");
         Err(result)
     }
 }
@@ -94,7 +95,8 @@ mod tests {
     fn fetch_page() {
         let req = create_request("https://github.com/jokeyrhyme/dotfiles-rs", None);
         let mut res = fetch_request(req).unwrap();
-        let body = res.text().unwrap();
+        let mut body = String::new();
+        res.read_to_string(&mut body).unwrap();
         assert!(body.contains("dotfiles-rs"));
     }
 }
