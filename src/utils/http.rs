@@ -4,6 +4,8 @@ use std::path::Path;
 
 use reqwest::{header, Client, Request, Response, Url};
 
+use crate::lib::cache::store_response_metadata;
+
 pub fn create_request<S>(url: S, headers: Option<header::HeaderMap>) -> Request
 where
     S: AsRef<str>,
@@ -57,6 +59,7 @@ pub fn fetch_request(req: Request) -> io::Result<Response> {
     };
 
     if res.status().is_success() {
+        store_response_metadata(&res)?;
         Ok(res)
     } else {
         println!("{:?} GET {}", &res.version(), &res.url());
