@@ -25,7 +25,7 @@ fn sync() -> task::Result {
     if check.exit_status.success() {
         return Ok(Status::NoChange(String::from("already installed")));
     }
-    brew::brew(&["bundle", "install", "--global", "--no-upgrade"])?;
+    brew::brew(&["bundle", "install", "--global", "--no-upgrade", "--verbose"])?;
     Ok(Status::Changed(
         String::from("unknown"),
         String::from("installed"),
