@@ -78,7 +78,7 @@ fn sync() -> task::Result {
         return Ok(Status::Skipped);
     }
 
-    let latest = utils::nodejs::latest_version();
+    let latest = utils::nodejs::latest_version()?;
     match install_nodejs(latest.clone()) {
         Ok(()) => Ok(Status::Changed(String::from("unknown"), latest)),
         Err(error) => Err(task::Error::Io(
@@ -94,7 +94,7 @@ fn update(_: Status) -> task::Result {
     }
 
     let current = utils::nodejs::current_version();
-    let latest = utils::nodejs::latest_version();
+    let latest = utils::nodejs::latest_version()?;
 
     if current == latest {
         Ok(Status::NoChange(current))
