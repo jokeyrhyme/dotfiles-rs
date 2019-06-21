@@ -4,6 +4,7 @@ use clap::{App, Arg, SubCommand};
 
 mod lib {
     pub mod brew;
+    pub mod cache;
     pub mod cargo;
     pub mod env;
     pub mod favourites;

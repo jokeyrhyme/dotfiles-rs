@@ -7,6 +7,12 @@ and [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- cache HTTP responses in ~/.cache/jokeyrhyme-dotfiles/
+
+- use cached HTTP response if less than 15 minutes old
+
 ## [0.32.0] - 2019-05-28
 
 ### Added

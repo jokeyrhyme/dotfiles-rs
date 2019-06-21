@@ -1,8 +1,11 @@
 use std::fs::{create_dir_all, File};
-use std::io::{self, ErrorKind};
+use std::io::{self, Read};
 use std::path::Path;
 
-use reqwest::{header, Client, Request, Response, Url};
+use chrono::{offset::Utc, Duration};
+use reqwest::{header, Client, Request, Url};
+
+use crate::lib::cache;
 
 pub fn create_request<S>(url: S, headers: Option<header::HeaderMap>) -> Request
 where
@@ -41,26 +44,36 @@ where
     };
 
     let mut file = File::create(d)?;
-    match res.copy_to(&mut file) {
+    match io::copy(&mut res, &mut file) {
         Ok(_) => Ok(()),
-        Err(e) => Err(io::Error::new(ErrorKind::Other, format!("{:?}", e))),
+        Err(e) => Err(io::Error::new(io::ErrorKind::Other, format!("{:?}", e))),
     }
 }
 
-pub fn fetch_request(req: Request) -> io::Result<Response> {
+pub fn fetch_request(req: Request) -> io::Result<impl Read> {
+    let url = req.url().clone();
+    if let Ok(rm) = cache::load_response_metadata(&url) {
+        let a_while_ago = Utc::now() - Duration::minutes(15);
+        if rm.date > a_while_ago {
+            return cache::load_response_body(&url);
+        }
+    }
+    // proceed with fresh HTTP request
+
     let client = create_client();
     let res = match client.execute(req) {
         Ok(r) => r,
         Err(e) => {
-            return Err(io::Error::new(ErrorKind::Other, format!("{:?}", e)));
+            return Err(io::Error::new(io::ErrorKind::Other, format!("{:?}", e)));
         }
     };
 
     if res.status().is_success() {
-        Ok(res)
+        cache::store_response(&url, res)?;
+        cache::load_response_body(&url)
     } else {
         println!("{:?} GET {}", &res.version(), &res.url());
-        let result = io::Error::new(ErrorKind::Other, "non-success");
+        let result = io::Error::new(io::ErrorKind::Other, "non-success");
         Err(result)
     }
 }
@@ -91,7 +104,8 @@ mod tests {
     fn fetch_page() {
         let req = create_request("https://github.com/jokeyrhyme/dotfiles-rs", None);
         let mut res = fetch_request(req).unwrap();
-        let body = res.text().unwrap();
+        let mut body = String::new();
+        res.read_to_string(&mut body).unwrap();
         assert!(body.contains("dotfiles-rs"));
     }
 }
