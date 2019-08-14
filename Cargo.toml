@@ -34,7 +34,7 @@ tar = "0.4.26"
 textwrap = "0.11.0"
 toml = "0.5.2"
 which = "2.0"
-zip = "0.5.2"
+zip = "0.5.3"
 
 [dev-dependencies]
 
