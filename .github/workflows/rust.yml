@@ -9,10 +9,11 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macOS-latest]
+        os: [ubuntu-latest, macOS-latest] # windows-latest
     steps:
     - uses: actions/checkout@v1
     - run: curl https://sh.rustup.rs -sSf | sh -s -- -y
+    - run: source $HOME/.cargo/env
     - run: rustup self update
     - run: rustup update
     - run: rustup component add clippy
