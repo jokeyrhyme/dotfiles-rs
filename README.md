@@ -1,4 +1,4 @@
-# dotfiles-rs [![Build Status](https://travis-ci.org/jokeyrhyme/dotfiles-rs.svg?branch=master)](https://travis-ci.org/jokeyrhyme/dotfiles-rs)
+# dotfiles-rs [![badge](https://action-badges.now.sh/jokeyrhyme/dotfiles-rs)](https://github.com/jokeyrhyme/dotfiles-rs/actions)
 
 read my dotfiles repository and do stuff
 
