@@ -18,6 +18,8 @@ jobs:
     - run: ~/.cargo/bin/rustup component add clippy
     - run: ~/.cargo/bin/cargo build --verbose
     - run: ~/.cargo/bin/cargo test --verbose
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - run: ~/.cargo/bin/cargo clippy --all-features --all-targets -- -D clippy::all
 
 
