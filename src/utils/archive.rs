@@ -81,7 +81,11 @@ pub fn extract_zip(source: &Path, target: &Path) -> io::Result<()> {
     extract_zip_pattern(source, target, &|_| true)
 }
 
-pub fn extract_zip_pattern(source: &Path, target: &Path, p: &Fn(String) -> bool) -> io::Result<()> {
+pub fn extract_zip_pattern(
+    source: &Path,
+    target: &Path,
+    p: &dyn Fn(String) -> bool,
+) -> io::Result<()> {
     let zip_file = match File::open(&source) {
         Ok(f) => f,
         Err(error) => {
