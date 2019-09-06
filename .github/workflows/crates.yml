@@ -13,6 +13,9 @@ jobs:
     - run: ~/.cargo/bin/rustup update
     - run: ~/.cargo/bin/cargo build --verbose
     - run: ~/.cargo/bin/cargo test --verbose
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   publish:
     name: Publish to crates.io
     needs: test
