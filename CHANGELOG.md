@@ -7,6 +7,8 @@ and [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.33.0] - 2019-09-07
+
 ### Added
 
 - cache HTTP responses in ~/.cache/jokeyrhyme-dotfiles/
