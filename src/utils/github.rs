@@ -67,11 +67,11 @@ impl fmt::Display for GitHubError {
     }
 }
 impl Error for GitHubError {
-    fn cause(&self) -> Option<&Error> {
+    fn cause(&self) -> Option<&dyn Error> {
         match *self {
             GitHubError::CompatibleAssetNotFound => None,
             GitHubError::EmptyReleases => None,
-            GitHubError::IoError(_, ref err) => Some(err as &Error),
+            GitHubError::IoError(_, ref err) => Some(err as &dyn Error),
             GitHubError::ValidReleaseNotFound => None,
             GitHubError::WrongAssetType => None,
         }
@@ -85,7 +85,7 @@ impl From<io::Error> for GitHubError {
 
 pub type Result<T> = std::result::Result<T, GitHubError>;
 
-pub fn compatible_asset(release: &Release, filter: &Fn(&Asset) -> bool) -> Result<Asset> {
+pub fn compatible_asset(release: &Release, filter: &dyn Fn(&Asset) -> bool) -> Result<Asset> {
     match release
         .assets
         .to_vec()

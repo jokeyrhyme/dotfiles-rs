@@ -37,24 +37,9 @@ fn sync() -> task::Result {
         }
     }
 
-    let pure_path = utils::env::home_dir().join(".zsh-pure");
-    if !utils::git::path_is_git_repository(&pure_path) {
-        utils::fs::delete_if_exists(&pure_path);
-        let pure_url = "https://github.com/sindresorhus/pure.git";
-        match utils::git::shallow_clone(pure_url, &pure_path.to_string_lossy()) {
-            Ok(()) => {}
-            Err(error) => println!("zsh: unable to install pure: {}", error),
-        }
-    }
-
-    utils::fs::symbolic_link_if_exists(
-        utils::env::home_dir().join(".zsh-pure/pure.zsh"),
-        utils::env::home_dir().join(".oh-my-zsh/custom/pure.zsh-theme"),
-    )?;
-    utils::fs::symbolic_link_if_exists(
-        utils::env::home_dir().join(".zsh-pure/async.zsh"),
-        utils::env::home_dir().join(".oh-my-zsh/custom/async.zsh"),
-    )?;
+    utils::fs::delete_if_exists(utils::env::home_dir().join(".zsh-pure"));
+    utils::fs::delete_if_exists(utils::env::home_dir().join(".oh-my-zsh/custom/pure.zsh-theme"));
+    utils::fs::delete_if_exists(utils::env::home_dir().join(".oh-my-zsh/custom/async.zsh"));
 
     Ok(Status::Done)
 }
@@ -69,14 +54,6 @@ fn update(_: Status) -> task::Result {
         match utils::git::shallow_fetch(oh_path.to_string_lossy()) {
             Ok(()) => {}
             Err(error) => println!("zsh: unable to update oh-my-zsh: {}", error),
-        }
-    }
-
-    let pure_path = utils::env::home_dir().join(".zsh-pure");
-    if utils::git::path_is_git_repository(&pure_path) {
-        match utils::git::shallow_fetch(pure_path.to_string_lossy()) {
-            Ok(()) => {}
-            Err(error) => println!("zsh: unable to update pure: {}", error),
         }
     }
 
