@@ -13,6 +13,10 @@ and [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 - use cached HTTP response if less than 15 minutes old
 
+### Changed
+
+- zsh: drop "pure" theme in favour of [starship.rs](https://starship.rs) prompt
+
 ### Fixed
 
 - brewbundle: run with `--verbose` because otherwise it looks like it crashed
