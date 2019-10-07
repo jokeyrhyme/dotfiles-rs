@@ -11,6 +11,7 @@ mod bazel;
 mod brew;
 mod brewbundle;
 mod brewfile;
+mod cascadiacode;
 mod dep;
 mod dotfiles;
 mod fccache;
@@ -115,6 +116,7 @@ fn sequence() -> Vec<String> {
         rustc::task().name, // deps: rustup
         rust::task().name,  // deps: config,rustc
         // fonts
+        cascadiacode::task().name,
         fira::task().name,
         firacode::task().name,
         hack::task().name,
@@ -175,6 +177,7 @@ fn mapping() -> HashMap<String, Task> {
     map.insert(String::from("brew"), brew::task());
     map.insert(String::from("brewbundle"), brewbundle::task());
     map.insert(String::from("brewfile"), brewfile::task());
+    map.insert(String::from("cascadiacode"), cascadiacode::task());
     map.insert(String::from("dep"), dep::task());
     map.insert(String::from("dotfiles"), dotfiles::task());
     map.insert(String::from("fccache"), fccache::task());

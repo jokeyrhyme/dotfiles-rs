@@ -15,6 +15,7 @@ use crate::{
 };
 
 const JRDF_FILE: &str = "jokeyrhyme-dotfiles.toml";
+const FONT_EXTENSIONS: &[&str] = &[".otf", ".ttf"];
 
 // GhraFont simplifies tasks that install fonts from GitHub Release archives.
 pub struct GhraFont<'a> {
@@ -73,17 +74,32 @@ impl<'a> GhraFont<'a> {
         let archive_path = mkftemp()?;
 
         let asset_re = regex::Regex::new(&self.asset_re).unwrap();
-        match github::compatible_asset(&release, &|a: &github::Asset| {
+        let asset = match github::compatible_asset(&release, &|a: &github::Asset| {
             asset_re.is_match(a.name.as_str())
         }) {
-            Ok(asset) => github::download(asset.browser_download_url.clone(), &archive_path)?,
-            Err(_) => github::download(release.zipball_url.clone(), &archive_path)?,
+            Ok(a) => {
+                github::download(a.browser_download_url.clone(), &archive_path)?;
+                a
+            }
+            Err(_) => {
+                github::download(release.zipball_url.clone(), &archive_path)?;
+                github::Asset::new()
+            }
         };
 
         delete_if_exists(&install_dir);
-        extract_zip_pattern(&archive_path, &install_dir, &|n| {
-            n.to_lowercase().ends_with(&self.font_suffix)
-        })?;
+
+        if FONT_EXTENSIONS
+            .iter()
+            .any(|e| asset.name.to_lowercase().ends_with(e))
+        {
+            fs::create_dir_all(&install_dir)?;
+            fs::copy(&archive_path, &install_dir.join(&asset.name))?;
+        } else {
+            extract_zip_pattern(&archive_path, &install_dir, &|n| {
+                n.to_lowercase().ends_with(&self.font_suffix)
+            })?;
+        }
 
         fs::remove_file(&archive_path)?;
 
