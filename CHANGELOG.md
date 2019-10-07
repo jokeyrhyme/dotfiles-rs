@@ -7,6 +7,8 @@ and [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.34.0] - 2019-10-07
+
 ### Added
 
 - cascadiacode: keep [Cascadia Code (font)](https://github.com/microsoft/cascadia-code) `sync`ed and `update`d (#294)
