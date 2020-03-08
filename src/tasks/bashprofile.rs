@@ -7,7 +7,7 @@ use crate::{
 
 pub fn task() -> Task {
     Task {
-        name: String::from("zshrc"),
+        name: String::from("bashprofile"),
         sync,
         ..Default::default()
     }
@@ -18,9 +18,9 @@ fn sync() -> task::Result {
         return Ok(Status::Skipped);
     }
 
-    // http://zsh.sourceforge.net/Doc/Release/Files.html
+    // https://scriptingosx.com/2017/04/about-bash_profile-and-bashrc-on-macos/
     utils::fs::symbolic_link_if_exists(
-        utils::env::home_dir().join(".dotfiles/config/zshrc"),
-        utils::env::home_dir().join(".zshrc"),
+        utils::env::home_dir().join(".dotfiles/config/bash_profile"),
+        utils::env::home_dir().join(".bash_profile"),
     )
 }

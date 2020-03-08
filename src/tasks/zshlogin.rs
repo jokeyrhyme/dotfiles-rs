@@ -7,7 +7,7 @@ use crate::{
 
 pub fn task() -> Task {
     Task {
-        name: String::from("zshrc"),
+        name: String::from("zshlogin"),
         sync,
         ..Default::default()
     }
@@ -20,7 +20,7 @@ fn sync() -> task::Result {
 
     // http://zsh.sourceforge.net/Doc/Release/Files.html
     utils::fs::symbolic_link_if_exists(
-        utils::env::home_dir().join(".dotfiles/config/zshrc"),
-        utils::env::home_dir().join(".zshrc"),
+        utils::env::home_dir().join(".dotfiles/config/zlogin"),
+        utils::env::home_dir().join(".zlogin"),
     )
 }
