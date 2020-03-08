@@ -1,7 +1,7 @@
 [package]
 name = "jokeyrhyme-dotfiles"
 description = "read my dotfiles repository and do stuff"
-version = "0.34.0"
+version = "0.35.0"
 edition = "2018"
 authors = ["Ron Waldon <jokeyrhyme@gmail.com>"]
 documentation = "https://github.com/jokeyrhyme/dotfiles-rs#readme"

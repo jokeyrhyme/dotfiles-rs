@@ -7,6 +7,8 @@ and [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.35.0] - 2020-03-08
+
 ### Added
 
 - bashprofile, zshenv, zshlogin, zshprofile: new tasks to symlink .bash_profile, .zshenv, .zlogin, and .zprofile respectively
