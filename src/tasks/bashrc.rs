@@ -18,6 +18,7 @@ fn sync() -> task::Result {
         return Ok(Status::Skipped);
     }
 
+    // https://scriptingosx.com/2017/04/about-bash_profile-and-bashrc-on-macos/
     utils::fs::symbolic_link_if_exists(
         utils::env::home_dir().join(".dotfiles/config/bashrc"),
         utils::env::home_dir().join(".bashrc"),
