@@ -7,10 +7,12 @@ use std::{
 use chrono::{offset::Utc, DateTime};
 use dirs::cache_dir;
 use regex::Regex;
-use reqwest::{Response, Url};
+use reqwest::Url;
 use serde_derive::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use toml;
+
+use crate::utils::http::Response;
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct ResponseMetadata {

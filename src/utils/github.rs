@@ -7,12 +7,14 @@ use std::{
     str,
 };
 
-use reqwest::{header, Request};
+use reqwest::header;
 use serde_derive::Deserialize;
 use serde_json;
 
-use crate::lib::version;
-use crate::utils;
+use crate::{
+    lib::version,
+    utils::{self, http::Request},
+};
 
 #[derive(Clone, Debug, Deserialize)]
 pub struct Asset {

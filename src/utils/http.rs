@@ -3,7 +3,8 @@ use std::io::{self, Read};
 use std::path::Path;
 
 use chrono::{offset::Utc, Duration};
-use reqwest::{header, Client, Request, Url};
+pub use reqwest::blocking::{Request, Response};
+use reqwest::{blocking::Client, header, Url};
 
 use crate::lib::cache;
 
