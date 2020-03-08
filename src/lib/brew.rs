@@ -35,8 +35,7 @@ where
                 "{}\n{}",
                 String::from_utf8_lossy(&output.stdout).trim(),
                 String::from_utf8_lossy(&output.stderr).trim(),
-            )
-            .to_string())
+            ))
         }
         None => Err(io::Error::new(io::ErrorKind::NotFound, "brew")),
     }
@@ -48,7 +47,7 @@ pub fn brew_prefix() -> Option<PathBuf> {
         let dir = PathBuf::from(if prefix.starts_with("~/") {
             prefix.replace("~", &home_dir.to_string_lossy())
         } else {
-            prefix.to_string()
+            prefix.to_owned().to_string()
         });
         if which_in(
             "brew",

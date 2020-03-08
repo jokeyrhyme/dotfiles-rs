@@ -84,8 +84,7 @@ where
         "{}\n{}",
         String::from_utf8_lossy(&output.stdout).trim(),
         String::from_utf8_lossy(&output.stderr).trim(),
-    )
-    .to_string())
+    ))
 }
 
 fn parse_pippackages<S>(s: S) -> Vec<PipPackage>

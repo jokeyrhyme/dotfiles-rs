@@ -74,8 +74,7 @@ where
         "{}\n{}",
         String::from_utf8_lossy(&output.stdout).trim(),
         String::from_utf8_lossy(&output.stderr).trim(),
-    )
-    .to_string())
+    ))
 }
 
 fn cargo_exe() -> PathBuf {
