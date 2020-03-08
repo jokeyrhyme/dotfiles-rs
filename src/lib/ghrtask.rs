@@ -76,7 +76,7 @@ impl<'a> GHRTask<'a> {
         if let Some(r) = github::release_versus_current(current.as_ref(), self.repo.0, self.repo.1)
         {
             self.install_release(&r)?;
-            return Ok(Status::Changed(current, r.tag_name.to_string()));
+            return Ok(Status::Changed(current, r.tag_name));
         };
         Ok(Status::NoChange(current))
     }

@@ -102,7 +102,7 @@ mod tests {
             install: vec![],
             uninstall: vec![missing_pkg.clone()],
         };
-        assert_eq!(false, favs.found().contains(&missing_pkg.clone()));
+        assert_eq!(false, favs.found().contains(&missing_pkg));
     }
 
     #[test]
@@ -122,7 +122,7 @@ mod tests {
         let src = gopath().join("src").join(goimports_pkg.clone());
         assert_eq!(
             bin.is_file() && src.is_dir(),
-            favs.found().contains(&goimports_pkg.clone())
+            favs.found().contains(&goimports_pkg)
         );
     }
 }

@@ -29,8 +29,7 @@ where
         "{}\n{}",
         String::from_utf8_lossy(&output.stdout).trim(),
         String::from_utf8_lossy(&output.stderr).trim(),
-    )
-    .to_string())
+    ))
 }
 
 pub fn rustup_version() -> String {
