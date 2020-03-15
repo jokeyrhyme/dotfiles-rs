@@ -6,8 +6,6 @@ mod alacritty;
 mod atlantis;
 mod atom;
 mod bash;
-mod bashprofile;
-mod bashrc;
 mod bazel;
 mod brew;
 mod brewbundle;
@@ -27,8 +25,6 @@ mod googlecloudsdk;
 mod hack;
 mod hadolint;
 mod hasklig;
-mod hyper;
-mod inputrc;
 mod inter;
 mod jq;
 mod local;
@@ -39,7 +35,6 @@ mod npm;
 mod overpass;
 mod pip;
 mod plex;
-mod profile;
 mod psql;
 mod publicsans;
 mod rust;
@@ -59,10 +54,6 @@ mod vscodejson;
 mod windows;
 mod yq;
 mod zsh;
-mod zshenv;
-mod zshlogin;
-mod zshprofile;
-mod zshrc;
 
 pub fn env() -> Exports {
     let mut exports: Exports = Default::default();
@@ -149,14 +140,9 @@ fn sequence() -> Vec<String> {
         yq::task().name,
         alacritty::task().name, // deps: config
         atom::task().name,
-        bashprofile::task().name, // deps: config
-        bashrc::task().name,      // deps: config
-        inputrc::task().name,     // deps: config
-        profile::task().name,     // deps: config
-        bash::task().name,        // deps: bashprofile,bashrc,inputrc,profile
-        git::task().name,         // deps: nodejs/npm
+        bash::task().name, // deps: bashprofile,bashrc,inputrc,profile
+        git::task().name,  // deps: nodejs/npm
         googlecloudsdk::task().name,
-        hyper::task().name, // deps: config
         macos::task().name,
         psql::task().name,       // deps: config
         ssh::task().name,        // deps: config
@@ -165,10 +151,6 @@ fn sequence() -> Vec<String> {
         vim::task().name,        // deps: config,pip; takes over the terminal
         vscodejson::task().name, // deps: config
         vscode::task().name,     // deps: config,vscodejson
-        zshenv::task().name,     // deps: config
-        zshlogin::task().name,   // deps: config
-        zshprofile::task().name, // deps: config
-        zshrc::task().name,      // deps: config
         zsh::task().name,        // deps: profile,zshenv,zshlogin,zshprofile,zshrc,brewbundle
         windows::task().name,
     ]
@@ -179,8 +161,6 @@ fn mapping() -> HashMap<String, Task> {
     map.insert(String::from("alacritty"), alacritty::task());
     map.insert(String::from("atlantis"), atlantis::task());
     map.insert(String::from("atom"), atom::task());
-    map.insert(String::from("bashprofile"), bashprofile::task());
-    map.insert(String::from("bashrc"), bashrc::task());
     map.insert(String::from("bash"), bash::task());
     map.insert(String::from("bazel"), bazel::task());
     map.insert(String::from("brew"), brew::task());
@@ -201,8 +181,6 @@ fn mapping() -> HashMap<String, Task> {
     map.insert(String::from("hack"), hack::task());
     map.insert(String::from("hadolint"), hadolint::task());
     map.insert(String::from("hasklig"), hasklig::task());
-    map.insert(String::from("hyper"), hyper::task());
-    map.insert(String::from("inputrc"), inputrc::task());
     map.insert(String::from("inter"), inter::task());
     map.insert(String::from("jq"), jq::task());
     map.insert(String::from("macos"), macos::task());
@@ -212,7 +190,6 @@ fn mapping() -> HashMap<String, Task> {
     map.insert(String::from("overpass"), overpass::task());
     map.insert(String::from("pip"), pip::task());
     map.insert(String::from("plex"), plex::task());
-    map.insert(String::from("profile"), profile::task());
     map.insert(String::from("psql"), psql::task());
     map.insert(String::from("publicsans"), publicsans::task());
     map.insert(String::from("rust"), rust::task());
@@ -232,10 +209,6 @@ fn mapping() -> HashMap<String, Task> {
     map.insert(String::from("windows"), windows::task());
     map.insert(String::from("yq"), yq::task());
     map.insert(String::from("zsh"), zsh::task());
-    map.insert(String::from("zshenv"), zshenv::task());
-    map.insert(String::from("zshlogin"), zshlogin::task());
-    map.insert(String::from("zshprofile"), zshprofile::task());
-    map.insert(String::from("zshrc"), zshrc::task());
     map
 }
 
