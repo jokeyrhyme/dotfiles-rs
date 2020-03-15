@@ -7,6 +7,10 @@ and [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Removed
+
+- bashprofile,bashrc,hyper,inputrc,profile,ssh,zshenv,zshlogin,zshprofile,zshrc: moved to [`tuning`](https://github.com/jokeyrhyme/tuning) with [my dotfiles](https://github.com/jokeyrhyme/dotfiles/tree/master/tuning)
+
 ## [0.35.0] - 2020-03-08
 
 ### Added

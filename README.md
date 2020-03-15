@@ -2,6 +2,12 @@
 
 read my dotfiles repository and do stuff
 
+## Status
+
+- this project is winding down in favour of [`tuning`](https://github.com/jokeyrhyme/tuning) as configured by [my dotfiles](https://github.com/jokeyrhyme/dotfiles/tree/master/tuning)
+
+- ideally, we will take the imperative code here and expose it as configuration-driven functionality over in `tuning`
+
 ## Usage
 
 ```sh
@@ -65,15 +71,13 @@ Note that you need to "Run As Administrator" in Windows so that this tool can pr
 
 ### GITHUB_TOKEN
 
-Generate a new [GitHub Personal Access Token](https://github.com/settings/tokens) without any special permissions,
+Generate a new [GitHub Personal Access Token](https://github.com/settings/tokens) without any extra permissions,
 and set this as the value for the GITHUB_TOKEN environment variable.
 
 This will reduce the likelihood of rate-limiting by GitHub's API.
 
-## Roadmap
-
-- [x] automatically build and publish for new git tags
-
 ## See Also
 
 - https://github.com/jokeyrhyme/dotfiles
+
+- https://github.com/jokeyrhyme/tuning
