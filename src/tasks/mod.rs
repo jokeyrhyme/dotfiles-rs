@@ -44,7 +44,6 @@ mod sourcesanspro;
 mod sourceserifpro;
 mod ssh;
 mod tmux;
-mod tmuxconf;
 mod vale;
 mod vim;
 mod vscode;
@@ -140,10 +139,9 @@ fn sequence() -> Vec<String> {
         git::task().name,  // deps: nodejs/npm
         googlecloudsdk::task().name,
         macos::task().name,
-        psql::task().name,       // deps: config
-        ssh::task().name,        // deps: config
-        tmuxconf::task().name,   // deps: config
-        tmux::task().name,       // deps: tmuxconf,brewbundle
+        psql::task().name, // deps: config
+        ssh::task().name,  // deps: config
+        tmux::task().name,
         vim::task().name,        // deps: config,pip; takes over the terminal
         vscodejson::task().name, // deps: config
         vscode::task().name,     // deps: config,vscodejson
@@ -195,7 +193,6 @@ fn mapping() -> HashMap<String, Task> {
     map.insert(String::from("sourceserifpro"), sourceserifpro::task());
     map.insert(String::from("ssh"), ssh::task());
     map.insert(String::from("tmux"), tmux::task());
-    map.insert(String::from("tmuxconf"), tmuxconf::task());
     map.insert(String::from("vale"), vale::task());
     map.insert(String::from("vim"), vim::task());
     map.insert(String::from("vscode"), vscode::task());
