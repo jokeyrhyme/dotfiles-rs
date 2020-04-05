@@ -7,6 +7,8 @@ and [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.36.0] - 2020-04-05
+
 ### Fixed
 
 - goget: fix favourites installation; fix PATH for favourites
