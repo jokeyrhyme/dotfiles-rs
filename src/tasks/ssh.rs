@@ -212,5 +212,4 @@ mod tests {
             assert!(!version.is_empty());
         }
     }
-
 }
