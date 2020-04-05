@@ -21,12 +21,14 @@ pub fn env(mut exports: Exports) -> Exports {
         exports.goroot = gr;
     }
 
-    let dir = bin_dir();
-    if !exports.path.contains(&dir) {
-        let mut paths = vec![dir];
-        paths.append(&mut exports.path);
-        exports.path = paths;
+    for dir in vec![bin_dir(), gopath().join("bin")] {
+        if !exports.path.contains(&dir) {
+            let mut paths = vec![dir];
+            paths.append(&mut exports.path);
+            exports.path = paths;
+        }
     }
+
     exports
 }
 

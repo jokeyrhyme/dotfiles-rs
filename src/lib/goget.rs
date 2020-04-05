@@ -41,10 +41,9 @@ impl Favourites for GoGetFavourites {
         Ok(())
     }
     fn fill(&mut self) -> io::Result<()> {
-        let mut args = vec![String::from("get")];
-        args.extend(self.missing());
-
-        command_spawn_wait("go", &args)?;
+        for pkg in self.missing() {
+            command_spawn_wait("go", &["get", "-u", "-v", &pkg])?;
+        }
         Ok(())
     }
     fn found(&self) -> Vec<String> {
