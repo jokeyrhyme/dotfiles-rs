@@ -33,7 +33,6 @@ mod npm;
 mod overpass;
 mod pip;
 mod plex;
-mod psql;
 mod publicsans;
 mod rust;
 mod rustc;
@@ -139,8 +138,7 @@ fn sequence() -> Vec<String> {
         git::task().name,  // deps: nodejs/npm
         googlecloudsdk::task().name,
         macos::task().name,
-        psql::task().name, // deps: config
-        ssh::task().name,  // deps: config
+        ssh::task().name, // deps: config
         tmux::task().name,
         vim::task().name,        // deps: config,pip; takes over the terminal
         vscodejson::task().name, // deps: config
@@ -182,7 +180,6 @@ fn mapping() -> HashMap<String, Task> {
     map.insert(String::from("overpass"), overpass::task());
     map.insert(String::from("pip"), pip::task());
     map.insert(String::from("plex"), plex::task());
-    map.insert(String::from("psql"), psql::task());
     map.insert(String::from("publicsans"), publicsans::task());
     map.insert(String::from("rust"), rust::task());
     map.insert(String::from("rustc"), rustc::task());
