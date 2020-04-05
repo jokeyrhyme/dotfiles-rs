@@ -8,8 +8,6 @@ mod atom;
 mod bash;
 mod bazel;
 mod brew;
-mod brewbundle;
-mod brewfile;
 mod cascadiacode;
 mod dep;
 mod dotfiles;
@@ -35,7 +33,6 @@ mod npm;
 mod overpass;
 mod pip;
 mod plex;
-mod psql;
 mod publicsans;
 mod rust;
 mod rustc;
@@ -46,7 +43,6 @@ mod sourcesanspro;
 mod sourceserifpro;
 mod ssh;
 mod tmux;
-mod tmuxconf;
 mod vale;
 mod vim;
 mod vscode;
@@ -99,9 +95,7 @@ where
 fn sequence() -> Vec<String> {
     vec![
         dotfiles::task().name, // provides: config; must be first
-        brewfile::task().name, // deps: config
-        brewbundle::task().name,
-        brew::task().name, // deps: brewfile, brewbundle
+        brew::task().name,
         golang::task().name,
         goget::task().name, // deps: config,golang
         nodejs::task().name,
@@ -144,10 +138,8 @@ fn sequence() -> Vec<String> {
         git::task().name,  // deps: nodejs/npm
         googlecloudsdk::task().name,
         macos::task().name,
-        psql::task().name,       // deps: config
-        ssh::task().name,        // deps: config
-        tmuxconf::task().name,   // deps: config
-        tmux::task().name,       // deps: tmuxconf,brewbundle
+        ssh::task().name, // deps: config
+        tmux::task().name,
         vim::task().name,        // deps: config,pip; takes over the terminal
         vscodejson::task().name, // deps: config
         vscode::task().name,     // deps: config,vscodejson
@@ -164,8 +156,6 @@ fn mapping() -> HashMap<String, Task> {
     map.insert(String::from("bash"), bash::task());
     map.insert(String::from("bazel"), bazel::task());
     map.insert(String::from("brew"), brew::task());
-    map.insert(String::from("brewbundle"), brewbundle::task());
-    map.insert(String::from("brewfile"), brewfile::task());
     map.insert(String::from("cascadiacode"), cascadiacode::task());
     map.insert(String::from("dep"), dep::task());
     map.insert(String::from("dotfiles"), dotfiles::task());
@@ -190,7 +180,6 @@ fn mapping() -> HashMap<String, Task> {
     map.insert(String::from("overpass"), overpass::task());
     map.insert(String::from("pip"), pip::task());
     map.insert(String::from("plex"), plex::task());
-    map.insert(String::from("psql"), psql::task());
     map.insert(String::from("publicsans"), publicsans::task());
     map.insert(String::from("rust"), rust::task());
     map.insert(String::from("rustc"), rustc::task());
@@ -201,7 +190,6 @@ fn mapping() -> HashMap<String, Task> {
     map.insert(String::from("sourceserifpro"), sourceserifpro::task());
     map.insert(String::from("ssh"), ssh::task());
     map.insert(String::from("tmux"), tmux::task());
-    map.insert(String::from("tmuxconf"), tmuxconf::task());
     map.insert(String::from("vale"), vale::task());
     map.insert(String::from("vim"), vim::task());
     map.insert(String::from("vscode"), vscode::task());
