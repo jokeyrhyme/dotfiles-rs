@@ -2,7 +2,6 @@ use std::collections::HashMap;
 
 use crate::lib::{env::Exports, task::Task};
 
-mod alacritty;
 mod atlantis;
 mod atom;
 mod bash;
@@ -132,7 +131,6 @@ fn sequence() -> Vec<String> {
         skaffold::task().name,
         vale::task().name,
         yq::task().name,
-        alacritty::task().name, // deps: config
         atom::task().name,
         bash::task().name, // deps: bashprofile,bashrc,inputrc,profile
         git::task().name,  // deps: nodejs/npm
@@ -150,7 +148,6 @@ fn sequence() -> Vec<String> {
 
 fn mapping() -> HashMap<String, Task> {
     let mut map = HashMap::<String, Task>::new();
-    map.insert(String::from("alacritty"), alacritty::task());
     map.insert(String::from("atlantis"), atlantis::task());
     map.insert(String::from("atom"), atom::task());
     map.insert(String::from("bash"), bash::task());
