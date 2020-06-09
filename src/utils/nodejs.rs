@@ -5,7 +5,6 @@ use std::{
 };
 
 use serde_derive::Deserialize;
-use serde_json;
 
 use crate::{lib::version, utils};
 

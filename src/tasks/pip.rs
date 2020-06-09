@@ -1,7 +1,5 @@
 use std::{fs, io, path::PathBuf};
 
-use toml;
-
 use crate::{
     lib::{
         env::Exports,

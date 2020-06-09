@@ -1,11 +1,6 @@
-use std;
 use std::fs::File;
 use std::io::{self, BufReader, BufWriter};
 use std::path::Path;
-
-use libflate;
-use tar;
-use zip;
 
 use crate::utils::{self, fs::mkftemp};
 

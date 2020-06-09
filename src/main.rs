@@ -1,3 +1,5 @@
+#![deny(clippy::all)]
+
 use std::env::var;
 
 use clap::{App, Arg, SubCommand};

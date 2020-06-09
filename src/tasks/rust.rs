@@ -1,7 +1,6 @@
 use std::{fs, io};
 
 use regex::Regex;
-use toml;
 
 use crate::{
     lib::{

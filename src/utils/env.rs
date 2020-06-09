@@ -1,7 +1,5 @@
 use std::path::PathBuf;
 
-use dirs;
-
 pub fn home_dir() -> PathBuf {
     match dirs::home_dir() {
         Some(path) => path,

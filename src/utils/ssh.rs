@@ -1,8 +1,5 @@
 use std::{collections::HashMap, fmt::Display, ops::BitOr, path::PathBuf};
 
-use textwrap;
-use which;
-
 use crate::lib::ssh::fields::{Duration, YesNo, YesNoAsk, YesNoAskAutoAutoAsk, YesNoDuration};
 
 #[allow(non_snake_case)]

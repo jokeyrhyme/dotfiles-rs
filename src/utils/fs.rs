@@ -7,8 +7,6 @@ use std::{
 #[cfg(unix)]
 use std::{fs::File, os::unix::fs::PermissionsExt};
 
-use mktemp;
-
 use crate::lib::task::{self, Status};
 
 pub fn delete_if_exists<P>(path: P)

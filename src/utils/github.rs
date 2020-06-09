@@ -9,7 +9,6 @@ use std::{
 
 use reqwest::header;
 use serde_derive::Deserialize;
-use serde_json;
 
 use crate::{
     lib::version,
@@ -22,16 +21,6 @@ pub struct Asset {
     pub name: String,
     state: String,
     updated_at: String,
-}
-impl Asset {
-    pub fn new() -> Self {
-        Self {
-            browser_download_url: String::new(),
-            name: String::new(),
-            state: String::new(),
-            updated_at: String::new(),
-        }
-    }
 }
 
 #[derive(Clone, Debug, Deserialize)]

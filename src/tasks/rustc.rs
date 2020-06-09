@@ -1,5 +1,3 @@
-use regex;
-
 use crate::lib::{
     rust,
     task::{self, Status, Task},

@@ -1,6 +1,5 @@
 use std::{env, io, path::PathBuf, str};
 
-use dirs;
 use which::{self, which_in};
 
 use crate::utils::process::{command_output, command_spawn_wait};
