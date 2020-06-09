@@ -194,8 +194,6 @@ fn sync() -> task::Result {
 mod tests {
     use super::*;
 
-    use which;
-
     #[test]
     fn is_blacklist_supported_by_versions() {
         let old_version = "OpenSSH_7.4p1 Debian-10+deb9u3, OpenSSL 1.0.2l  25 May 2017";
