@@ -8,7 +8,6 @@ mod lib {
     pub mod cargo;
     pub mod env;
     pub mod favourites;
-    pub mod ghrafont;
     pub mod ghratask;
     pub mod ghrtask;
     pub mod goget;

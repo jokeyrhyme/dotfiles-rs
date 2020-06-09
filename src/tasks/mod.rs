@@ -7,39 +7,27 @@ mod atom;
 mod bash;
 mod bazel;
 mod brew;
-mod cascadiacode;
 mod dep;
 mod dotfiles;
-mod fccache;
-mod fira;
-mod firacode;
 mod git;
 mod gitleaks;
 mod gitsizer;
 mod goget;
 mod golang;
 mod googlecloudsdk;
-mod hack;
 mod hadolint;
-mod hasklig;
-mod inter;
 mod jq;
 mod local;
 mod macos;
 mod minikube;
 mod nodejs;
 mod npm;
-mod overpass;
 mod pip;
-mod plex;
-mod publicsans;
 mod rust;
 mod rustc;
 mod rustup;
 mod shfmt;
 mod skaffold;
-mod sourcesanspro;
-mod sourceserifpro;
 mod ssh;
 mod tmux;
 mod vale;
@@ -103,19 +91,6 @@ fn sequence() -> Vec<String> {
         rustup::task().name,
         rustc::task().name, // deps: rustup
         rust::task().name,  // deps: config,rustc
-        // fonts
-        cascadiacode::task().name,
-        fira::task().name,
-        firacode::task().name,
-        hack::task().name,
-        hasklig::task().name,
-        inter::task().name,
-        overpass::task().name,
-        plex::task().name,
-        sourcesanspro::task().name,
-        sourceserifpro::task().name,
-        publicsans::task().name,
-        fccache::task().name, // deps: all other font tasks
         // these are GitHub Release tasks,
         // that are mostly I/O-heavy,
         // and serialising such things avoids clogging our pipes
@@ -153,38 +128,26 @@ fn mapping() -> HashMap<String, Task> {
     map.insert(String::from("bash"), bash::task());
     map.insert(String::from("bazel"), bazel::task());
     map.insert(String::from("brew"), brew::task());
-    map.insert(String::from("cascadiacode"), cascadiacode::task());
     map.insert(String::from("dep"), dep::task());
     map.insert(String::from("dotfiles"), dotfiles::task());
-    map.insert(String::from("fccache"), fccache::task());
-    map.insert(String::from("fira"), fira::task());
-    map.insert(String::from("firacode"), firacode::task());
     map.insert(String::from("git"), git::task());
     map.insert(String::from("gitleaks"), gitleaks::task());
     map.insert(String::from("gitsizer"), gitsizer::task());
     map.insert(String::from("goget"), goget::task());
     map.insert(String::from("golang"), golang::task());
     map.insert(String::from("googlecloudsdk"), googlecloudsdk::task());
-    map.insert(String::from("hack"), hack::task());
     map.insert(String::from("hadolint"), hadolint::task());
-    map.insert(String::from("hasklig"), hasklig::task());
-    map.insert(String::from("inter"), inter::task());
     map.insert(String::from("jq"), jq::task());
     map.insert(String::from("macos"), macos::task());
     map.insert(String::from("minikube"), minikube::task());
     map.insert(String::from("nodejs"), nodejs::task());
     map.insert(String::from("npm"), npm::task());
-    map.insert(String::from("overpass"), overpass::task());
     map.insert(String::from("pip"), pip::task());
-    map.insert(String::from("plex"), plex::task());
-    map.insert(String::from("publicsans"), publicsans::task());
     map.insert(String::from("rust"), rust::task());
     map.insert(String::from("rustc"), rustc::task());
     map.insert(String::from("rustup"), rustup::task());
     map.insert(String::from("shfmt"), shfmt::task());
     map.insert(String::from("skaffold"), skaffold::task());
-    map.insert(String::from("sourcesanspro"), sourcesanspro::task());
-    map.insert(String::from("sourceserifpro"), sourceserifpro::task());
     map.insert(String::from("ssh"), ssh::task());
     map.insert(String::from("tmux"), tmux::task());
     map.insert(String::from("vale"), vale::task());
