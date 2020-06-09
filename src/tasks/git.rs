@@ -1,8 +1,6 @@
 use std::{collections::HashMap, fs, str};
 
 use serde_derive::Deserialize;
-use toml;
-use which;
 
 use crate::{
     lib::task::{self, Status, Task},

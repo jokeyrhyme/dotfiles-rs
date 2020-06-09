@@ -1,7 +1,5 @@
 use std::fs;
 
-use toml;
-
 use crate::{
     lib::{
         favourites::Favourites,

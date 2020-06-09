@@ -1,7 +1,6 @@
 use std::{ffi::OsStr, io, path::PathBuf};
 
 use subprocess::{self, Exec, Redirection};
-use which;
 
 const VERSION_ARGS: &[&str] = &["--version"];
 

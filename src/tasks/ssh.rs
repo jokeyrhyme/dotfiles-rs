@@ -1,7 +1,5 @@
 use std::{fs, str};
 
-use regex;
-
 use crate::lib::task::{self, Status, Task};
 use crate::utils::{self, ssh::Config};
 
@@ -195,8 +193,6 @@ fn sync() -> task::Result {
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    use which;
 
     #[test]
     fn is_blacklist_supported_by_versions() {

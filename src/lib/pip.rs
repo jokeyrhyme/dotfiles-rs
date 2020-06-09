@@ -1,7 +1,6 @@
 use std::{io, path::PathBuf, str};
 
 use serde_derive::Deserialize;
-use serde_json;
 
 use crate::{
     lib::favourites::Favourites,

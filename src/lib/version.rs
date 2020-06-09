@@ -1,5 +1,3 @@
-use regex;
-
 const UNSTABLE: &[&str] = &["alpha", "beta", "canary", "dev", "preview", "rc"];
 
 pub fn is_stable<S>(version: S) -> bool

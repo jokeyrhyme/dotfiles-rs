@@ -1,7 +1,6 @@
 use std::{fmt, io, result};
 
 use colored::*;
-use subprocess;
 
 use crate::utils::github;
 

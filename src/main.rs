@@ -1,3 +1,5 @@
+#![deny(clippy::all)]
+
 use std::env::var;
 
 use clap::{App, Arg, SubCommand};
@@ -8,7 +10,6 @@ mod lib {
     pub mod cargo;
     pub mod env;
     pub mod favourites;
-    pub mod ghrafont;
     pub mod ghratask;
     pub mod ghrtask;
     pub mod goget;

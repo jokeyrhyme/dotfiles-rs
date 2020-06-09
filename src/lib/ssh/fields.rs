@@ -3,8 +3,6 @@ use std::{
     i32,
 };
 
-use regex;
-
 const ASK: &str = "ask";
 const AUTO: &str = "auto";
 const AUTOASK: &str = "autoask";

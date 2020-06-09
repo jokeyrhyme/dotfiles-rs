@@ -10,7 +10,6 @@ use regex::Regex;
 use reqwest::Url;
 use serde_derive::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
-use toml;
 
 use crate::utils::http::Response;
 

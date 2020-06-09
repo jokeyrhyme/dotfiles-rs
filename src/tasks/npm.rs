@@ -3,9 +3,6 @@ use std::path::Path;
 use std::{fs, io, str};
 
 use serde_derive::Deserialize;
-use serde_json;
-use toml;
-use which;
 
 use crate::lib::{
     self,

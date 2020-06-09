@@ -1,7 +1,6 @@
 use std::{env::consts::OS, fs, path::Path, str};
 
 use serde_derive::Deserialize;
-use toml;
 
 use crate::{
     lib::task::{self, Status, Task},
