@@ -11,6 +11,8 @@ and [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 - alacritty: moved to [`tuning`](https://github.com/jokeyrhyme/tuning) with [my dotfiles](https://github.com/jokeyrhyme/dotfiles/tree/master/tuning)
 
+- atom: removed, unlikely to revisit
+
 - fonts: moved to [`tuning`](https://github.com/jokeyrhyme/tuning) with my [Brewfile](https://github.com/jokeyrhyme/dotfiles/blob/master/config/Brewfile)
 
 ## [0.36.0] - 2020-04-05
