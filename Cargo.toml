@@ -33,7 +33,7 @@ subprocess = "0.2"
 tar = "0.4"
 textwrap = "0.11"
 toml = "0.5"
-which = "3.0"
+which = "4.0"
 zip = "0.5"
 
 [dev-dependencies]
