@@ -19,7 +19,7 @@ license = "MIT"
 chrono = { version = "0.4", features = ["serde"] }
 colored = "1.9"
 clap = "2.33"
-dirs = "2.0"
+dirs = "3.0"
 Inflector = "0.11"
 libflate = "1.0"
 mktemp = "0.4"
