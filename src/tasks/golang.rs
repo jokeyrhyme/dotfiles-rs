@@ -13,12 +13,12 @@ use crate::utils::{
 pub fn env(mut exports: Exports) -> Exports {
     let gp = gopath();
     if gp.is_dir() {
-        exports.gopath = gp;
+        exports.gopath = Some(gp);
     }
 
     let gr = goroot();
     if gr.is_dir() {
-        exports.goroot = gr;
+        exports.goroot = Some(gr);
     }
 
     for dir in vec![bin_dir(), gopath().join("bin")] {

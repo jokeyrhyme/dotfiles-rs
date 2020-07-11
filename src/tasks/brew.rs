@@ -11,6 +11,15 @@ use crate::{
 
 pub fn env(mut exports: Exports) -> Exports {
     if let Some(prefix) = brew::brew_prefix() {
+        // TODO: consider parsing the output from `brew shellenv`
+
+        // we add homebrew to the end of ...PATH,
+        // as we want to treat it more like a cross-distribution fallback,
+        // rather than the primary source of packages (for now, at least)
+
+        exports.info_path.push(prefix.join("info"));
+        exports.man_path.push(prefix.join("man"));
+
         let mut paths: Vec<PathBuf> = vec!["bin", "sbin"]
             .iter()
             .filter_map(|b| {
@@ -22,10 +31,7 @@ pub fn env(mut exports: Exports) -> Exports {
                 }
             })
             .collect();
-        paths.append(&mut exports.path);
-        exports.path = paths;
-
-        // TODO: parse and export the output from `brew shellenv`
+        exports.path.append(&mut paths);
     }
     exports
 }
