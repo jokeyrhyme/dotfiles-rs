@@ -7,6 +7,10 @@ and [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- `jokeyrhyme-dotfiles env` may now manipulate INFO_PATH and MAN_PATH
+
 ### Changed
 
 - env: append homebrew to PATH instead of prepending,

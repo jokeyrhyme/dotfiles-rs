@@ -1,19 +1,28 @@
 use std::{
-    env::{consts::OS, var},
+    env::{join_paths, split_paths, var_os},
+    ffi::OsStr,
     fmt::Display,
     path::PathBuf,
 };
 
-pub const EDITOR: &str = "EDITOR";
-pub const GOPATH: &str = "GOPATH";
-pub const GOROOT: &str = "GOROOT";
-pub const PATH: &str = "PATH";
+const DEFAULT_INFO_PATHS: &[&str] = &["/usr/share/info", "/usr/local/share/info"];
+const DEFAULT_MAN_PATHS: &[&str] = &["/usr/share/man", "/usr/local/share/man"];
+const DEFAULT_PATHS: &[&str] = &["/bin", "/usr/bin", "/usr/local/bin"];
+
+const EDITOR: &str = "EDITOR";
+const GOPATH: &str = "GOPATH";
+const GOROOT: &str = "GOROOT";
+const INFOPATH: &str = "INFOPATH";
+const MANPATH: &str = "MANPATH";
+const PATH: &str = "PATH";
 
 #[derive(Debug)]
 pub struct Exports {
     pub editor: PathBuf,
     pub gopath: PathBuf,
     pub goroot: PathBuf,
+    pub info_path: Vec<PathBuf>,
+    pub man_path: Vec<PathBuf>,
     pub path: Vec<PathBuf>,
 }
 
@@ -23,6 +32,8 @@ impl Exports {
             editor: PathBuf::new(),
             gopath: PathBuf::new(),
             goroot: PathBuf::new(),
+            info_path: Vec::<PathBuf>::new(),
+            man_path: Vec::<PathBuf>::new(),
             path: Vec::<PathBuf>::new(),
         }
     }
@@ -46,33 +57,64 @@ impl Exports {
             &self.goroot.as_path().to_string_lossy().into_owned(),
         );
 
-        let path_strings: Vec<String> = self
-            .path
-            .clone()
-            .into_iter()
-            .map(|p| p.as_path().to_string_lossy().into_owned())
-            .collect();
-        let path_line = export_shell(
-            &shell,
-            PATH,
-            &path_strings.join(if OS == "windows" { ";" } else { ":" }),
-        );
+        let mut lines = vec![editor_line, gopath_line, goroot_line];
 
-        let lines: &[String] = &[editor_line, gopath_line, goroot_line, path_line];
+        if let Ok(paths) = join_paths(&self.info_path) {
+            lines.push(export_shell(
+                &shell,
+                INFOPATH,
+                &paths.to_string_lossy().into_owned(),
+            ));
+        }
+
+        if let Ok(paths) = join_paths(&self.man_path) {
+            lines.push(export_shell(
+                &shell,
+                MANPATH,
+                &paths.to_string_lossy().into_owned(),
+            ));
+        }
+
+        if let Ok(paths) = join_paths(&self.path) {
+            lines.push(export_shell(
+                &shell,
+                PATH,
+                &paths.to_string_lossy().into_owned(),
+            ));
+        }
+
         lines.join("\n")
     }
 }
 
 impl Default for Exports {
     fn default() -> Exports {
-        let mut exports = Self::new();
-        exports.path = match var("PATH") {
-            Ok(paths) => {
-                let path_strings = paths.split(if OS == "windows" { ";" } else { ":" });
-                path_strings.map(PathBuf::from).collect()
-            }
-            Err(_) => exports.path,
+        let mut exports = Exports {
+            info_path: var_split_paths(INFOPATH),
+            man_path: var_split_paths(MANPATH),
+            path: var_split_paths(PATH),
+            ..Exports::new()
         };
+
+        for path in DEFAULT_INFO_PATHS {
+            let pb = PathBuf::from(path);
+            if pb.is_dir() && !exports.info_path.contains(&pb) {
+                exports.info_path.push(pb); // TODO: de-dupe
+            }
+        }
+        for path in DEFAULT_MAN_PATHS {
+            let pb = PathBuf::from(path);
+            if pb.is_dir() && !exports.man_path.contains(&pb) {
+                exports.man_path.push(pb); // TODO: de-dupe
+            }
+        }
+        for path in DEFAULT_PATHS {
+            let pb = PathBuf::from(path);
+            if pb.is_dir() && !exports.path.contains(&pb) {
+                exports.path.push(pb); // TODO: de-dupe
+            }
+        }
+
         exports
     }
 }
@@ -115,23 +157,33 @@ where
         return String::new();
     }
     match shell {
-        Shell::Bash => export_bash(key, value),
+        Shell::Bash | Shell::Zsh => export_bash(key, value),
         Shell::Fish => export_fish(key, value),
-        Shell::Zsh => export_bash(key, value),
+    }
+}
+
+fn var_split_paths<O>(name: O) -> Vec<PathBuf>
+where
+    O: AsRef<OsStr>,
+{
+    match var_os(name) {
+        Some(value) => split_paths(&value).collect(),
+        None => vec![],
     }
 }
 
 #[cfg(test)]
 mod tests {
+    use std::env::consts::OS;
+
     use super::*;
 
     #[test]
     fn to_bash() {
         let exports = Exports {
             editor: PathBuf::from("/usr/bin/vim"),
-            gopath: PathBuf::new(),
-            goroot: PathBuf::new(),
             path: vec![PathBuf::from("/usr/bin"), PathBuf::from("/bin")],
+            ..Exports::new()
         };
         let got = exports.to_shell(Shell::Bash);
         let want = if OS == "windows" {
@@ -146,9 +198,8 @@ mod tests {
     fn to_fish() {
         let exports = Exports {
             editor: PathBuf::from("/usr/bin/vim"),
-            gopath: PathBuf::new(),
-            goroot: PathBuf::new(),
             path: vec![PathBuf::from("/usr/bin"), PathBuf::from("/bin")],
+            ..Exports::new()
         };
         let got = exports.to_shell(Shell::Fish);
         let want = if OS == "windows" {
@@ -163,9 +214,8 @@ mod tests {
     fn to_zsh() {
         let exports = Exports {
             editor: PathBuf::from("/usr/bin/vim"),
-            gopath: PathBuf::new(),
-            goroot: PathBuf::new(),
             path: vec![PathBuf::from("/usr/bin"), PathBuf::from("/bin")],
+            ..Exports::new()
         };
         let got = exports.to_shell(Shell::Zsh);
         let want = if OS == "windows" {
