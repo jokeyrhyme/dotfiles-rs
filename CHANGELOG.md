@@ -7,6 +7,8 @@ and [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.38.0] - 2020-07-11
+
 ### Added
 
 - `jokeyrhyme-dotfiles env` may now manipulate INFO_PATH and MAN_PATH
