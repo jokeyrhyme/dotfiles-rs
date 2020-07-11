@@ -19,8 +19,8 @@ const PATH: &str = "PATH";
 #[derive(Debug)]
 pub struct Exports {
     pub editor: PathBuf,
-    pub gopath: PathBuf,
-    pub goroot: PathBuf,
+    pub gopath: Option<PathBuf>,
+    pub goroot: Option<PathBuf>,
     pub info_path: Vec<PathBuf>,
     pub man_path: Vec<PathBuf>,
     pub path: Vec<PathBuf>,
@@ -30,8 +30,8 @@ impl Exports {
     pub fn new() -> Exports {
         Exports {
             editor: PathBuf::new(),
-            gopath: PathBuf::new(),
-            goroot: PathBuf::new(),
+            gopath: None,
+            goroot: None,
             info_path: Vec::<PathBuf>::new(),
             man_path: Vec::<PathBuf>::new(),
             path: Vec::<PathBuf>::new(),
@@ -45,19 +45,23 @@ impl Exports {
             &self.editor.as_path().to_string_lossy().into_owned(),
         );
 
-        let gopath_line = export_shell(
-            &shell,
-            GOPATH,
-            &self.gopath.as_path().to_string_lossy().into_owned(),
-        );
+        let mut lines = vec![editor_line];
 
-        let goroot_line = export_shell(
-            &shell,
-            GOROOT,
-            &self.goroot.as_path().to_string_lossy().into_owned(),
-        );
+        if let Some(gopath) = &self.gopath {
+            lines.push(export_shell(
+                &shell,
+                GOPATH,
+                &gopath.as_path().to_string_lossy().into_owned(),
+            ));
+        }
 
-        let mut lines = vec![editor_line, gopath_line, goroot_line];
+        if let Some(goroot) = &self.goroot {
+            lines.push(export_shell(
+                &shell,
+                GOROOT,
+                &goroot.as_path().to_string_lossy().into_owned(),
+            ));
+        }
 
         if let Ok(paths) = join_paths(&self.info_path) {
             lines.push(export_shell(
