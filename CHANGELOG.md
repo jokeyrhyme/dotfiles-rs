@@ -7,6 +7,12 @@ and [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- env: append homebrew to PATH instead of prepending,
+  as we want to treat it more like a cross-distribution fallback,
+  rather than the primary source of packages (for now, at least)
+
 ## [0.37.0] - 2020-06-09
 
 ### Removed
