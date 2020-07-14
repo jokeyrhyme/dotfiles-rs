@@ -17,7 +17,7 @@ license = "MIT"
 
 [dependencies]
 chrono = { version = "0.4", features = ["serde"] }
-colored = "1.9"
+colored = "2.0"
 clap = "2.33"
 dirs = "3.0"
 Inflector = "0.11"
