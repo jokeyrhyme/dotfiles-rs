@@ -8,6 +8,8 @@ read my dotfiles repository and do stuff
 
 - ideally, we will take the imperative code here and expose it as configuration-driven functionality over in `tuning`
 
+MOVED: https://gitlab.com/jokeyrhyme/dotfiles-rs
+
 ## Usage
 
 ```sh
